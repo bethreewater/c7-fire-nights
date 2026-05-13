@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>SUMMER NIGHTS — Container No.7</title>
+<meta name="description" content="Penghu · 2026.06 – 2026.08 · Saturdays · Fire Performance Dinner.">
+
+<meta property="og:title" content="SUMMER NIGHTS · Container No.7">
+<meta property="og:description" content="Penghu · 2026 · Saturdays · Fire Dinner">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=IBM+Plex+Sans:wght@200;300;400;500;600&family=Noto+Serif+TC:wght@300;500;700;900&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #000000;
+    --bg-2: #0A0A0A;
+    --paper: #EFEAE0;
+    --paper-soft: #C8C2B5;
+    --paper-mute: #6B665E;
+    --fire: #D14820;
+    --fire-soft: #E8A158;
+    --line: #1F1F1D;
+
+    --display: 'Anton', 'Noto Sans TC', sans-serif;
+    --serif: 'Fraunces', 'Noto Serif TC', Georgia, serif;
+    --sans: 'IBM Plex Sans', 'Noto Sans TC', -apple-system, sans-serif;
+    --zh-display: 'Noto Sans TC', sans-serif;
+    --zh-serif: 'Noto Serif TC', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--paper);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0 0.87 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.6;
+    mix-blend-mode: overlay;
+  }
+
+  ::selection { background: var(--fire); color: var(--paper); }
+  a { color: inherit; text-decoration: none; transition: color 0.4s; }
+  a:hover { color: var(--fire); }
+
+  /* Top runner */
+  .runner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 32px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--paper);
+    mix-blend-mode: difference;
+  }
+  .runner .left { font-weight: 500; }
+  .runner .right { display: flex; gap: 24px; }
+  @media (max-width: 720px) {
+    .runner { padding: 16px 20px; font-size: 10px; }
+    .runner .right { display: none; }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 640px;
+    width: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 1fr auto 1fr;
+  }
+  .hero .hero-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .hero .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.55) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.5) 100%);
+  }
+  .hero::before { display: none; }
+  .hero > * { position: relative; z-index: 2; }
+
+  .hero .top-meta,
+  .hero .bottom-meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 80px 32px 0;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--paper);
+  }
+  .hero .bottom-meta {
+    align-items: end;
+    padding: 0 32px 40px;
+  }
+  .hero .top-meta { align-items: start; }
+  .hero .top-meta .feature {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--paper-soft);
+  }
+
+  .hero .title-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 24px;
+  }
+  .hero h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(80px, 18vw, 280px);
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    color: var(--paper);
+    text-shadow: 0 4px 60px rgba(0,0,0,0.5);
+  }
+  .hero h1 .nights {
+    display: block;
+    color: var(--paper);
+  }
+  .hero .zh-sub {
+    font-family: var(--zh-display);
+    font-weight: 900;
+    font-size: clamp(22px, 4vw, 44px);
+    letter-spacing: 0.4em;
+    margin-top: 24px;
+    color: var(--paper);
+  }
+  .hero .lead {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(13px, 1.4vw, 15px);
+    letter-spacing: 0.08em;
+    line-height: 1.9;
+    margin-top: 40px;
+    color: var(--paper-soft);
+    max-width: 520px;
+  }
+  @media (max-width: 720px) {
+    .hero .top-meta,
+    .hero .bottom-meta { padding-left: 20px; padding-right: 20px; }
+    .hero .top-meta { padding-top: 60px; font-size: 10px; }
+    .hero .bottom-meta { font-size: 10px; padding-bottom: 32px; }
+    .hero .top-meta > div:nth-child(2) { display: none; }
+  }
+
+  /* Section base */
+  section {
+    padding: 160px 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+  }
+  @media (max-width: 720px) {
+    section { padding: 96px 24px; }
+  }
+
+  /* Section heading style — magazine-spread */
+  .spread {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 96px;
+  }
+  @media (max-width: 900px) {
+    .spread { grid-template-columns: 1fr; gap: 48px; }
+  }
+  .spread .index {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+  }
+  .spread .index .num {
+    display: block;
+    font-family: var(--display);
+    font-size: 80px;
+    line-height: 1;
+    color: var(--paper);
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .spread .index .num::after {
+    content: ' /';
+    color: var(--fire);
+  }
+
+  .display-h {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(56px, 9vw, 144px);
+    line-height: 0.9;
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    color: var(--paper);
+    margin-bottom: 16px;
+  }
+  .display-h .accent {
+    color: var(--fire);
+  }
+  .display-h-zh {
+    font-family: var(--zh-display);
+    font-weight: 900;
+    font-size: clamp(24px, 3.2vw, 44px);
+    letter-spacing: 0.3em;
+    color: var(--paper);
+    margin: 32px 0 24px;
+  }
+  .lede {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(17px, 1.8vw, 22px);
+    line-height: 1.55;
+    letter-spacing: 0.02em;
+    color: var(--paper-soft);
+    max-width: 720px;
+  }
+  .body-p {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--paper-soft);
+    max-width: 640px;
+    margin-top: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Sessions block */
+  .sessions {
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 0;
+    margin-top: 96px;
+  }
+  @media (max-width: 720px) {
+    .sessions { grid-template-columns: 1fr; gap: 48px; }
+    .sessions .divider { display: none; }
+  }
+  .sessions .divider {
+    background: var(--line);
+  }
+  .session-block {
+    padding: 0 48px;
+  }
+  @media (max-width: 720px) {
+    .session-block { padding: 0; }
+  }
+  .session-block .time {
+    font-family: var(--display);
+    font-size: 96px;
+    line-height: 1;
+    color: var(--paper);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .session-block .label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 32px;
+  }
+  .session-block .desc {
+    font-family: var(--zh-serif);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--paper);
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .session-block .body {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--paper-soft);
+    letter-spacing: 0.02em;
+  }
+
+  /* Menu — numbered list, no boxes */
+  .menu-list {
+    margin-top: 96px;
+  }
+  .course {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px;
+    gap: 32px;
+    padding: 48px 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .course:last-child { border-bottom: 1px solid var(--line); }
+  @media (max-width: 720px) {
+    .course {
+      grid-template-columns: 56px 1fr;
+      gap: 16px;
+      padding: 32px 0;
+    }
+    .course .meta { display: none; }
+  }
+  .course .num {
+    font-family: var(--display);
+    font-size: 40px;
+    color: var(--fire);
+    letter-spacing: -0.02em;
+  }
+  .course .name {
+    font-family: var(--zh-serif);
+    font-weight: 500;
+    font-size: clamp(22px, 2.5vw, 32px);
+    line-height: 1.2;
+    color: var(--paper);
+    letter-spacing: 0.04em;
+  }
+  .course .en {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+    margin-top: 10px;
+  }
+  .course .meta {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+    text-align: right;
+    line-height: 1.8;
+  }
+  .course .meta .desc {
+    font-family: var(--zh-serif);
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--paper-soft);
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+
+  /* Drinks — three full-width spreads */
+  .drinks-section {
+    background: var(--bg-2);
+    padding: 0;
+    max-width: none;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .drinks-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 160px 32px 96px;
+  }
+  .drink {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    padding: 80px 0;
+    border-top: 1px solid var(--line);
+    align-items: center;
+  }
+  .drink:first-of-type { border-top: none; }
+  @media (max-width: 800px) {
+    .drink { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
+  }
+  .drink .visual {
+    position: relative;
+    aspect-ratio: 1;
+    max-width: 460px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .drink .visual .orb {
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    filter: blur(0.5px);
+    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .drink .visual .orb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.25), transparent 50%);
+  }
+  .orb.sunset { background: radial-gradient(circle at 35% 35%, #F0A050 5%, #D14820 50%, #6B1A0A 100%); }
+  .orb.midnight { background: radial-gradient(circle at 35% 35%, #6B3A88 5%, #2A1545 55%, #08020F 100%); }
+  .orb.kumquat { background: radial-gradient(circle at 35% 35%, #F4D060 5%, #C88A1E 55%, #5A3408 100%); }
+
+  .drink .info .num {
+    font-family: var(--display);
+    font-size: 40px;
+    color: var(--fire);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .drink .info .zh {
+    font-family: var(--zh-display);
+    font-weight: 900;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 0.06em;
+    color: var(--paper);
+    margin: 24px 0 8px;
+    line-height: 1;
+  }
+  .drink .info .en {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(28px, 4vw, 48px);
+    letter-spacing: 0;
+    color: var(--paper);
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .drink .info .en .it {
+    color: var(--fire);
+  }
+  .drink .info .ingredients {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    line-height: 1.9;
+    color: var(--paper-soft);
+    margin: 40px 0 24px;
+    max-width: 420px;
+  }
+  .drink .info .story {
+    font-family: var(--zh-serif);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.85;
+    color: var(--paper);
+    max-width: 420px;
+    border-top: 1px solid var(--line);
+    padding-top: 28px;
+    letter-spacing: 0.02em;
+  }
+  .drink .info .abv {
+    margin-top: 24px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+  }
+
+  /* Flow — single column timeline */
+  .flow-list {
+    margin-top: 80px;
+  }
+  .beat {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .beat:last-child { border-bottom: 1px solid var(--line); }
+  .beat.fire {
+    background: linear-gradient(90deg, rgba(209, 72, 32, 0.06), transparent);
+  }
+  .beat .time {
+    font-family: var(--display);
+    font-size: 24px;
+    color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+  .beat.fire .time { color: var(--fire); }
+  .beat .what {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--paper-soft);
+  }
+  .beat .what strong {
+    font-family: var(--zh-serif);
+    font-weight: 500;
+    color: var(--paper);
+    letter-spacing: 0.04em;
+    font-size: 17px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .beat.fire .what strong {
+    color: var(--fire);
+  }
+
+  /* Schedule */
+  .sched-group { margin-top: 64px; }
+  .sched-group h4 {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 32px;
+    font-weight: 500;
+  }
+  .sched-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .slot {
+    padding: 24px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.3s;
+    cursor: pointer;
+  }
+  .slot:hover {
+    background: rgba(209, 72, 32, 0.06);
+  }
+  .slot .d {
+    font-family: var(--display);
+    font-size: 32px;
+    color: var(--paper);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .slot .month-tag {
+    font-family: var(--sans);
+    font-size: 10px;
+    color: var(--paper-mute);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .slot .sess {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--paper-soft);
+    margin-top: 16px;
+    line-height: 1.8;
+  }
+  .slot.beta {
+    background: rgba(209, 72, 32, 0.08);
+  }
+  .slot.beta .tag {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-top: 8px;
+    display: block;
+  }
+
+  /* CTA */
+  .cta-block {
+    margin-top: 96px;
+    padding-top: 64px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+  .cta {
+    display: inline-block;
+    padding: 28px 64px;
+    border: 1px solid var(--paper);
+    color: var(--paper);
+    font-family: var(--display);
+    font-size: clamp(28px, 4vw, 48px);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.4s;
+  }
+  .cta:hover {
+    background: var(--fire);
+    border-color: var(--fire);
+    color: #000;
+  }
+  .cta-note {
+    margin-top: 24px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+  }
+
+  /* Terms / FAQ */
+  .qa {
+    padding: 32px 0;
+    border-top: 1px solid var(--line);
+  }
+  .qa:last-of-type { border-bottom: 1px solid var(--line); }
+  .qa .q {
+    font-family: var(--zh-serif);
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .qa .q .num {
+    font-family: var(--display);
+    font-size: 14px;
+    color: var(--fire);
+    letter-spacing: 0;
+    flex-shrink: 0;
+  }
+  .qa .a {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--paper-soft);
+    letter-spacing: 0.02em;
+    max-width: 800px;
+  }
+
+  /* Visit */
+  .visit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 56px;
+    margin-top: 80px;
+  }
+  .visit-item .label {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 16px;
+  }
+  .visit-item .val {
+    font-family: var(--zh-serif);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--paper);
+  }
+  .visit-item .val a {
+    border-bottom: 1px solid var(--paper-mute);
+    padding-bottom: 1px;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 64px 32px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: end;
+  }
+  @media (max-width: 720px) {
+    footer { grid-template-columns: 1fr; }
+  }
+  footer .mark {
+    font-family: var(--display);
+    font-size: 56px;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--paper);
+  }
+  footer .mark .it {
+    color: var(--fire);
+  }
+  footer .info {
+    text-align: right;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+    line-height: 2;
+  }
+  @media (max-width: 720px) {
+    footer .info { text-align: left; }
+  }
+
+  /* fade-in on scroll */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="runner">
+  <div class="left">C/7 · FIRE / 2026</div>
+  <div class="right">
+    <a href="#sessions">Sessions</a>
+    <a href="#menu">Menu</a>
+    <a href="#drinks">Drinks</a>
+    <a href="#schedule">Dates</a>
+    <a href="#visit">Visit</a>
+  </div>
+</div>
+
+<!-- HERO with video placeholder -->
+<header class="hero">
+  <video autoplay muted loop playsinline class="hero-video">
+    <source src="img/fire.mp4" type="video/mp4">
+  </video>
+  <div class="hero-bg"></div>
+
+  <div class="top-meta">
+    <div>
+      Container No.7<br>
+      Penghu, Taiwan
+    </div>
+    <div class="feature">A summer feature.</div>
+    <div>
+      MMXXVI<br>
+      JUN — AUG
+    </div>
+  </div>
+
+  <div class="title-block">
+    <h1>
+      Summer<br>
+      <span class="nights">Nights</span>
+    </h1>
+    <div class="zh-sub">夏夜火舞</div>
+    <p class="lead">
+      Thirteen Saturdays. Two sittings. <br>
+      Fire performance, plated dinner, signature drinks. <br>
+      One hundred and ten minutes between dusk and night.
+    </p>
+  </div>
+
+  <div class="bottom-meta">
+    <div>13 Saturdays / 26 Sittings</div>
+    <div>↓ Scroll</div>
+    <div>NT$ 2,000</div>
+  </div>
+</header>
+
+<!-- SESSIONS -->
+<section id="sessions">
+  <div class="spread">
+    <div class="index">
+      <span class="num">01</span>
+      Two Sittings
+    </div>
+    <div>
+      <h2 class="display-h">Dusk, <span class="accent">and then</span><br>night.</h2>
+      <div class="display-h-zh">兩個場次</div>
+      <p class="lede">
+        Same fire. Same menu. Different sky. <br>
+        Choose the one that meets you where you are.
+      </p>
+
+      <div class="sessions">
+        <div class="session-block">
+          <div class="time">18:00</div>
+          <div class="label">Sunset Sitting</div>
+          <p class="desc">
+            看火與太陽落下，同時發生。
+          </p>
+          <p class="body">
+            天空從橘到漆黑的這一個小時，火光的背景跟著換場。第一段表演在黃昏，第二、第三段在夜空。<br><br>
+            這是 Night 場做不到的時間流。
+          </p>
+        </div>
+        <div class="divider"></div>
+        <div class="session-block">
+          <div class="time">20:00</div>
+          <div class="label">Night Sitting</div>
+          <p class="desc">
+            入場時天已經黑了。火，唯一在發生的事。
+          </p>
+          <p class="body">
+            火舞與夜空互相成立，沒有黃昏的緩衝。<br><br>
+            適合想要一場完整的夜的人。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="spread">
+    <div class="index">
+      <span class="num">02</span>
+      The Menu
+    </div>
+    <div>
+      <h2 class="display-h">Seven <span class="accent">small</span><br>movements.</h2>
+      <div class="display-h-zh">七道菜</div>
+      <p class="lede">
+        Five courses sent in waves, between three fire performances.
+        Set menu, NT$2,000.
+      </p>
+
+      <div class="menu-list">
+        <div class="course">
+          <div class="num">i</div>
+          <div>
+            <div class="name">
+              迎賓麵包 ／ 抹醬 ／ 店內發酵康普茶
+              <span class="en">Sourdough · Tomato basil dip · House-fermented kombucha</span>
+            </div>
+          </div>
+          <div class="meta">
+            On Arrival
+            <div class="desc">墊胃、清口、預期管理。</div>
+          </div>
+        </div>
+
+        <div class="course">
+          <div class="num">ii</div>
+          <div>
+            <div class="name">
+              西班牙冷湯 ／ 冰卷 ／ 水果沙拉
+              <span class="en">Gazpacho · Penghu squid · Summer fruits</span>
+            </div>
+          </div>
+          <div class="meta">
+            Before Fire I
+            <div class="desc">三道冷的，給接下來的火留位置。</div>
+          </div>
+        </div>
+
+        <div class="course">
+          <div class="num">iii</div>
+          <div>
+            <div class="name">
+              套餐專屬調飲（三款擇一）
+              <span class="en">Choose one of three signature drinks · see below</span>
+            </div>
+          </div>
+          <div class="meta">
+            After Fire I
+            <div class="desc">Cactus Sunset · Midnight Berry · Fire Kumquat</div>
+          </div>
+        </div>
+
+        <div class="course">
+          <div class="num">iv</div>
+          <div>
+            <div class="name">
+              秘藏紅燒牛肉麵
+              <span class="en">Slow-braised beef noodles</span>
+            </div>
+          </div>
+          <div class="meta">
+            Before Fire II
+            <div class="desc">牛腱滷三小時，秘藏滷包。湯先喝一口，再吃麵。</div>
+          </div>
+        </div>
+
+        <div class="course">
+          <div class="num">v</div>
+          <div>
+            <div class="name">
+              烤布蕾
+              <span class="en">Crème brûlée, torched at the table</span>
+            </div>
+          </div>
+          <div class="meta">
+            Before Fire III
+            <div class="desc">焦糖現噴，「叩」一聲。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DRINKS -->
+<section class="drinks-section" id="drinks">
+<div class="drinks-inner">
+  <div class="spread">
+    <div class="index">
+      <span class="num">03</span>
+      The Drinks
+    </div>
+    <div>
+      <h2 class="display-h">Three <span class="accent">for the</span><br>summer.</h2>
+      <div class="display-h-zh">三款專屬調飲</div>
+      <p class="lede">
+        Built for this menu, not on the regular list. <br>
+        All three are alcohol-free.
+      </p>
+    </div>
+  </div>
+
+  <div class="drink">
+    <div class="visual"><div class="orb sunset"></div></div>
+    <div class="info">
+      <div class="num">3.1</div>
+      <div class="zh">日落仙人掌</div>
+      <div class="en">Cactus <span class="it">Sunset</span></div>
+      <div class="ingredients">
+        Penghu cactus juice — concentrated grape — <br>
+        agave nectar — lime — soda <br>
+        cactus chip & lime peel
+      </div>
+      <p class="story">
+        太陽落入海平面那一刻，大概十五分鐘的窗口。<br>
+        天空是橘紅、海是金、火是這杯。
+      </p>
+      <div class="abv">No Alcohol · 0%</div>
+    </div>
+  </div>
+
+  <div class="drink">
+    <div class="visual"><div class="orb midnight"></div></div>
+    <div class="info">
+      <div class="num">3.2</div>
+      <div class="zh">夜空藍莓</div>
+      <div class="en">Midnight <span class="it">Berry</span></div>
+      <div class="ingredients">
+        Blueberry purée — cassis — <br>
+        cinnamon syrup — lime — tonic <br>
+        fresh blueberries
+      </div>
+      <p class="story">
+        完全黑了之後，海是看不到的。<br>
+        只剩火光跟天上的星。
+      </p>
+      <div class="abv">No Alcohol · 0%</div>
+    </div>
+  </div>
+
+  <div class="drink">
+    <div class="visual"><div class="orb kumquat"></div></div>
+    <div class="info">
+      <div class="num">3.3</div>
+      <div class="zh">火光金桔</div>
+      <div class="en">Fire <span class="it">Kumquat</span></div>
+      <div class="ingredients">
+        House-fermented kombucha — Taiwan kumquat — <br>
+        honey — fresh ginger — lime <br>
+        ginger chip
+      </div>
+      <p class="story">
+        火光是橘金的，草皮上燒的火也是這顏色。<br>
+        喝起來像把火光裝進了杯子。
+      </p>
+      <div class="abv">Kombucha-Based · &lt; 0.5%</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <div class="spread">
+    <div class="index">
+      <span class="num">04</span>
+      The Evening
+    </div>
+    <div>
+      <h2 class="display-h">One <span class="accent">hundred</span><br>and ten.</h2>
+      <div class="display-h-zh">一百一十分鐘</div>
+      <p class="lede">
+        Sunset Sitting timeline. Night Sitting is the same shape, two hours later.
+      </p>
+
+      <div class="flow-list">
+        <div class="beat">
+          <div class="time">17:30</div>
+          <div class="what"><strong>Doors</strong>草皮就座</div>
+        </div>
+        <div class="beat">
+          <div class="time">18:00</div>
+          <div class="what"><strong>Course I</strong>迎賓麵包＋抹醬＋康普茶</div>
+        </div>
+        <div class="beat">
+          <div class="time">18:15</div>
+          <div class="what"><strong>Course II</strong>西班牙冷湯＋冰卷＋水果沙拉</div>
+        </div>
+        <div class="beat fire">
+          <div class="time">18:30</div>
+          <div class="what"><strong>FIRE I</strong>Sunset 編排，日落與火同框</div>
+        </div>
+        <div class="beat">
+          <div class="time">18:40</div>
+          <div class="what"><strong>Course III</strong>套餐專屬調飲（擇一）</div>
+        </div>
+        <div class="beat">
+          <div class="time">18:55</div>
+          <div class="what"><strong>Course IV</strong>秘藏紅燒牛肉麵</div>
+        </div>
+        <div class="beat fire">
+          <div class="time">19:10</div>
+          <div class="what"><strong>FIRE II</strong>夜場模式</div>
+        </div>
+        <div class="beat">
+          <div class="time">19:20</div>
+          <div class="what"><strong>Course V</strong>烤布蕾，焦糖現噴</div>
+        </div>
+        <div class="beat fire">
+          <div class="time">19:30</div>
+          <div class="what"><strong>FIRE III</strong>收尾段</div>
+        </div>
+        <div class="beat">
+          <div class="time">19:40</div>
+          <div class="what"><strong>End</strong>送客／加購收尾杯</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="spread">
+    <div class="index">
+      <span class="num">05</span>
+      The Dates
+    </div>
+    <div>
+      <h2 class="display-h">Thirteen <span class="accent">saturdays</span>.</h2>
+      <div class="display-h-zh">十三個週六</div>
+      <p class="lede">
+        June through August. Each evening: 18:00 Sunset + 20:00 Night.
+      </p>
+
+      <div class="sched-group">
+        <h4>Preview · 內測場（限熟客邀請）</h4>
+        <div class="sched-grid">
+          <div class="slot beta">
+            <div class="d">5/30</div>
+            <div class="month-tag">May · Sat</div>
+            <div class="sess">Sunset 18:00<br>Night 20:00</div>
+            <span class="tag">NT$1,500 · 75%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sched-group">
+        <h4>June</h4>
+        <div class="sched-grid">
+          <div class="slot"><div class="d">6/06</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">6/13</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">6/20</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">6/27</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+        </div>
+      </div>
+
+      <div class="sched-group">
+        <h4>July</h4>
+        <div class="sched-grid">
+          <div class="slot"><div class="d">7/04</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">7/11</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">7/18</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">7/25</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+        </div>
+      </div>
+
+      <div class="sched-group">
+        <h4>August</h4>
+        <div class="sched-grid">
+          <div class="slot"><div class="d">8/01</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">8/08</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">8/15</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">8/22</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+          <div class="slot"><div class="d">8/29</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
+        </div>
+      </div>
+
+      <div class="cta-block">
+        <a href="#" class="cta" onclick="alert('預購表單建置中——目前請透過 IG @container_no.7_penghu 或電話 0963-059-889 預約'); return false;">Reserve / 預購</a>
+        <div class="cta-note">20 seats per sitting · cutoff 22:00 day before</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TERMS -->
+<section>
+  <div class="spread">
+    <div class="index">
+      <span class="num">06</span>
+      The Fine Print
+    </div>
+    <div>
+      <h2 class="display-h">Weather, <span class="accent">refunds</span>,<br>arrivals.</h2>
+      <div class="display-h-zh">條款</div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.1</span>颱風／天氣</div>
+        <div class="a">
+          中央氣象署陸警或海警發布 → 全額退費或免費換期。<br>
+          ≤ 小雨表演照常；&gt; 中雨延後 30 分鐘觀察；19:30 仍持續 → 表演取消（套餐照出，可選下一場補火舞，不退費）。<br>
+          預售期間發布颱風警報 → 整週場次自動延後一週。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.2</span>退費</div>
+        <div class="a">
+          場次前 5 天以上：全額退費。<br>
+          場次前 2–5 天：退 50%。<br>
+          場次前 ＜ 2 天：不退費，可換期。<br>
+          颱風／警報：依「天氣」條款，不受此限。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.3</span>開場門檻</div>
+        <div class="a">
+          單場預售 &lt; 8 人 → 提前 3 天通知換期或全額退費。<br>
+          此條為保護整場節目品質。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.4</span>抵達時間</div>
+        <div class="a">
+          Sunset：17:30–17:50 抵達。Night：19:50–20:05 抵達。<br>
+          遲到 15 分鐘以上 → 視為棄權，不退費。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.5</span>過敏／飲食限制</div>
+        <div class="a">
+          預購時請務必填寫。不吃牛、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。<br>
+          未填寫者，現場無法另作調整。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISIT -->
+<section id="visit">
+  <div class="spread">
+    <div class="index">
+      <span class="num">07</span>
+      Visit
+    </div>
+    <div>
+      <h2 class="display-h">Container <span class="accent">No.7</span>,<br>Penghu.</h2>
+      <div class="display-h-zh">前來</div>
+
+      <div class="visit-grid">
+        <div class="visit-item">
+          <div class="label">Address</div>
+          <div class="val">
+            澎湖<br>
+            <a href="https://maps.google.com/?q=Container+No.7+Penghu" target="_blank">Google Maps ↗</a>
+          </div>
+        </div>
+        <div class="visit-item">
+          <div class="label">Phone</div>
+          <div class="val"><a href="tel:+886963059889">0963 · 059 · 889</a></div>
+        </div>
+        <div class="visit-item">
+          <div class="label">Instagram</div>
+          <div class="val"><a href="https://instagram.com/container_no.7_penghu" target="_blank">@container_no.7_penghu</a></div>
+        </div>
+        <div class="visit-item">
+          <div class="label">Daily Hours</div>
+          <div class="val">
+            18:07 — 00:07<br>
+            Closed Mon. & Thu.<br>
+            <a href="https://bethreewater.github.io/c7-bar/">Main site ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="mark">
+    Summer<br>
+    <span class="it">Nights.</span>
+  </div>
+  <div class="info">
+    <div>Container No.7</div>
+    <div>Penghu · 2026</div>
+    <div>End of file.</div>
+  </div>
+</footer>
+
+<script>
+  // fade-in on scroll
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('section, .drink, .beat, .qa, .visit-item, .slot').forEach(el => {
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>
