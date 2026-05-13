@@ -332,71 +332,65 @@
   }
 
   /* Menu — numbered list, no boxes */
-  .menu-list {
-    margin-top: 96px;
-  }
-  .course {
+  /* Course grid — 5 tiles, magazine-table style */
+  .course-grid {
     display: grid;
-    grid-template-columns: 80px 1fr 200px;
-    gap: 32px;
-    padding: 48px 0;
-    border-top: 1px solid var(--line);
-    align-items: baseline;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 64px;
   }
-  .course:last-child { border-bottom: 1px solid var(--line); }
-  @media (max-width: 720px) {
-    .course {
-      grid-template-columns: 56px 1fr;
-      gap: 16px;
-      padding: 32px 0;
-    }
-    .course .meta { display: none; }
+  @media (max-width: 900px) { .course-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 600px) { .course-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 380px) { .course-grid { grid-template-columns: 1fr; } }
+
+  .course-tile {
+    background: var(--bg);
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 300px;
+    position: relative;
+    transition: background 0.5s ease;
   }
-  .course .num {
+  .course-tile:hover { background: #0F0F0F; }
+  .course-tile .num {
     font-family: var(--display);
-    font-size: 40px;
+    font-size: 32px;
     color: var(--fire);
+    line-height: 1;
     letter-spacing: -0.02em;
   }
-  .course .name {
+  .course-tile .when {
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--paper-mute);
+    font-weight: 500;
+  }
+  .course-tile .zh {
     font-family: var(--zh-serif);
     font-weight: 500;
-    font-size: clamp(22px, 2.5vw, 32px);
-    line-height: 1.2;
+    font-size: 17px;
+    line-height: 1.5;
     color: var(--paper);
     letter-spacing: 0.04em;
   }
-  .course .en {
-    display: block;
+  .course-tile .en {
     font-family: var(--sans);
     font-weight: 300;
-    font-size: 12px;
+    font-size: 10px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--paper-mute);
-    margin-top: 10px;
-  }
-  .course .meta {
-    font-family: var(--sans);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--paper-mute);
-    text-align: right;
-    line-height: 1.8;
-  }
-  .course .meta .desc {
-    font-family: var(--zh-serif);
-    font-weight: 400;
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    text-transform: none;
-    color: var(--paper-soft);
-    margin-top: 14px;
     line-height: 1.7;
+    margin-top: auto;
   }
 
-  /* Drinks — three full-width spreads */
+  /* Drinks — three tiles, magazine-table style (mirrors course-grid) */
   .drinks-section {
     background: var(--bg-2);
     padding: 0;
@@ -407,39 +401,48 @@
   .drinks-inner {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 160px 32px 96px;
+    padding: 120px 32px 96px;
   }
-  .drink {
+  .drinks-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 96px;
-    padding: 80px 0;
-    border-top: 1px solid var(--line);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 64px;
+  }
+  @media (max-width: 800px) { .drinks-grid { grid-template-columns: 1fr; } }
+
+  .drink-tile {
+    background: var(--bg-2);
+    padding: 40px 28px 36px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-  }
-  .drink:first-of-type { border-top: none; }
-  @media (max-width: 800px) {
-    .drink { grid-template-columns: 1fr; gap: 32px; padding: 48px 0; }
-  }
-  .drink .visual {
+    text-align: center;
+    min-height: 460px;
     position: relative;
-    aspect-ratio: 1;
-    max-width: 460px;
-    width: 100%;
-    margin: 0 auto;
+    transition: background 0.5s ease;
+  }
+  .drink-tile:hover { background: #181818; }
+  .drink-tile .visual {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-  .drink .visual .orb {
-    width: 70%;
-    height: 70%;
+  .drink-tile .visual .orb {
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     filter: blur(0.5px);
-    box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
     position: relative;
   }
-  .drink .visual .orb::after {
+  .drink-tile .visual .orb::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -450,59 +453,49 @@
   .orb.midnight { background: radial-gradient(circle at 35% 35%, #6B3A88 5%, #2A1545 55%, #08020F 100%); }
   .orb.kumquat { background: radial-gradient(circle at 35% 35%, #F4D060 5%, #C88A1E 55%, #5A3408 100%); }
 
-  .drink .info .num {
+  .drink-tile .num {
     font-family: var(--display);
-    font-size: 40px;
+    font-size: 22px;
     color: var(--fire);
     line-height: 1;
     letter-spacing: -0.02em;
   }
-  .drink .info .zh {
+  .drink-tile .zh {
     font-family: var(--zh-display);
     font-weight: 900;
-    font-size: clamp(36px, 5vw, 64px);
-    letter-spacing: 0.06em;
+    font-size: 26px;
+    letter-spacing: 0.08em;
     color: var(--paper);
-    margin: 24px 0 8px;
+    margin: 12px 0 6px;
     line-height: 1;
   }
-  .drink .info .en {
+  .drink-tile .en {
     font-family: var(--display);
     font-weight: 400;
-    font-size: clamp(28px, 4vw, 48px);
+    font-size: 22px;
     letter-spacing: 0;
     color: var(--paper);
     line-height: 1;
     text-transform: uppercase;
   }
-  .drink .info .en .it {
+  .drink-tile .en .it {
     color: var(--fire);
   }
-  .drink .info .ingredients {
+  .drink-tile .ingredients {
     font-family: var(--sans);
     font-weight: 300;
-    font-size: 14px;
-    letter-spacing: 0.02em;
+    font-size: 11px;
+    letter-spacing: 0.04em;
     line-height: 1.9;
     color: var(--paper-soft);
-    margin: 40px 0 24px;
-    max-width: 420px;
-  }
-  .drink .info .story {
-    font-family: var(--zh-serif);
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 1.85;
-    color: var(--paper);
-    max-width: 420px;
-    border-top: 1px solid var(--line);
-    padding-top: 28px;
-    letter-spacing: 0.02em;
-  }
-  .drink .info .abv {
     margin-top: 24px;
+    max-width: 260px;
+  }
+  .drink-tile .abv {
+    margin-top: auto;
+    padding-top: 24px;
     font-family: var(--sans);
-    font-size: 11px;
+    font-size: 9px;
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--paper-mute);
@@ -820,15 +813,15 @@
   }
 
   /* Drinks orb breathing + hover */
-  .drink .visual .orb {
+  .drink-tile .visual .orb {
     animation: breathe 7s ease-in-out infinite;
     transition: box-shadow 0.6s ease, transform 0.6s ease;
     will-change: transform;
   }
-  .drink:hover .visual .orb {
+  .drink-tile:hover .visual .orb {
     animation-play-state: paused;
-    transform: scale(1.06);
-    box-shadow: 0 60px 140px rgba(209, 72, 32, 0.35), 0 0 80px rgba(255, 200, 100, 0.18);
+    transform: scale(1.08);
+    box-shadow: 0 30px 80px rgba(209, 72, 32, 0.45), 0 0 60px rgba(255, 200, 100, 0.25);
   }
   @keyframes breathe {
     0%, 100% { transform: scale(1); }
@@ -1039,81 +1032,41 @@
       <h2 class="display-h">Seven <span class="accent">small</span><br>movements.</h2>
       <div class="display-h-zh">七道菜</div>
       <p class="lede">
-        Five courses sent in waves, between three fire performances.
-        Set menu, NT$2,000.
+        Five courses, sent in waves between three fire performances. Set menu, NT$2,000.
       </p>
+    </div>
+  </div>
 
-      <div class="menu-list">
-        <div class="course">
-          <div class="num">i</div>
-          <div>
-            <div class="name">
-              迎賓麵包 ／ 抹醬 ／ 店內發酵康普茶
-              <span class="en">Sourdough · Tomato basil dip · House-fermented kombucha</span>
-            </div>
-          </div>
-          <div class="meta">
-            On Arrival
-            <div class="desc">墊胃、清口、預期管理。</div>
-          </div>
-        </div>
-
-        <div class="course">
-          <div class="num">ii</div>
-          <div>
-            <div class="name">
-              西班牙冷湯 ／ 冰卷 ／ 水果沙拉
-              <span class="en">Gazpacho · Penghu squid · Summer fruits</span>
-            </div>
-          </div>
-          <div class="meta">
-            Before Fire I
-            <div class="desc">三道冷的，給接下來的火留位置。</div>
-          </div>
-        </div>
-
-        <div class="course">
-          <div class="num">iii</div>
-          <div>
-            <div class="name">
-              套餐專屬調飲（三款擇一）
-              <span class="en">Choose one of three signature drinks · see below</span>
-            </div>
-          </div>
-          <div class="meta">
-            After Fire I
-            <div class="desc">Cactus Sunset · Midnight Berry · Fire Kumquat</div>
-          </div>
-        </div>
-
-        <div class="course">
-          <div class="num">iv</div>
-          <div>
-            <div class="name">
-              秘藏紅燒牛肉麵
-              <span class="en">Slow-braised beef noodles</span>
-            </div>
-          </div>
-          <div class="meta">
-            Before Fire II
-            <div class="desc">牛腱滷三小時，秘藏滷包。湯先喝一口，再吃麵。</div>
-          </div>
-        </div>
-
-        <div class="course">
-          <div class="num">v</div>
-          <div>
-            <div class="name">
-              烤布蕾
-              <span class="en">Crème brûlée, torched at the table</span>
-            </div>
-          </div>
-          <div class="meta">
-            Before Fire III
-            <div class="desc">焦糖現噴，「叩」一聲。</div>
-          </div>
-        </div>
-      </div>
+  <div class="course-grid">
+    <div class="course-tile">
+      <div class="num">i</div>
+      <div class="when">On Arrival</div>
+      <div class="zh">迎賓麵包<br>抹醬<br>店內發酵康普茶</div>
+      <div class="en">Sourdough · Tomato dip · House Kombucha</div>
+    </div>
+    <div class="course-tile">
+      <div class="num">ii</div>
+      <div class="when">Before Fire I</div>
+      <div class="zh">西班牙冷湯<br>冰卷<br>水果沙拉</div>
+      <div class="en">Gazpacho · Penghu Squid · Summer Fruit</div>
+    </div>
+    <div class="course-tile">
+      <div class="num">iii</div>
+      <div class="when">After Fire I</div>
+      <div class="zh">套餐專屬調飲<br>（三款擇一）</div>
+      <div class="en">Sunset · Berry · Kumquat — see 03</div>
+    </div>
+    <div class="course-tile">
+      <div class="num">iv</div>
+      <div class="when">Before Fire II</div>
+      <div class="zh">秘藏紅燒<br>牛肉麵</div>
+      <div class="en">Slow-Braised Beef Noodles</div>
+    </div>
+    <div class="course-tile">
+      <div class="num">v</div>
+      <div class="when">Before Fire III</div>
+      <div class="zh">烤布蕾<br>（桌邊現噴）</div>
+      <div class="en">Crème Brûlée · torched tableside</div>
     </div>
   </div>
 </section>
@@ -1136,60 +1089,38 @@
     </div>
   </div>
 
-  <div class="drink">
-    <div class="visual"><div class="orb sunset"></div></div>
-    <div class="info">
+  <div class="drinks-grid">
+    <div class="drink-tile">
+      <div class="visual"><div class="orb sunset"></div></div>
       <div class="num">3.1</div>
       <div class="zh">日落仙人掌</div>
       <div class="en">Cactus <span class="it">Sunset</span></div>
       <div class="ingredients">
-        Penghu cactus juice — concentrated grape — <br>
-        agave nectar — lime — soda <br>
-        cactus chip & lime peel
+        Penghu cactus juice · concentrated grape · agave nectar · lime · soda
       </div>
-      <p class="story">
-        太陽落入海平面那一刻，大概十五分鐘的窗口。<br>
-        天空是橘紅、海是金、火是這杯。
-      </p>
       <div class="abv">No Alcohol · 0%</div>
     </div>
-  </div>
 
-  <div class="drink">
-    <div class="visual"><div class="orb midnight"></div></div>
-    <div class="info">
+    <div class="drink-tile">
+      <div class="visual"><div class="orb midnight"></div></div>
       <div class="num">3.2</div>
       <div class="zh">夜空藍莓</div>
       <div class="en">Midnight <span class="it">Berry</span></div>
       <div class="ingredients">
-        Blueberry purée — cassis — <br>
-        cinnamon syrup — lime — tonic <br>
-        fresh blueberries
+        Blueberry purée · cassis · cinnamon syrup · lime · tonic
       </div>
-      <p class="story">
-        完全黑了之後，海是看不到的。<br>
-        只剩火光跟天上的星。
-      </p>
       <div class="abv">No Alcohol · 0%</div>
     </div>
-  </div>
 
-  <div class="drink">
-    <div class="visual"><div class="orb kumquat"></div></div>
-    <div class="info">
+    <div class="drink-tile">
+      <div class="visual"><div class="orb kumquat"></div></div>
       <div class="num">3.3</div>
       <div class="zh">火光金桔</div>
       <div class="en">Fire <span class="it">Kumquat</span></div>
       <div class="ingredients">
-        House-fermented kombucha — Taiwan kumquat — <br>
-        honey — fresh ginger — lime <br>
-        ginger chip
+        House kombucha · Taiwan kumquat · honey · fresh ginger · lime
       </div>
-      <p class="story">
-        火光是橘金的，草皮上燒的火也是這顏色。<br>
-        喝起來像把火光裝進了杯子。
-      </p>
-      <div class="abv">Kombucha-Based · &lt; 0.5%</div>
+      <div class="abv">Kombucha · &lt; 0.5%</div>
     </div>
   </div>
 </div>
@@ -1460,7 +1391,7 @@
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
   }, { threshold: 0.12 });
-  document.querySelectorAll('section, .drink, .beat, .qa, .visit-item, .slot').forEach(el => {
+  document.querySelectorAll('section, .drink-tile, .course-tile, .beat, .qa, .visit-item, .slot').forEach(el => {
     el.classList.add('reveal');
     io.observe(el);
   });
@@ -1490,11 +1421,11 @@
 
     // Hover state targets — use event delegation so dynamically created elements work
     document.addEventListener('mouseover', e => {
-      if (e.target.closest('.drink .visual .orb')) dot.classList.add('over-orb');
+      if (e.target.closest('.drink-tile .visual .orb')) dot.classList.add('over-orb');
       else if (e.target.closest('a, .cta, .slot')) dot.classList.add('over-link');
     }, { passive: true });
     document.addEventListener('mouseout', e => {
-      if (e.target.closest('.drink .visual .orb')) dot.classList.remove('over-orb');
+      if (e.target.closest('.drink-tile .visual .orb')) dot.classList.remove('over-orb');
       else if (e.target.closest('a, .cta, .slot')) dot.classList.remove('over-link');
     }, { passive: true });
   }
