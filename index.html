@@ -748,19 +748,181 @@
     footer .info { text-align: left; }
   }
 
+  /* ────────────────────────────────────────
+     INTERACTIONS
+     ──────────────────────────────────────── */
+
   /* fade-in on scroll */
   .reveal {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 1s ease, transform 1s ease;
+    transform: translateY(28px);
+    transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .reveal.in {
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* Display heading reveal: letter-spacing tightens on enter */
+  .display-h {
+    transition: letter-spacing 1.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal .display-h { letter-spacing: 0.04em; }
+  .reveal.in .display-h { letter-spacing: -0.015em; }
+
+  /* Section index number: slide up from below on reveal */
+  .spread .index .num {
+    display: block;
+    transform: translateY(40px);
+    opacity: 0;
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  }
+  .reveal.in .spread .index .num {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Hero entrance sequence */
+  .hero .top-meta > div,
+  .hero h1 .word,
+  .hero .zh-sub,
+  .hero .lead,
+  .hero .bottom-meta > div {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: heroIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero .top-meta > div:nth-child(1) { animation-delay: 0.45s; }
+  .hero .top-meta > div:nth-child(2) { animation-delay: 0.55s; }
+  .hero .top-meta > div:nth-child(3) { animation-delay: 0.65s; }
+  .hero h1 .word.summer { animation-delay: 0.8s; }
+  .hero h1 .word.nights { animation-delay: 1.1s; }
+  .hero .zh-sub { animation-delay: 1.45s; }
+  .hero .lead { animation-delay: 1.75s; }
+  .hero .bottom-meta > div:nth-child(1) { animation-delay: 2.1s; }
+  .hero .bottom-meta > div:nth-child(2) { animation-delay: 2.2s; }
+  .hero .bottom-meta > div:nth-child(3) { animation-delay: 2.3s; }
+
+  .hero h1 .word { display: inline-block; }
+
+  @keyframes heroIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Hero video subtle ken-burns */
+  .hero .hero-video {
+    animation: kenburns 32s ease-in-out infinite alternate;
+    transform-origin: 50% 45%;
+  }
+  @keyframes kenburns {
+    from { transform: scale(1.02); }
+    to { transform: scale(1.12); }
+  }
+
+  /* Drinks orb breathing + hover */
+  .drink .visual .orb {
+    animation: breathe 7s ease-in-out infinite;
+    transition: box-shadow 0.6s ease, transform 0.6s ease;
+    will-change: transform;
+  }
+  .drink:hover .visual .orb {
+    animation-play-state: paused;
+    transform: scale(1.06);
+    box-shadow: 0 60px 140px rgba(209, 72, 32, 0.35), 0 0 80px rgba(255, 200, 100, 0.18);
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.025); }
+  }
+
+  /* Schedule slot hover detail */
+  .slot {
+    position: relative;
+    overflow: hidden;
+  }
+  .slot::after {
+    content: '→  Reserve';
+    position: absolute;
+    inset: auto 0 -28px 24px;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--fire);
+    opacity: 0;
+    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+  }
+  .slot:hover::after {
+    inset: auto 0 12px 24px;
+    opacity: 1;
+  }
+  .slot .d {
+    transition: color 0.4s ease, transform 0.4s ease;
+  }
+  .slot:hover .d {
+    color: var(--fire);
+  }
+
+  /* Custom cursor */
+  @media (hover: hover) and (pointer: fine) {
+    html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
+    .cursor-dot {
+      position: fixed;
+      top: 0; left: 0;
+      width: 10px; height: 10px;
+      background: var(--fire);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, background 0.3s, opacity 0.3s;
+      mix-blend-mode: difference;
+    }
+    .cursor-dot.over-link {
+      width: 36px; height: 36px;
+      background: var(--paper);
+    }
+    .cursor-dot.over-orb {
+      width: 80px; height: 80px;
+      background: transparent;
+      border: 1px solid var(--fire);
+      mix-blend-mode: normal;
+    }
+  }
+
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    height: 1px;
+    background: var(--fire);
+    width: 0%;
+    z-index: 102;
+    transition: width 0.1s linear;
+  }
+
+  /* Respect reduced-motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    .hero .top-meta > div,
+    .hero h1 .word,
+    .hero .zh-sub,
+    .hero .lead,
+    .hero .bottom-meta > div,
+    .spread .index .num { opacity: 1; transform: none; animation: none; }
+  }
 </style>
 </head>
 <body>
+
+<div class="scroll-progress" id="scroll-progress"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
 
 <div class="runner">
   <div class="left">C/7 · FIRE / 2026</div>
@@ -795,8 +957,8 @@
 
   <div class="title-block">
     <h1>
-      Summer<br>
-      <span class="nights">Nights</span>
+      <span class="word summer">Summer</span><br>
+      <span class="word nights">Nights</span>
     </h1>
     <div class="zh-sub">夏夜火舞</div>
     <p class="lead">
@@ -1288,11 +1450,50 @@
   // fade-in on scroll
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12 });
   document.querySelectorAll('section, .drink, .beat, .qa, .visit-item, .slot').forEach(el => {
     el.classList.add('reveal');
     io.observe(el);
   });
+
+  // Scroll progress bar
+  const progress = document.getElementById('scroll-progress');
+  function updateProgress() {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
+    progress.style.width = (pct * 100) + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // Custom cursor (only on devices with fine pointer)
+  const supportsCustom = matchMedia('(hover: hover) and (pointer: fine)').matches
+    && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (supportsCustom) {
+    document.documentElement.classList.add('has-custom-cursor');
+    const dot = document.getElementById('cursor-dot');
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = 0; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = 1; });
+    function tick() {
+      cx += (tx - cx) * 0.22;
+      cy += (ty - cy) * 0.22;
+      dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(tick);
+    }
+    tick();
+
+    // Hover state targets
+    function bind(selector, cls) {
+      document.querySelectorAll(selector).forEach(el => {
+        el.addEventListener('mouseenter', () => dot.classList.add(cls));
+        el.addEventListener('mouseleave', () => dot.classList.remove(cls));
+      });
+    }
+    bind('a, .cta, .slot', 'over-link');
+    bind('.drink .visual .orb', 'over-orb');
+  }
 </script>
 
 </body>
