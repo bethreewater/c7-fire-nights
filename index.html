@@ -863,7 +863,7 @@
     color: var(--fire);
   }
 
-  /* Custom cursor */
+  /* Custom cursor — GPU-accelerated, no lerp */
   @media (hover: hover) and (pointer: fine) {
     html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
     .cursor-dot {
@@ -874,16 +874,25 @@
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s, height 0.3s, background 0.3s, opacity 0.3s;
+      will-change: transform, width, height;
+      transform: translate3d(-100px, -100px, 0);
+      transition: width 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+                  height 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+                  background 0.18s ease,
+                  border-color 0.18s ease,
+                  opacity 0.2s ease,
+                  margin 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      margin: -5px 0 0 -5px;
       mix-blend-mode: difference;
     }
     .cursor-dot.over-link {
       width: 36px; height: 36px;
+      margin: -18px 0 0 -18px;
       background: var(--paper);
     }
     .cursor-dot.over-orb {
       width: 80px; height: 80px;
+      margin: -40px 0 0 -40px;
       background: transparent;
       border: 1px solid var(--fire);
       mix-blend-mode: normal;
@@ -1466,33 +1475,28 @@
   window.addEventListener('scroll', updateProgress, { passive: true });
   updateProgress();
 
-  // Custom cursor (only on devices with fine pointer)
+  // Custom cursor (only on devices with fine pointer) — 1:1 tracking, GPU
   const supportsCustom = matchMedia('(hover: hover) and (pointer: fine)').matches
     && !matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (supportsCustom) {
     document.documentElement.classList.add('has-custom-cursor');
     const dot = document.getElementById('cursor-dot');
-    let tx = 0, ty = 0, cx = 0, cy = 0;
-    document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+    // Direct 1:1 follow — no lerp, no RAF loop. Browser handles smoothing via compositor.
+    document.addEventListener('mousemove', e => {
+      dot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+    }, { passive: true });
     document.addEventListener('mouseleave', () => { dot.style.opacity = 0; });
     document.addEventListener('mouseenter', () => { dot.style.opacity = 1; });
-    function tick() {
-      cx += (tx - cx) * 0.22;
-      cy += (ty - cy) * 0.22;
-      dot.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
-      requestAnimationFrame(tick);
-    }
-    tick();
 
-    // Hover state targets
-    function bind(selector, cls) {
-      document.querySelectorAll(selector).forEach(el => {
-        el.addEventListener('mouseenter', () => dot.classList.add(cls));
-        el.addEventListener('mouseleave', () => dot.classList.remove(cls));
-      });
-    }
-    bind('a, .cta, .slot', 'over-link');
-    bind('.drink .visual .orb', 'over-orb');
+    // Hover state targets — use event delegation so dynamically created elements work
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('.drink .visual .orb')) dot.classList.add('over-orb');
+      else if (e.target.closest('a, .cta, .slot')) dot.classList.add('over-link');
+    }, { passive: true });
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('.drink .visual .orb')) dot.classList.remove('over-orb');
+      else if (e.target.closest('a, .cta, .slot')) dot.classList.remove('over-link');
+    }, { passive: true });
   }
 </script>
 
