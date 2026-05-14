@@ -3,3 +3,6 @@
 *.tmp
 .vscode/
 .idea/
+
+# Internal tools — never commit
+internal/
