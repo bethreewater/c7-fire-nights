@@ -277,6 +277,27 @@
     letter-spacing: 0.02em;
   }
 
+  /* The Island — story */
+  .story { max-width: 660px; margin-top: 40px; }
+  .story p {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 2;
+    color: var(--paper-soft);
+    margin-bottom: 22px;
+    letter-spacing: 0.02em;
+  }
+  .story p strong { color: var(--fire); font-weight: 500; }
+  .story p.em {
+    font-family: var(--zh-serif);
+    font-size: clamp(20px, 2.4vw, 28px);
+    line-height: 1.6;
+    color: var(--paper);
+    margin: 40px 0;
+    letter-spacing: 0.04em;
+  }
+
   /* Sessions block */
   .sessions {
     display: grid;
@@ -965,6 +986,31 @@
   </div>
 </header>
 
+<!-- THE ISLAND -->
+<section id="island">
+  <div class="spread">
+    <div class="index">
+      <span class="num">00</span>
+      The Island
+    </div>
+    <div>
+      <h2 class="display-h">Born <span class="accent">of</span><br>fire.</h2>
+      <div class="display-h-zh">火生的島</div>
+      <div class="story">
+        <p>一千七百萬年前，海底的火山開始噴發。岩漿湧上來、冷卻，凝成黑色的玄武岩——澎湖，就是這樣從海裡長出來的。噴了又停、停了又噴，前後九百萬年。</p>
+        <p>你今晚站的這塊地，挖下去就是那塊黑石——最早，是一團火。</p>
+        <p class="em">火，沒有離開這座島。</p>
+        <p>它長成島上的<strong>草</strong>——風茹，夏天曬乾煮茶解暑。你的第一杯，我們把它釀了進去。</p>
+        <p>它化成<strong>漁火</strong>——漁船點燈，把小管引上海面。你的前菜，那盤冰卷沙拉，就是這樣來的。</p>
+        <p>它泡在<strong>海</strong>裡——島邊鹹水養著野生明蝦，長得慢、肉緊得發甜。你的主餐，就是它。</p>
+        <p>它連外來的都點燃——荷蘭人四百年前種來當刺牆的<strong>仙人掌</strong>，火山土卻養出紅果子，成了澎湖的甜。你最後那碗冰沙，就是它。</p>
+        <p>今晚，火不只在故事裡。杜奇把它跳給你看；桌上的燈，從你自己的手點起；最後，它會到你手上——怎麼來的，你會在現場知道。</p>
+        <p class="em">你來這座火生的島，吃它的海、喝它的草、嚐它的果，看它的火。走的時候，帶一點火走。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SESSIONS -->
 <section id="sessions">
   <div class="spread">
@@ -1035,8 +1081,8 @@
     <div class="course-tile">
       <div class="num">ii</div>
       <div class="when">Starter</div>
-      <div class="zh">西班牙冷湯<br>冰卷沙拉<br>澎湖冰卷</div>
-      <div class="en">Gazpacho · Squid Salad · Penghu Squid</div>
+      <div class="zh">西班牙冷湯<br>澎湖冰卷沙拉</div>
+      <div class="en">Gazpacho · Penghu Squid Salad</div>
     </div>
     <div class="course-tile">
       <div class="num">iii</div>
@@ -1156,7 +1202,7 @@
       <div class="flow-list">
         <div class="beat">
           <div class="time">Doors</div>
-          <div class="what"><strong>入場</strong>布簾圍起一塊草皮，中央是火。我們不收你的手機——只在火舞那幾段，請你把它收起來。</div>
+          <div class="what"><strong>入場</strong>布簾圍起一塊草皮，中央是火。我們不收你的手機，整晚自由拍。</div>
         </div>
         <div class="beat">
           <div class="time">Dusk</div>
