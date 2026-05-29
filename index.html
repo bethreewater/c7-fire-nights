@@ -13,7 +13,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=IBM+Plex+Sans:wght@200;300;400;500;600&family=Noto+Serif+TC:wght@300;500;700;900&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@200;300;400;500;600&family=Noto+Serif+TC:wght@300;500;700;900&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -21,13 +21,13 @@
     --bg-2: #0A0A0A;
     --paper: #EFEAE0;
     --paper-soft: #C8C2B5;
-    --paper-mute: #6B665E;
+    --paper-mute: #8A857B;
     --fire: #D14820;
     --fire-soft: #E8A158;
     --line: #1F1F1D;
 
     --display: 'Anton', 'Noto Sans TC', sans-serif;
-    --serif: 'Fraunces', 'Noto Serif TC', Georgia, serif;
+    --serif: 'Noto Serif TC', Georgia, serif;
     --sans: 'IBM Plex Sans', 'Noto Sans TC', -apple-system, sans-serif;
     --zh-display: 'Noto Sans TC', sans-serif;
     --zh-serif: 'Noto Serif TC', serif;
@@ -68,6 +68,47 @@
   a { color: inherit; text-decoration: none; transition: color 0.4s; }
   a:hover { color: var(--fire); }
 
+  /* Inline link — fire-coloured, underlined (e.g. performer handle) */
+  .inline-link {
+    color: var(--fire);
+    border-bottom: 1px solid var(--fire);
+    padding-bottom: 2px;
+  }
+
+  /* Keyboard focus — visible focus ring across all interactive elements */
+  a:focus-visible,
+  .cta:focus-visible,
+  .nav-burger:focus-visible,
+  .slot:focus-visible {
+    outline: 2px solid var(--fire);
+    outline-offset: 3px;
+  }
+  .runner .right a:focus-visible::after { width: 100%; }
+
+  /* Skip link — hidden until keyboard-focused */
+  .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 200;
+    padding: 12px 20px;
+    background: var(--fire);
+    color: #000;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transform: translateY(-150%);
+    transition: transform 0.3s ease;
+  }
+  .skip-link:focus {
+    transform: translateY(0);
+    color: #000;
+    outline: 2px solid var(--paper);
+    outline-offset: 2px;
+  }
+
   /* Top runner */
   .runner {
     position: fixed;
@@ -83,12 +124,97 @@
     text-transform: uppercase;
     color: var(--paper);
     mix-blend-mode: difference;
+    transition: background 0.4s ease, padding 0.4s ease, border-color 0.4s ease;
+  }
+  /* scrolled past hero → solid glass bar, normal blend so fire-orange reads */
+  .runner.scrolled {
+    mix-blend-mode: normal;
+    background: rgba(10,10,10,0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px;
   }
   .runner .left { font-weight: 500; }
-  .runner .right { display: flex; gap: 24px; }
+  .runner .left .ac { color: var(--fire); }
+  .runner .right { display: flex; gap: 26px; }
+  .runner .right a {
+    position: relative;
+    color: var(--paper);
+    text-decoration: none;
+    padding-bottom: 4px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease, color 0.3s ease;
+  }
+  .runner .right a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 0; height: 1px;
+    background: var(--fire);
+    transition: width 0.35s cubic-bezier(0.16,1,0.3,1);
+  }
+  .runner .right a:hover { opacity: 1; }
+  .runner .right a:hover::after { width: 100%; }
+  .runner .right a.active::after { width: 100%; }
+  .runner.scrolled .right a:hover,
+  .runner.scrolled .right a.active { color: var(--fire); opacity: 1; }
+
+  .nav-burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none; border: none;
+    cursor: pointer; padding: 4px;
+    z-index: 101;
+  }
+  .nav-burger span {
+    display: block; width: 24px; height: 2px;
+    background: var(--paper);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-burger.open span:nth-child(2) { opacity: 0; }
+  .nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
   @media (max-width: 720px) {
-    .runner { padding: 16px 20px; font-size: 10px; }
-    .runner .right { display: none; }
+    .runner {
+      mix-blend-mode: normal;
+      padding: 16px 20px;
+      font-size: 10px;
+      background: rgba(10,10,10,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .runner.scrolled { padding: 12px 20px; }
+    .nav-burger { display: flex; }
+    .runner .right {
+      position: fixed;
+      top: 0; right: 0;
+      height: 100vh;
+      width: min(74vw, 300px);
+      flex-direction: column;
+      justify-content: center;
+      gap: 30px;
+      padding: 48px;
+      background: rgba(8,8,8,0.97);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transform: translateX(100%);
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0.45s;
+      font-size: 14px;
+      letter-spacing: 0.2em;
+    }
+    .runner .right.open {
+      transform: translateX(0);
+      visibility: visible;
+      pointer-events: auto;
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s;
+    }
+    .runner .right a { opacity: 0.9; }
+    .runner .right a.active { color: var(--fire); }
   }
 
   /* Hero */
@@ -173,7 +299,7 @@
     font-family: var(--zh-display);
     font-weight: 900;
     font-size: clamp(22px, 4vw, 44px);
-    letter-spacing: 0.4em;
+    letter-spacing: 0.18em;
     margin-top: 24px;
     color: var(--paper);
   }
@@ -186,6 +312,7 @@
     margin-top: 40px;
     color: var(--paper-soft);
     max-width: 520px;
+    text-wrap: pretty;
   }
   @media (max-width: 720px) {
     .hero .top-meta,
@@ -202,6 +329,10 @@
     margin: 0 auto;
     position: relative;
   }
+  /* Tablet mid-band: align section padding step with the .spread collapse (900px) */
+  @media (max-width: 900px) {
+    section { padding: 120px 28px; }
+  }
   @media (max-width: 720px) {
     section { padding: 96px 24px; }
   }
@@ -210,7 +341,7 @@
   .spread {
     display: grid;
     grid-template-columns: 280px 1fr;
-    gap: 96px;
+    gap: 80px;
   }
   @media (max-width: 900px) {
     .spread { grid-template-columns: 1fr; gap: 48px; }
@@ -245,6 +376,7 @@
     text-transform: uppercase;
     color: var(--paper);
     margin-bottom: 16px;
+    text-wrap: balance;
   }
   .display-h .accent {
     color: var(--fire);
@@ -253,9 +385,10 @@
     font-family: var(--zh-display);
     font-weight: 900;
     font-size: clamp(24px, 3.2vw, 44px);
-    letter-spacing: 0.3em;
+    letter-spacing: 0.13em;
     color: var(--paper);
     margin: 32px 0 24px;
+    text-wrap: balance;
   }
   .lede {
     font-family: var(--sans);
@@ -275,6 +408,7 @@
     max-width: 640px;
     margin-top: 32px;
     letter-spacing: 0.02em;
+    text-wrap: pretty;
   }
 
   /* The Island — story */
@@ -287,12 +421,13 @@
     color: var(--paper-soft);
     margin-bottom: 22px;
     letter-spacing: 0.02em;
+    text-wrap: pretty;
   }
   .story p strong { color: var(--fire); font-weight: 500; }
   .story p.em {
     font-family: var(--zh-serif);
     font-size: clamp(20px, 2.4vw, 28px);
-    line-height: 1.6;
+    line-height: 1.8;
     color: var(--paper);
     margin: 40px 0;
     letter-spacing: 0.04em;
@@ -320,7 +455,7 @@
   }
   .session-block .time {
     font-family: var(--display);
-    font-size: 96px;
+    font-size: clamp(56px, 10vw, 96px);
     line-height: 1;
     color: var(--paper);
     letter-spacing: -0.02em;
@@ -350,6 +485,7 @@
     line-height: 1.8;
     color: var(--paper-soft);
     letter-spacing: 0.02em;
+    text-wrap: pretty;
   }
 
   /* Menu — numbered list, no boxes */
@@ -372,14 +508,14 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
-    min-height: 300px;
+    min-height: 240px;
     position: relative;
     transition: background 0.5s ease;
   }
   .course-tile:hover { background: #0F0F0F; }
   .course-tile .num {
     font-family: var(--display);
-    font-size: 32px;
+    font-size: clamp(22px, 2.4vw, 32px);
     color: var(--fire);
     line-height: 1;
     letter-spacing: -0.02em;
@@ -422,7 +558,7 @@
   .drinks-inner {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 120px 32px 96px;
+    padding: 160px 32px;
   }
   .drinks-grid {
     display: grid;
@@ -433,6 +569,8 @@
     margin-top: 64px;
   }
   @media (max-width: 800px) { .drinks-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) { .drinks-inner { padding: 120px 28px; } }
+  @media (max-width: 720px) { .drinks-inner { padding: 96px 24px; } }
 
   .drink-tile {
     background: var(--bg-2);
@@ -448,12 +586,12 @@
   .drink-tile:hover { background: #181818; }
   .drink-tile .visual {
     width: 100%;
-    max-width: 220px;
+    max-width: 240px;
     aspect-ratio: 1 / 1;
     position: relative;
     margin-bottom: 24px;
     overflow: hidden;
-    border-radius: 10px;
+    border-radius: 4px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.45);
     transition: box-shadow 0.6s ease;
   }
@@ -463,12 +601,12 @@
     object-fit: cover;
     display: block;
     transition: transform 0.6s ease, filter 0.6s ease;
-    will-change: transform;
   }
+  .drink-tile:hover .visual img { will-change: transform; }
 
   .drink-tile .num {
     font-family: var(--display);
-    font-size: 22px;
+    font-size: clamp(22px, 2.4vw, 32px);
     color: var(--fire);
     line-height: 1;
     letter-spacing: -0.02em;
@@ -480,7 +618,10 @@
     letter-spacing: 0.08em;
     color: var(--paper);
     margin: 12px 0 6px;
-    line-height: 1;
+    line-height: 1.2;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
   }
   .drink-tile .en {
     font-family: var(--display);
@@ -503,6 +644,7 @@
     color: var(--paper-soft);
     margin-top: 24px;
     max-width: 260px;
+    min-height: calc(11px * 1.9 * 2);
   }
   .drink-tile .abv {
     margin-top: auto;
@@ -641,13 +783,14 @@
     text-transform: uppercase;
     background: transparent;
     cursor: pointer;
-    transition: all 0.4s;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease, transform 0.2s ease;
   }
   .cta:hover {
     background: var(--fire);
     border-color: var(--fire);
     color: #000;
   }
+  .cta:active { transform: translateY(1px); }
   .cta-note {
     margin-top: 24px;
     font-family: var(--sans);
@@ -846,17 +989,18 @@
   .slot::after {
     content: '→  Reserve';
     position: absolute;
-    inset: auto 0 -28px 24px;
+    inset: auto 0 12px 24px;
     font-family: var(--sans);
     font-size: 10px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--fire);
     opacity: 0;
-    transition: bottom 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+    transform: translateY(40px);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
   }
   .slot:hover::after {
-    inset: auto 0 12px 24px;
+    transform: translateY(0);
     opacity: 1;
   }
   .slot .d {
@@ -909,9 +1053,11 @@
     left: 0;
     height: 1px;
     background: var(--fire);
-    width: 0%;
+    width: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
     z-index: 102;
-    transition: width 0.1s linear;
+    transition: transform 0.1s linear;
   }
 
   /* Respect reduced-motion preferences */
@@ -933,24 +1079,28 @@
 </head>
 <body>
 
+<a href="#island" class="skip-link">Skip to content / 跳至內容</a>
+
 <div class="scroll-progress" id="scroll-progress"></div>
 <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
 
-<div class="runner">
-  <div class="left">C/7 · FIRE / 2026</div>
-  <div class="right">
-    <a href="#sessions">Sessions</a>
-    <a href="#menu">Menu</a>
-    <a href="#drinks">Drinks</a>
-    <a href="#performer">Performer</a>
-    <a href="#schedule">Dates</a>
-    <a href="#visit">Visit</a>
+<nav class="runner" id="runner">
+  <div class="left">C/7 · <span class="ac">FIRE</span> / 2026</div>
+  <button class="nav-burger" id="navBurger" aria-label="選單" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <div class="right" id="navLinks">
+    <a href="#island" data-sec="island">Island</a>
+    <a href="#sessions" data-sec="sessions">Sessions</a>
+    <a href="#menu" data-sec="menu">Menu</a>
+    <a href="#drinks" data-sec="drinks">Drinks</a>
+    <a href="#performer" data-sec="performer">Performer</a>
+    <a href="#schedule" data-sec="schedule">Dates</a>
+    <a href="#visit" data-sec="visit">Visit</a>
   </div>
-</div>
+</nav>
 
 <!-- HERO with video placeholder -->
 <header class="hero">
-  <video autoplay muted loop playsinline class="hero-video">
+  <video autoplay muted loop playsinline class="hero-video" poster="img/hero-poster.jpg" preload="metadata">
     <source src="img/fire.mp4" type="video/mp4">
   </video>
   <div class="hero-bg"></div>
@@ -963,7 +1113,7 @@
     <div class="feature">A summer feature.</div>
     <div>
       MMXXVI<br>
-      JUN — AUG
+      JUN – AUG
     </div>
   </div>
 
@@ -995,7 +1145,7 @@
     </div>
     <div>
       <h2 class="display-h">Born <span class="accent">of</span><br>fire.</h2>
-      <div class="display-h-zh">火生的島</div>
+      <div class="display-h-zh" lang="zh-Hant">火生的島</div>
       <div class="story">
         <p class="em">你帶著一身的趕，走進來。<br>放下——這座島等了你一千七百萬年，不差這一晚。</p>
         <p>那時，海底噴著火。岩漿湧出、凝結，澎湖從海裡長出來——黑的，是冷掉的火。你今晚坐的這塊地，挖下去，就是那團火。</p>
@@ -1019,7 +1169,7 @@
     </div>
     <div>
       <h2 class="display-h">Dusk, <span class="accent">and then</span><br>night.</h2>
-      <div class="display-h-zh">兩個場次</div>
+      <div class="display-h-zh" lang="zh-Hant">兩個場次</div>
       <p class="lede">
         Same fire. Same menu. Different sky. <br>
         Choose the one that meets you where you are.
@@ -1063,7 +1213,7 @@
     </div>
     <div>
       <h2 class="display-h">Five <span class="accent">small</span><br>movements.</h2>
-      <div class="display-h-zh">五道</div>
+      <div class="display-h-zh" lang="zh-Hant">五道</div>
       <p class="lede">
         四道菜、一杯調飲，分四段火舞之間慢慢上。一道一道，不趕。Set menu，NT$2,000／人。
       </p>
@@ -1114,7 +1264,7 @@
     </div>
     <div>
       <h2 class="display-h">Three <span class="accent">for the</span><br>summer.</h2>
-      <div class="display-h-zh">三款專屬調飲</div>
+      <div class="display-h-zh" lang="zh-Hant">三款專屬調飲</div>
       <p class="lede">
         Built for this menu, not on the regular list. <br>
         三杯沿著夜晚走：日落 → 夜空 → 煙火。都沒有酒精。<br>
@@ -1169,7 +1319,7 @@
     </div>
     <div>
       <h2 class="display-h">THE <span class="accent">PHOENIX</span><br>DANCER.</h2>
-      <div class="display-h-zh">鳳凰舞者・杜奇</div>
+      <div class="display-h-zh" lang="zh-Hant">鳳凰舞者・杜奇</div>
       <p class="lede">
         火舞表演者。為今年夏天的七號貨櫃，編排了 Sunset 場與 Night 場各一套節目。
       </p>
@@ -1178,7 +1328,7 @@
         Sunset 場與 Night 場編排不同。
       </p>
       <p class="body-p" style="margin-top: 32px;">
-        <a href="https://www.instagram.com/duchifire/" target="_blank" rel="noopener" style="color: var(--fire); border-bottom: 1px solid var(--fire); padding-bottom: 2px;">@duchifire&nbsp;↗</a>
+        <a href="https://www.instagram.com/duchifire/" target="_blank" rel="noopener" class="inline-link">@duchifire&nbsp;↗</a>
       </p>
     </div>
   </div>
@@ -1193,7 +1343,7 @@
     </div>
     <div>
       <h2 class="display-h">A <span class="accent">shape</span>,<br>not a schedule.</h2>
-      <div class="display-h-zh">一個夜晚的形狀</div>
+      <div class="display-h-zh" lang="zh-Hant">一個夜晚的形狀</div>
       <p class="lede">
         我們不列精確時間表——因為它不能快轉，你不需要看錶。
       </p>
@@ -1229,7 +1379,7 @@
     </div>
     <div>
       <h2 class="display-h">Thirteen <span class="accent">saturdays</span>.</h2>
-      <div class="display-h-zh">十三個週六</div>
+      <div class="display-h-zh" lang="zh-Hant">十三個週六</div>
       <p class="lede">
         June through August. Each evening: 18:00 Sunset + 20:00 Night.
       </p>
@@ -1238,7 +1388,7 @@
         <h4>Preview · 內測場（限熟客邀請）</h4>
         <div class="sched-grid">
           <div class="slot beta">
-            <div class="d">6/6</div>
+            <div class="d">6/06</div>
             <div class="month-tag">Jun · Sat</div>
             <div class="sess">Sunset 18:00<br>Night 20:00</div>
             <span class="tag">NT$1,500 · 75%</span>
@@ -1277,7 +1427,7 @@
       </div>
 
       <div class="cta-block">
-        <a href="#" class="cta" onclick="alert('預購表單建置中——目前請透過 IG @container_no.7_penghu 或電話 0963-059-889 預約'); return false;">Reserve / 預購</a>
+        <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="cta">Reserve / 預購</a>
         <div class="cta-note">8–15 seats per sitting · cutoff 22:00 day before</div>
       </div>
     </div>
@@ -1293,7 +1443,7 @@
     </div>
     <div>
       <h2 class="display-h">Weather, <span class="accent">refunds</span>,<br>arrivals.</h2>
-      <div class="display-h-zh">條款</div>
+      <div class="display-h-zh" lang="zh-Hant">條款</div>
 
       <div class="qa">
         <div class="q"><span class="num">07.1</span>颱風／天氣</div>
@@ -1350,7 +1500,7 @@
     </div>
     <div>
       <h2 class="display-h">Container <span class="accent">No.7</span>,<br>Penghu.</h2>
-      <div class="display-h-zh">前來</div>
+      <div class="display-h-zh" lang="zh-Hant">前來</div>
 
       <div class="visit-grid">
         <div class="visit-item">
@@ -1371,7 +1521,7 @@
         <div class="visit-item">
           <div class="label">Daily Hours</div>
           <div class="val">
-            18:07 — 00:07<br>
+            18:07 – 00:07<br>
             Closed Mon. & Thu.<br>
             <a href="https://bethreewater.github.io/c7-bar/">Main site ↗</a>
           </div>
@@ -1396,24 +1546,123 @@
 </footer>
 
 <script>
-  // fade-in on scroll
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  // fade-in on scroll, with staggered entrance for grid children
+  const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const STAGGER_SELECTOR = '.course-tile, .drink-tile, .beat, .slot';
+  const STAGGER_STEP = 70;   // ms between siblings
+  const STAGGER_MAX = 5;     // cap so delays stay tasteful
+
+  // Pre-assign each staggered item an index within its own group (DOM order)
+  document.querySelectorAll(STAGGER_SELECTOR).forEach(el => {
+    if (!el.parentElement) return;
+    const siblings = Array.from(el.parentElement.children)
+      .filter(c => c.matches(STAGGER_SELECTOR));
+    el._staggerIndex = Math.min(siblings.indexOf(el), STAGGER_MAX);
+  });
+
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      if (!prefersReducedMotion && el._staggerIndex) {
+        el.style.transitionDelay = (el._staggerIndex * STAGGER_STEP) + 'ms';
+        // clear the delay once it has animated in, so later transitions aren't lagged
+        el.addEventListener('transitionend', () => { el.style.transitionDelay = ''; }, { once: true });
+      }
+      el.classList.add('in');
+      obs.unobserve(el);
+    });
   }, { threshold: 0.12 });
   document.querySelectorAll('section, .drink-tile, .course-tile, .beat, .qa, .visit-item, .slot').forEach(el => {
     el.classList.add('reveal');
     io.observe(el);
   });
 
-  // Scroll progress bar
+  // Single rAF-throttled scroll handler: progress bar + nav glass state + scroll-spy
   const progress = document.getElementById('scroll-progress');
-  function updateProgress() {
-    const h = document.documentElement;
-    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight);
-    progress.style.width = (pct * 100) + '%';
+  const runner = document.getElementById('runner');
+  const navLinks = document.getElementById('navLinks');
+  const burger = document.getElementById('navBurger');
+
+  const navMap = {};
+  navLinks.querySelectorAll('a[data-sec]').forEach(a => { navMap[a.dataset.sec] = a; });
+  const spySections = ['island','sessions','menu','drinks','performer','schedule','visit']
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
+  let currentActive = null;
+
+  function setActive(el) {
+    const id = el ? el.id : null;
+    if (id === currentActive) return;
+    currentActive = id;
+    navLinks.querySelectorAll('a').forEach(a => a.classList.remove('active'));
+    if (id && navMap[id]) navMap[id].classList.add('active');
   }
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  updateProgress();
+
+  function onScroll() {
+    const doc = document.documentElement;
+    const scrollTop = doc.scrollTop;
+    const viewportH = doc.clientHeight;
+
+    // Progress bar (transform: scaleX to avoid layout)
+    const max = doc.scrollHeight - viewportH;
+    const pct = max > 0 ? scrollTop / max : 0;
+    progress.style.transform = 'scaleX(' + pct + ')';
+
+    // Nav glass state past hero
+    const header = document.querySelector('header');
+    const trigger = header ? header.offsetHeight * 0.6 : 400;
+    runner.classList.toggle('scrolled', scrollTop > trigger);
+
+    // Scroll-spy: at the very top clear all; else pick section nearest viewport centre
+    if (scrollTop < 4) {
+      setActive(null);
+      return;
+    }
+    const centre = scrollTop + viewportH / 2;
+    let best = null, bestDist = Infinity;
+    spySections.forEach(sec => {
+      const top = sec.offsetTop;
+      const bottom = top + sec.offsetHeight;
+      if (centre >= top && centre <= bottom) {
+        // section spans the centre line — distance from its own middle
+        const dist = Math.abs(centre - (top + bottom) / 2);
+        if (dist < bestDist) { bestDist = dist; best = sec; }
+      }
+    });
+    if (best) setActive(best);
+  }
+
+  let ticking = false;
+  function onScrollRaf() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(() => { onScroll(); ticking = false; });
+    }
+  }
+  window.addEventListener('scroll', onScrollRaf, { passive: true });
+  window.addEventListener('resize', onScrollRaf, { passive: true });
+  onScroll();
+  if (burger) {
+    function closeMenu() {
+      navLinks.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+    burger.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      burger.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', String(open));
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+    // Esc closes the menu and returns focus to the burger
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && navLinks.classList.contains('open')) {
+        closeMenu();
+        burger.focus();
+      }
+    });
+  }
 
   // Custom cursor (only on devices with fine pointer) — 1:1 tracking, GPU
   const supportsCustom = matchMedia('(hover: hover) and (pointer: fine)').matches
@@ -1428,15 +1677,30 @@
     document.addEventListener('mouseleave', () => { dot.style.opacity = 0; });
     document.addEventListener('mouseenter', () => { dot.style.opacity = 1; });
 
-    // Hover state targets — use event delegation so dynamically created elements work
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest('.drink-tile .visual')) dot.classList.add('over-orb');
-      else if (e.target.closest('a, .cta, .slot')) dot.classList.add('over-link');
-    }, { passive: true });
-    document.addEventListener('mouseout', e => {
-      if (e.target.closest('.drink-tile .visual')) dot.classList.remove('over-orb');
-      else if (e.target.closest('a, .cta, .slot')) dot.classList.remove('over-link');
-    }, { passive: true });
+    // Hover state targets — derive cursor state from the element under the pointer.
+    // Always clear both classes first, then re-add at most one, so they never coexist.
+    function setCursorState(target) {
+      dot.classList.remove('over-orb', 'over-link');
+      if (!target) return;
+      if (target.closest('.drink-tile .visual')) dot.classList.add('over-orb');
+      else if (target.closest('a, .cta, .slot')) dot.classList.add('over-link');
+    }
+    document.addEventListener('mouseover', e => setCursorState(e.target), { passive: true });
+    document.addEventListener('mouseout', e => setCursorState(e.relatedTarget), { passive: true });
+  }
+
+  // Respect reduced-motion: do not autoplay the hero video — hold on the poster frame
+  if (prefersReducedMotion) {
+    const heroVideo = document.querySelector('.hero-video');
+    if (heroVideo) {
+      heroVideo.removeAttribute('autoplay');
+      heroVideo.autoplay = false;
+      const stop = () => { try { heroVideo.pause(); heroVideo.currentTime = 0; } catch (e) {} };
+      stop();
+      // Some browsers begin playback before JS runs; pause again once metadata is ready
+      heroVideo.addEventListener('loadedmetadata', stop, { once: true });
+      heroVideo.addEventListener('play', stop);
+    }
   }
 </script>
 
