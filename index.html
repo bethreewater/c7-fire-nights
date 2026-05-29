@@ -426,32 +426,24 @@
   }
   .drink-tile:hover { background: #181818; }
   .drink-tile .visual {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    max-width: 220px;
+    aspect-ratio: 1 / 1;
     position: relative;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-bottom: 24px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+    transition: box-shadow 0.6s ease;
   }
-  .drink-tile .visual .orb {
+  .drink-tile .visual img {
     width: 100%;
     height: 100%;
-    border-radius: 50%;
-    filter: blur(0.5px);
-    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
-    position: relative;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease, filter 0.6s ease;
+    will-change: transform;
   }
-  .drink-tile .visual .orb::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.25), transparent 50%);
-  }
-  .orb.sunset { background: radial-gradient(circle at 35% 35%, #F0A050 5%, #D14820 50%, #6B1A0A 100%); }
-  .orb.midnight { background: radial-gradient(circle at 35% 35%, #6B3A88 5%, #2A1545 55%, #08020F 100%); }
-  .orb.kumquat { background: radial-gradient(circle at 35% 35%, #F4D060 5%, #C88A1E 55%, #5A3408 100%); }
 
   .drink-tile .num {
     font-family: var(--display);
@@ -812,16 +804,13 @@
     to { transform: scale(1.12); }
   }
 
-  /* Drinks orb breathing + hover */
-  .drink-tile .visual .orb {
-    animation: breathe 7s ease-in-out infinite;
-    transition: box-shadow 0.6s ease, transform 0.6s ease;
-    will-change: transform;
+  /* Drinks image hover */
+  .drink-tile:hover .visual img {
+    transform: scale(1.06);
+    filter: brightness(1.08) saturate(1.05);
   }
-  .drink-tile:hover .visual .orb {
-    animation-play-state: paused;
-    transform: scale(1.08);
-    box-shadow: 0 30px 80px rgba(209, 72, 32, 0.45), 0 0 60px rgba(255, 200, 100, 0.25);
+  .drink-tile:hover .visual {
+    box-shadow: 0 24px 60px rgba(209, 72, 32, 0.4), 0 0 50px rgba(255, 200, 100, 0.2);
   }
   @keyframes breathe {
     0%, 100% { transform: scale(1); }
@@ -964,7 +953,7 @@
     </h1>
     <div class="zh-sub">夏夜火舞</div>
     <p class="lead">
-      入場時，我們收走你的手機，給你一台即可拍。<br>
+      火舞分四段，餐分四道，慢慢走。<br>
       接下來一百一十分鐘——不能快轉。
     </p>
   </div>
@@ -1028,10 +1017,10 @@
       The Menu
     </div>
     <div>
-      <h2 class="display-h">Seven <span class="accent">small</span><br>movements.</h2>
-      <div class="display-h-zh">七道菜</div>
+      <h2 class="display-h">Five <span class="accent">small</span><br>movements.</h2>
+      <div class="display-h-zh">五道</div>
       <p class="lede">
-        七道，分四段火舞之間慢慢上。一道一道，不趕。Set menu，NT$2,000。
+        四道菜、一杯調飲，分四段火舞之間慢慢上。一道一道，不趕。Set menu，NT$2,000／人。
       </p>
     </div>
   </div>
@@ -1040,32 +1029,32 @@
     <div class="course-tile">
       <div class="num">i</div>
       <div class="when">On Arrival</div>
-      <div class="zh">迎賓麵包<br>抹醬<br>店內發酵康普茶</div>
-      <div class="en">Sourdough · Tomato dip · House Kombucha</div>
+      <div class="zh">迎賓麵包<br>抹醬<br>風茹康普茶</div>
+      <div class="en">Sourdough · Dip · Fengru Kombucha</div>
     </div>
     <div class="course-tile">
       <div class="num">ii</div>
-      <div class="when">Before Fire I</div>
-      <div class="zh">西班牙冷湯<br>冰卷<br>水果沙拉</div>
-      <div class="en">Gazpacho · Penghu Squid · Summer Fruit</div>
+      <div class="when">Starter</div>
+      <div class="zh">西班牙冷湯<br>冰卷沙拉<br>澎湖冰卷</div>
+      <div class="en">Gazpacho · Squid Salad · Penghu Squid</div>
     </div>
     <div class="course-tile">
       <div class="num">iii</div>
-      <div class="when">After Fire I</div>
+      <div class="when">A Glass</div>
       <div class="zh">套餐專屬調飲<br>（三款擇一）</div>
-      <div class="en">Sunset · Berry · Kumquat — see 03</div>
+      <div class="en">Sunset · Star · Fireworks — see 03</div>
     </div>
     <div class="course-tile">
       <div class="num">iv</div>
-      <div class="when">Before Fire II</div>
-      <div class="zh">秘藏紅燒<br>牛肉麵</div>
-      <div class="en">Slow-Braised Beef Noodles</div>
+      <div class="when">Main</div>
+      <div class="zh">煎鴨胸<br>配澎湖明蝦</div>
+      <div class="en">Seared Duck · Penghu Prawn</div>
     </div>
     <div class="course-tile">
       <div class="num">v</div>
-      <div class="when">Before Fire III</div>
-      <div class="zh">烤布蕾<br>（桌邊現噴）</div>
-      <div class="en">Crème Brûlée · torched tableside</div>
+      <div class="when">Dessert</div>
+      <div class="zh">仙人掌<br>水果冰沙</div>
+      <div class="en">Cactus Fruit Sorbet</div>
     </div>
   </div>
 </section>
@@ -1083,43 +1072,44 @@
       <div class="display-h-zh">三款專屬調飲</div>
       <p class="lede">
         Built for this menu, not on the regular list. <br>
-        All three are alcohol-free.
+        三杯沿著夜晚走：日落 → 夜空 → 煙火。都沒有酒精。<br>
+        名字都是一首歌——懂的人會心一笑。
       </p>
     </div>
   </div>
 
   <div class="drinks-grid">
     <div class="drink-tile">
-      <div class="visual"><div class="orb sunset"></div></div>
+      <div class="visual"><img src="img/drink-sunset.webp" alt="落日飛車 Sunset Rollercoaster" loading="lazy"></div>
       <div class="num">3.1</div>
-      <div class="zh">日落仙人掌</div>
-      <div class="en">Cactus <span class="it">Sunset</span></div>
+      <div class="zh">落日飛車</div>
+      <div class="en">Sunset <span class="it">Rollercoaster</span></div>
       <div class="ingredients">
-        Penghu cactus juice · concentrated grape · agave nectar · lime · soda
+        澎湖仙人掌果 · 紅橙 · 像日落的那杯
       </div>
       <div class="abv">No Alcohol · 0%</div>
     </div>
 
     <div class="drink-tile">
-      <div class="visual"><div class="orb midnight"></div></div>
+      <div class="visual"><img src="img/drink-star.webp" alt="夜空中最亮的星 Brightest Star" loading="lazy"></div>
       <div class="num">3.2</div>
-      <div class="zh">夜空藍莓</div>
-      <div class="en">Midnight <span class="it">Berry</span></div>
+      <div class="zh">夜空中最亮的星</div>
+      <div class="en">Brightest <span class="it">Star</span></div>
       <div class="ingredients">
-        Blueberry purée · cassis · cinnamon syrup · lime · tonic
+        蝶豆花 · 藍 · 像夜空的那杯
       </div>
       <div class="abv">No Alcohol · 0%</div>
     </div>
 
     <div class="drink-tile">
-      <div class="visual"><div class="orb kumquat"></div></div>
+      <div class="visual"><img src="img/drink-fireworks.webp" alt="煙火裡的塵埃 Dust in Fireworks" loading="lazy"></div>
       <div class="num">3.3</div>
-      <div class="zh">火光金桔</div>
-      <div class="en">Fire <span class="it">Kumquat</span></div>
+      <div class="zh">煙火裡的塵埃</div>
+      <div class="en">Dust in <span class="it">Fireworks</span></div>
       <div class="ingredients">
-        House kombucha · Taiwan kumquat · honey · fresh ginger · lime
+        金桔 · 黑糖氣泡 · 像煙火的那杯
       </div>
-      <div class="abv">Kombucha · &lt; 0.5%</div>
+      <div class="abv">No Alcohol · 0%</div>
     </div>
   </div>
 </div>
@@ -1166,7 +1156,7 @@
       <div class="flow-list">
         <div class="beat">
           <div class="time">Doors</div>
-          <div class="what"><strong>入場</strong>手機交給我們保管，換一台即可拍。今晚你不用負責記錄。</div>
+          <div class="what"><strong>入場</strong>布簾圍起一塊草皮，中央是火。我們不收你的手機——只在火舞那幾段，請你把它收起來。</div>
         </div>
         <div class="beat">
           <div class="time">Dusk</div>
@@ -1174,15 +1164,11 @@
         </div>
         <div class="beat">
           <div class="time">Night</div>
-          <div class="what"><strong>入夜</strong>四段火舞，七道菜，在海風與星空之間慢慢交替。</div>
+          <div class="what"><strong>入夜</strong>四段火舞，餐一道一道，在星空下慢慢交替。抬頭是這個空間裡唯一的「外面」。</div>
         </div>
         <div class="beat">
           <div class="time">Last</div>
-          <div class="what"><strong>收尾</strong>最後一段火。這個夜晚怎麼結束——你會自己知道。</div>
-        </div>
-        <div class="beat">
-          <div class="time">After</div>
-          <div class="what"><strong>之後</strong>三到五天後，即可拍沖洗好的照片寄到你手上。你會在那時候，才真正收到那個夜晚。</div>
+          <div class="what"><strong>收尾</strong>最後一段火。然後，火會以另一種方式延續——這個夜晚怎麼結束，你會在現場知道。</div>
         </div>
       </div>
     </div>
@@ -1207,8 +1193,8 @@
         <h4>Preview · 內測場（限熟客邀請）</h4>
         <div class="sched-grid">
           <div class="slot beta">
-            <div class="d">5/30</div>
-            <div class="month-tag">May · Sat</div>
+            <div class="d">6/6</div>
+            <div class="month-tag">Jun · Sat</div>
             <div class="sess">Sunset 18:00<br>Night 20:00</div>
             <span class="tag">NT$1,500 · 75%</span>
           </div>
@@ -1218,7 +1204,6 @@
       <div class="sched-group">
         <h4>June</h4>
         <div class="sched-grid">
-          <div class="slot"><div class="d">6/06</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
           <div class="slot"><div class="d">6/13</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
           <div class="slot"><div class="d">6/20</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
           <div class="slot"><div class="d">6/27</div><div class="month-tag">Sat</div><div class="sess">18:00<br>20:00</div></div>
@@ -1248,7 +1233,7 @@
 
       <div class="cta-block">
         <a href="#" class="cta" onclick="alert('預購表單建置中——目前請透過 IG @container_no.7_penghu 或電話 0963-059-889 預約'); return false;">Reserve / 預購</a>
-        <div class="cta-note">20 seats per sitting · cutoff 22:00 day before</div>
+        <div class="cta-note">8–15 seats per sitting · cutoff 22:00 day before</div>
       </div>
     </div>
   </div>
@@ -1303,7 +1288,7 @@
       <div class="qa">
         <div class="q"><span class="num">07.5</span>過敏／飲食限制</div>
         <div class="a">
-          預購時請務必填寫。不吃牛、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。<br>
+          預購時請務必填寫。不吃鴨、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。<br>
           未填寫者，現場無法另作調整。
         </div>
       </div>
@@ -1400,11 +1385,11 @@
 
     // Hover state targets — use event delegation so dynamically created elements work
     document.addEventListener('mouseover', e => {
-      if (e.target.closest('.drink-tile .visual .orb')) dot.classList.add('over-orb');
+      if (e.target.closest('.drink-tile .visual')) dot.classList.add('over-orb');
       else if (e.target.closest('a, .cta, .slot')) dot.classList.add('over-link');
     }, { passive: true });
     document.addEventListener('mouseout', e => {
-      if (e.target.closest('.drink-tile .visual .orb')) dot.classList.remove('over-orb');
+      if (e.target.closest('.drink-tile .visual')) dot.classList.remove('over-orb');
       else if (e.target.closest('a, .cta, .slot')) dot.classList.remove('over-link');
     }, { passive: true });
   }
