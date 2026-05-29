@@ -765,6 +765,63 @@
     display: block;
   }
 
+  /* Reserve — how-to + scarcity, sits above the CTA in Schedule */
+  .reserve {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--line);
+  }
+  .reserve-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  @media (max-width: 760px) { .reserve-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 380px) { .reserve-row { grid-template-columns: 1fr; } }
+  .reserve-item {
+    background: var(--bg);
+    padding: 24px 22px;
+  }
+  .reserve-item .rk {
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--fire);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .reserve-item .rv {
+    font-family: var(--display);
+    font-size: clamp(26px, 3.4vw, 34px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--paper);
+  }
+  .reserve-item .rv .rsub {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--paper-mute);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+  .reserve-how {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+    color: var(--paper-soft);
+    margin-top: 28px;
+    text-wrap: pretty;
+  }
+
   /* CTA */
   .cta-block {
     margin-top: 96px;
@@ -860,6 +917,13 @@
   .visit-item .val a {
     border-bottom: 1px solid var(--paper-mute);
     padding-bottom: 1px;
+  }
+  .visit-item .val .addr-pending {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--paper-mute);
   }
 
   /* Footer */
@@ -1094,6 +1158,7 @@
     <a href="#drinks" data-sec="drinks">Drinks</a>
     <a href="#performer" data-sec="performer">Performer</a>
     <a href="#schedule" data-sec="schedule">Dates</a>
+    <a href="#faq" data-sec="faq">Q&amp;A</a>
     <a href="#visit" data-sec="visit">Visit</a>
   </div>
 </nav>
@@ -1426,6 +1491,33 @@
         </div>
       </div>
 
+      <div class="reserve">
+        <div class="reserve-row">
+          <div class="reserve-item">
+            <div class="rk">每場名額</div>
+            <div class="rv">8–15 位<span class="rsub">小而精緻，滿了就關</span></div>
+          </div>
+          <div class="reserve-item">
+            <div class="rk">正式場</div>
+            <div class="rv">NT$2,000<span class="rsub">／人</span></div>
+          </div>
+          <div class="reserve-item">
+            <div class="rk">內測場 6/6</div>
+            <div class="rv">NT$1,500<span class="rsub">限熟客邀請</span></div>
+          </div>
+          <div class="reserve-item">
+            <div class="rk">預購截止</div>
+            <div class="rv">場次前一天<span class="rsub">22:00</span></div>
+          </div>
+        </div>
+        <p class="reserve-how">
+          預購方式：IG 私訊
+          <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="inline-link">@container_no.7_penghu&nbsp;↗</a>
+          或電話
+          <a href="tel:+886963059889" class="inline-link">0963-059-889</a>。
+        </p>
+      </div>
+
       <div class="cta-block">
         <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="cta">Reserve / 預購</a>
         <div class="cta-note">8–15 seats per sitting · cutoff 22:00 day before</div>
@@ -1446,45 +1538,87 @@
       <div class="display-h-zh" lang="zh-Hant">條款</div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.1</span>颱風／天氣</div>
+        <div class="q"><span class="num">07.1</span>天氣</div>
         <div class="a">
-          中央氣象署陸警或海警發布 → 全額退費或免費換期。<br>
-          ≤ 小雨表演照常；&gt; 中雨延後 30 分鐘觀察；19:30 仍持續 → 表演取消（套餐照出，可選下一場補火舞，不退費）。<br>
-          預售期間發布颱風警報 → 整週場次自動延後一週。
+          中央氣象署陸警／海警 → 全額退費或免費換期。<br>
+          表演當天降雨：小雨照常；中雨以上延後 30 分鐘觀察；19:30 仍持續，火舞當日取消（餐照出，可選下一場補火舞，不退費）。
         </div>
       </div>
 
       <div class="qa">
         <div class="q"><span class="num">07.2</span>退費</div>
         <div class="a">
-          場次前 5 天以上：全額退費。<br>
-          場次前 2–5 天：退 50%。<br>
-          場次前 ＜ 2 天：不退費，可換期。<br>
-          颱風／警報：依「天氣」條款，不受此限。
+          場次前 5 天以上全額退；2–5 天退 50%；不足 2 天不退、可換期。颱風／警報不受此限。
         </div>
       </div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.3</span>開場門檻</div>
+        <div class="q"><span class="num">07.3</span>抵達</div>
         <div class="a">
-          單場預售 &lt; 8 人 → 提前 3 天通知換期或全額退費。<br>
-          此條為保護整場節目品質。
+          Sunset 場 17:30–17:50 抵達；Night 場 19:50–20:05 抵達。遲到 15 分鐘以上視為棄權。
         </div>
       </div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.4</span>抵達時間</div>
+        <div class="q"><span class="num">07.4</span>飲食限制</div>
         <div class="a">
-          Sunset：17:30–17:50 抵達。Night：19:50–20:05 抵達。<br>
-          遲到 15 分鐘以上 → 視為棄權，不退費。
+          預購時務必填寫。不吃鴨、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="spread">
+    <div class="index">
+      <span class="num">08</span>
+      Questions
+    </div>
+    <div>
+      <h2 class="display-h">Before <span class="accent">you</span><br>come.</h2>
+      <div class="display-h-zh" lang="zh-Hant">常見問題</div>
+
+      <div class="qa">
+        <div class="q"><span class="num">08.1</span>手機可以用嗎？</div>
+        <div class="a">
+          我們不收你的手機。整晚——拍照、錄影、發限動，都可以。
         </div>
       </div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.5</span>過敏／飲食限制</div>
+        <div class="q"><span class="num">08.2</span>可以只看火舞、不吃套餐嗎？</div>
         <div class="a">
-          預購時請務必填寫。不吃鴨、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。<br>
-          未填寫者，現場無法另作調整。
+          不行。這是一個完整的夜晚，火舞與餐分不開。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">08.3</span>要穿什麼？</div>
+        <div class="a">
+          草皮、戶外、夏夜。好走的鞋、輕鬆的衣服。會微涼可帶薄外套。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">08.4</span>可以帶小孩嗎？</div>
+        <div class="a">
+          可以，建議 6 歲以上（火舞有聲響、餐期較長）。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">08.5</span>康普茶有酒精嗎？</div>
+        <div class="a">
+          店內發酵的康普茶 ABV ＜ 0.5%，依台灣法規屬無酒精飲料。
+        </div>
+      </div>
+
+      <div class="qa">
+        <div class="q"><span class="num">08.6</span>過敏或飲食限制怎麼辦？</div>
+        <div class="a">
+          不吃鴨、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。預購時請務必告訴我們；未填寫者，現場無法另作調整。
         </div>
       </div>
     </div>
@@ -1495,7 +1629,7 @@
 <section id="visit">
   <div class="spread">
     <div class="index">
-      <span class="num">08</span>
+      <span class="num">09</span>
       Visit
     </div>
     <div>
@@ -1506,8 +1640,9 @@
         <div class="visit-item">
           <div class="label">Address</div>
           <div class="val">
-            澎湖<br>
-            <a href="https://maps.google.com/?q=Container+No.7+Penghu" target="_blank">Google Maps ↗</a>
+            澎湖縣馬公市・七號貨櫃<br>
+            <!-- TODO: 地址/地圖待補 — 確切門牌與 Google Maps 連結尚未提供，請勿編造 -->
+            <span class="addr-pending">詳細地址 · 地圖連結整理中</span>
           </div>
         </div>
         <div class="visit-item">
@@ -1586,7 +1721,7 @@
 
   const navMap = {};
   navLinks.querySelectorAll('a[data-sec]').forEach(a => { navMap[a.dataset.sec] = a; });
-  const spySections = ['island','sessions','menu','drinks','performer','schedule','visit']
+  const spySections = ['island','sessions','menu','drinks','performer','schedule','faq','visit']
     .map(id => document.getElementById(id))
     .filter(Boolean);
   let currentActive = null;
