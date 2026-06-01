@@ -337,6 +337,28 @@
     section { padding: 96px 24px; }
   }
 
+  /* Section mural backgrounds — vertical reveal via background-position */
+  .has-mural { overflow: hidden; }
+  .mural-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 0%;
+    background-repeat: no-repeat;
+    z-index: 0;
+    will-change: background-position;
+  }
+  .mural-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,10,0.5), rgba(10,10,10,0.3) 40%, rgba(10,10,10,0.58));
+  }
+  .mural-bg.mural-contain { background-size: contain; background-position: center; }
+  .has-mural > .spread { position: relative; z-index: 1; }
+  @media (max-width: 720px) {
+    .mural-bg:not(.mural-contain) { background-position: center !important; }
+  }
+
   /* Section heading style — magazine-spread */
   .spread {
     display: grid;
@@ -1202,7 +1224,8 @@
 </header>
 
 <!-- THE ISLAND -->
-<section id="island">
+<section id="island" class="has-mural">
+  <div class="mural-bg" style="background-image:url('img/mural-island.jpg')" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
       <span class="num">00</span>
@@ -1212,8 +1235,8 @@
       <h2 class="display-h">Born <span class="accent">of</span><br>fire.</h2>
       <div class="display-h-zh" lang="zh-Hant">火生的島</div>
       <div class="story">
-        <p class="em">你帶著一身的趕，走進來。<br>放下——這座島等了你一千七百萬年，不差這一晚。</p>
-        <p>那時，海底噴著火。岩漿湧出、凝結，澎湖從海裡長出來——黑的，是冷掉的火。你今晚坐的這塊地，挖下去，就是那團火。</p>
+        <p class="em">這座島，是火做的——比你老一千七百萬年。</p>
+        <p>海底噴發，岩漿湧上來、冷卻，澎湖就這樣從海裡長出來——黑的，是冷掉的火。</p>
         <p class="em">火，沒走。</p>
         <p>它沉進海，成了夜裡引小管的漁火——你的<strong>冰卷</strong>。<br>它鑽進土，長成曬乾煮茶的草——你的<strong>第一杯</strong>。<br>它養著鹹水裡慢慢長大的蝦——你的<strong>主餐</strong>。<br>它連荷蘭人四百年前插下的刺，都焐出了甜——你的<strong>冰沙</strong>。</p>
         <p>一千七百萬年，這座島把一團火，煨成你眼前這一桌。</p>
@@ -1376,7 +1399,8 @@
 </section>
 
 <!-- PERFORMER -->
-<section id="performer">
+<section id="performer" class="has-mural">
+  <div class="mural-bg" style="background-image:url('img/mural-phoenix.jpg')" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
       <span class="num">04</span>
@@ -1718,6 +1742,7 @@
   const runner = document.getElementById('runner');
   const navLinks = document.getElementById('navLinks');
   const burger = document.getElementById('navBurger');
+  const murals = document.querySelectorAll('.mural-bg');
 
   const navMap = {};
   navLinks.querySelectorAll('a[data-sec]').forEach(a => { navMap[a.dataset.sec] = a; });
@@ -1748,6 +1773,17 @@
     const header = document.querySelector('header');
     const trigger = header ? header.offsetHeight * 0.6 : 400;
     runner.classList.toggle('scrolled', scrollTop > trigger);
+
+    // Section murals — vertical reveal: scroll pans each mural top→bottom, matching scroll direction
+    if (window.innerWidth > 720 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      murals.forEach(m => {
+        if (m.classList.contains('mural-contain')) return; // full-bleed murals show whole image, no pan
+        const sec = m.parentElement;
+        const r = sec.getBoundingClientRect();
+        const p = Math.max(0, Math.min(1, (viewportH - r.top) / (viewportH + r.height)));
+        m.style.backgroundPositionY = (p * 100).toFixed(1) + '%';
+      });
+    }
 
     // Scroll-spy: at the very top clear all; else pick section nearest viewport centre
     if (scrollTop < 4) {
