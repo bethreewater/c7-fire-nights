@@ -13,7 +13,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@200;300;400;500;600&family=Noto+Serif+TC:wght@300;500;700;900&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@200;300;400;500;600&family=Noto+Serif+TC:wght@300;400;500;700;900&family=Noto+Sans+TC:wght@300;500;700;900&display=swap" rel="stylesheet">
 
 <style>
   :root {
@@ -234,6 +234,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center 68%;
     z-index: 0;
   }
   .hero .hero-bg {
@@ -242,10 +243,20 @@
     z-index: 1;
     pointer-events: none;
     background:
-      radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.55) 100%),
+      radial-gradient(ellipse at 50% 60%, transparent 16%, rgba(0,0,0,0.42) 54%, rgba(0,0,0,0.82) 100%),
       linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.5) 100%);
   }
-  .hero::before { display: none; }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'><filter id='hn'><feTurbulence type='fractalNoise' baseFrequency='0.62' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.4 0'/></filter><rect width='100%' height='100%' filter='url(%23hn)'/></svg>");
+    background-size: 180px 180px;
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+  }
   .hero > * { position: relative; z-index: 2; }
 
   .hero .top-meta,
@@ -351,12 +362,17 @@
   .mural-bg::after {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(10,10,10,0.5), rgba(10,10,10,0.3) 40%, rgba(10,10,10,0.58));
+    background:
+      linear-gradient(180deg, rgba(10,10,10,0.5), rgba(10,10,10,0.3) 42%, rgba(10,10,10,0.6)),
+      linear-gradient(95deg, rgba(10,10,10,0.62) 0%, rgba(10,10,10,0.24) 52%, rgba(10,10,10,0) 100%);
   }
   .mural-bg.mural-contain { background-size: contain; background-position: center; }
-  .has-mural > .spread { position: relative; z-index: 1; }
+  .has-mural > :not(.mural-bg) { position: relative; z-index: 1; }
   @media (max-width: 720px) {
     .mural-bg:not(.mural-contain) { background-position: center !important; }
+    .mural-bg::after {
+      background: linear-gradient(180deg, rgba(10,10,10,0.6), rgba(10,10,10,0.42) 40%, rgba(10,10,10,0.66));
+    }
   }
 
   /* Section heading style — magazine-spread */
@@ -412,6 +428,12 @@
     margin: 32px 0 24px;
     text-wrap: balance;
   }
+  /* Mural sections: classical serif for the Chinese title echoes the fresco */
+  .has-mural .display-h-zh {
+    font-family: var(--zh-serif);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+  }
   .lede {
     font-family: var(--sans);
     font-weight: 300;
@@ -436,13 +458,13 @@
   /* The Island — story */
   .story { max-width: 660px; margin-top: 40px; }
   .story p {
-    font-family: var(--sans);
-    font-weight: 300;
+    font-family: var(--zh-serif);
+    font-weight: 400;
     font-size: clamp(16px, 1.6vw, 19px);
     line-height: 2;
     color: var(--paper-soft);
     margin-bottom: 22px;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.045em;
     text-wrap: pretty;
   }
   .story p strong { color: var(--fire); font-weight: 500; }
@@ -749,6 +771,11 @@
   .slot:hover {
     background: rgba(209, 72, 32, 0.06);
   }
+  @keyframes fieldFlash {
+    0%   { border-color: var(--fire); box-shadow: 0 0 0 3px rgba(209,72,32,0.3); }
+    100% { border-color: var(--line); box-shadow: 0 0 0 0 transparent; }
+  }
+  .bf-in.flash { animation: fieldFlash 1.5s ease; }
   .slot .d {
     font-family: var(--display);
     font-size: 32px;
@@ -775,6 +802,7 @@
   }
   .slot.beta {
     background: rgba(209, 72, 32, 0.08);
+    cursor: default;
   }
   .slot.beta .tag {
     font-family: var(--sans);
@@ -795,13 +823,12 @@
   }
   .reserve-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1px;
     background: var(--line);
     border: 1px solid var(--line);
   }
-  @media (max-width: 760px) { .reserve-row { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 380px) { .reserve-row { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .reserve-row { grid-template-columns: 1fr; } }
   .reserve-item {
     background: var(--bg);
     padding: 24px 22px;
@@ -870,6 +897,31 @@
     color: #000;
   }
   .cta:active { transform: translateY(1px); }
+  .cta-tel {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 13px 30px;
+    border: 1px solid var(--line);
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--paper-soft);
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+  .cta-tel:hover { border-color: var(--paper); color: var(--paper); }
+  .cta-guide {
+    margin: 30px auto 0;
+    max-width: 580px;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+    color: var(--paper-soft);
+    text-wrap: pretty;
+  }
+  .cta-guide strong { color: var(--paper); font-weight: 500; }
   .cta-note {
     margin-top: 24px;
     font-family: var(--sans);
@@ -877,6 +929,128 @@
     letter-spacing: 0.4em;
     text-transform: uppercase;
     color: var(--paper-mute);
+  }
+
+  /* —— Reserve form —— */
+  .book { text-align: left; max-width: 680px; margin: 0 auto; }
+  .book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 560px) { .book-grid { grid-template-columns: 1fr; } }
+  .bf { display: flex; flex-direction: column; gap: 8px; }
+  .bf-wide { grid-column: 1 / -1; }
+  .bf-k {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--paper-mute);
+  }
+  .bf-in {
+    font-family: var(--sans); font-size: 16px; color: var(--paper);
+    background: rgba(255,255,255,0.02); border: 1px solid var(--line);
+    padding: 14px 16px; border-radius: 0; -webkit-appearance: none; appearance: none;
+    transition: border-color 0.25s ease;
+  }
+  .bf-in:focus { outline: none; border-color: var(--fire); }
+  .bf-in::placeholder { color: var(--paper-mute); }
+  select.bf-in {
+    cursor: pointer; padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238A857B'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+  }
+  .book option { background: #121212; color: var(--paper); }
+  .bf-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { cursor: pointer; }
+  .chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .chip span {
+    display: inline-block; padding: 9px 16px; border: 1px solid var(--line);
+    font-family: var(--sans); font-size: 13px; color: var(--paper-soft);
+    letter-spacing: 0.04em; transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .chip input:checked + span { background: var(--fire); border-color: var(--fire); color: #000; }
+  .chip input:focus-visible + span { outline: 2px solid var(--paper); outline-offset: 2px; }
+  .bf-terms {
+    margin-top: 14px; padding: 22px 24px; border: 1px solid var(--line);
+    background: rgba(255,255,255,0.015);
+  }
+  .bf-terms-k {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--fire); margin-bottom: 14px;
+  }
+  .bf-terms ul { list-style: none; padding: 0; margin: 0; }
+  .bf-terms li {
+    font-family: var(--sans); font-weight: 300; font-size: 13px; line-height: 1.7;
+    color: var(--paper-soft); margin-bottom: 10px; text-wrap: pretty;
+  }
+  .bf-terms li:last-child { margin-bottom: 0; }
+  .bf-terms li strong { color: var(--paper); font-weight: 500; margin-right: 8px; }
+  .bf-agree {
+    display: flex; align-items: flex-start; gap: 10px; margin-top: 18px;
+    cursor: pointer; font-family: var(--sans); font-size: 13px; color: var(--paper); letter-spacing: 0.02em;
+  }
+  .bf-agree input { margin-top: 1px; width: 16px; height: 16px; accent-color: var(--fire); flex-shrink: 0; cursor: pointer; }
+  .book .cta { display: block; width: 100%; margin-top: 28px; text-align: center;
+    font-size: clamp(24px, 3.5vw, 40px); padding: 24px; cursor: pointer; }
+  .bf-hint {
+    margin-top: 14px; font-family: var(--sans); font-size: 13px; letter-spacing: 0.03em;
+    color: var(--fire); min-height: 18px; text-align: center; white-space: pre-line;
+  }
+  .bf-note {
+    margin-top: 16px; font-family: var(--sans); font-size: 12px; line-height: 1.7;
+    letter-spacing: 0.02em; color: var(--paper-mute); text-align: center; text-wrap: pretty;
+  }
+
+  /* —— Booking modal + fire burn-in —— */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: radial-gradient(ellipse at 50% 62%, rgba(70,24,10,0.5), rgba(0,0,0,0.9));
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.45s ease, visibility 0.45s ease;
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal-card {
+    position: relative; width: 100%; max-width: 620px; max-height: 88vh; overflow-y: auto;
+    background: #0b0b0b; border: 1px solid var(--fire); padding: 54px 34px 40px;
+  }
+  .modal-overlay.open .modal-card {
+    animation: burnIn 0.72s cubic-bezier(0.16,0.84,0.24,1) both,
+               emberGlow 3.4s ease-in-out 0.72s infinite;
+  }
+  @keyframes burnIn {
+    0%   { clip-path: inset(100% 0 0 0); opacity: 0; transform: translateY(20px) scale(0.975); filter: brightness(2.3) saturate(1.7); }
+    55%  { opacity: 1; filter: brightness(1.4) saturate(1.3); }
+    100% { clip-path: inset(0 0 0 0); opacity: 1; transform: translateY(0) scale(1); filter: none; }
+  }
+  @keyframes emberGlow {
+    0%,100% { box-shadow: 0 0 48px rgba(209,72,32,0.32); }
+    50%     { box-shadow: 0 0 84px rgba(209,72,32,0.52); }
+  }
+  .modal-fire {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 4px; pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--fire) 18%, #ff8a4d 50%, var(--fire) 82%, transparent);
+    opacity: 0;
+  }
+  .modal-overlay.open .modal-fire { animation: fireSweep 0.72s ease-out both; }
+  @keyframes fireSweep {
+    0%   { bottom: 0;    opacity: 1; box-shadow: 0 0 28px 9px rgba(255,120,50,0.85); }
+    85%  { opacity: 1; }
+    100% { bottom: 100%; opacity: 0; box-shadow: 0 0 10px 2px rgba(255,120,50,0); }
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; z-index: 3;
+    width: 40px; height: 40px; background: transparent; border: 1px solid var(--line);
+    color: var(--paper-soft); font-size: 16px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.25s ease, color 0.25s ease;
+  }
+  .modal-close:hover { border-color: var(--fire); color: var(--fire); }
+  .modal-title {
+    font-family: var(--display); font-size: clamp(28px, 5vw, 44px);
+    text-transform: uppercase; letter-spacing: 0.04em; color: var(--paper);
+    margin-bottom: 26px; line-height: 1;
+  }
+  .modal-card .book { max-width: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .modal-overlay.open .modal-card { animation: none; }
+    .modal-fire { display: none; }
   }
 
   /* Terms / FAQ */
@@ -1044,14 +1218,14 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Hero video subtle ken-burns */
+  /* Subtle ken-burns, anchored on the dancer so the crop stays on him */
   .hero .hero-video {
-    animation: kenburns 32s ease-in-out infinite alternate;
-    transform-origin: 50% 45%;
+    animation: kenburns 36s ease-in-out infinite alternate;
+    transform-origin: 50% 68%;
   }
   @keyframes kenburns {
-    from { transform: scale(1.02); }
-    to { transform: scale(1.12); }
+    from { transform: scale(1); }
+    to { transform: scale(1.06); }
   }
 
   /* Drinks image hover */
@@ -1219,7 +1393,7 @@
   <div class="bottom-meta">
     <div>13 Saturdays / 26 Sittings</div>
     <div>↓ Scroll</div>
-    <div>NT$ 2,000</div>
+    <div>NT$ 2,000 · 一夜</div>
   </div>
 </header>
 
@@ -1293,7 +1467,8 @@
 </section>
 
 <!-- MENU -->
-<section id="menu">
+<section id="menu" class="has-mural">
+  <div class="mural-bg" style="background-image:url('img/mural-fishing.jpg')" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
       <span class="num">02</span>
@@ -1303,7 +1478,7 @@
       <h2 class="display-h">Five <span class="accent">small</span><br>movements.</h2>
       <div class="display-h-zh" lang="zh-Hant">五道</div>
       <p class="lede">
-        四道菜、一杯調飲，分四段火舞之間慢慢上。一道一道，不趕。Set menu，NT$2,000／人。
+        四道菜、一杯調飲，穿插在四段火舞之間，一道一道，不趕。一個晚上：四段火舞、四道菜、一百一十分鐘——NT$2,000／人。
       </p>
     </div>
   </div>
@@ -1424,7 +1599,8 @@
 </section>
 
 <!-- FLOW -->
-<section id="flow">
+<section id="flow" class="has-mural">
+  <div class="mural-bg" style="background-image:url('img/mural-share.jpg')" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
       <span class="num">05</span>
@@ -1470,7 +1646,8 @@
       <h2 class="display-h">Thirteen <span class="accent">saturdays</span>.</h2>
       <div class="display-h-zh" lang="zh-Hant">十三個週六</div>
       <p class="lede">
-        June through August. Each evening: 18:00 Sunset + 20:00 Night.
+        June through August · Sunset 18:00 ＋ Night 20:00。<br>
+        十三個週六、二十六個夜晚——Sunset 與 Night，連天色都不一樣。
       </p>
 
       <div class="sched-group">
@@ -1480,7 +1657,6 @@
             <div class="d">6/06</div>
             <div class="month-tag">Jun · Sat</div>
             <div class="sess">Sunset 18:00<br>Night 20:00</div>
-            <span class="tag">NT$1,500 · 75%</span>
           </div>
         </div>
       </div>
@@ -1516,6 +1692,7 @@
       </div>
 
       <div class="reserve">
+        <p class="lede" style="margin-bottom:40px">每一場，是一個完整的夜晚——四段火舞、四道菜、一百一十分鐘。一晚只開兩場，一場最多十五人。</p>
         <div class="reserve-row">
           <div class="reserve-item">
             <div class="rk">每場名額</div>
@@ -1524,10 +1701,6 @@
           <div class="reserve-item">
             <div class="rk">正式場</div>
             <div class="rv">NT$2,000<span class="rsub">／人</span></div>
-          </div>
-          <div class="reserve-item">
-            <div class="rk">內測場 6/6</div>
-            <div class="rv">NT$1,500<span class="rsub">限熟客邀請</span></div>
           </div>
           <div class="reserve-item">
             <div class="rk">預購截止</div>
@@ -1543,8 +1716,96 @@
       </div>
 
       <div class="cta-block">
-        <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="cta">Reserve / 預購</a>
-        <div class="cta-note">8–15 seats per sitting · cutoff 22:00 day before</div>
+        <button type="button" class="cta" id="openBook">預購 · Reserve</button>
+        <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，直接填預購表。</p>
+      </div>
+
+      <div class="modal-overlay" id="bookModal" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-modal="true" aria-label="預購表">
+          <button type="button" class="modal-close" aria-label="關閉預購表">✕</button>
+          <div class="modal-fire" aria-hidden="true"></div>
+          <h3 class="modal-title">預購 · Reserve</h3>
+          <form class="book" id="book" novalidate>
+          <div class="book-grid">
+            <label class="bf">
+              <span class="bf-k">場次</span>
+              <select class="bf-in" id="bfDate">
+                <option value="">選日期</option>
+                <option>6/13（六）</option>
+                <option>6/20（六）</option>
+                <option>6/27（六）</option>
+                <option>7/04（六）</option>
+                <option>7/11（六）</option>
+                <option>7/18（六）</option>
+                <option>7/25（六）</option>
+                <option>8/01（六）</option>
+                <option>8/08（六）</option>
+                <option>8/15（六）</option>
+                <option>8/22（六）</option>
+                <option>8/29（六）</option>
+              </select>
+            </label>
+            <label class="bf">
+              <span class="bf-k">時段</span>
+              <select class="bf-in" id="bfTime">
+                <option value="">選時段</option>
+                <option>Sunset · 18:00</option>
+                <option>Night · 20:00</option>
+              </select>
+            </label>
+            <label class="bf">
+              <span class="bf-k">人數</span>
+              <select class="bf-in" id="bfPax">
+                <option value="">幾位</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+                <option>6</option>
+                <option>7</option>
+                <option>8</option>
+                <option>9</option>
+                <option>10</option>
+              </select>
+            </label>
+            <label class="bf">
+              <span class="bf-k">稱呼</span>
+              <input type="text" class="bf-in" id="bfName" placeholder="怎麼稱呼你" autocomplete="name">
+            </label>
+            <label class="bf bf-wide">
+              <span class="bf-k">電話</span>
+              <input type="tel" class="bf-in" id="bfTel" placeholder="0900 000 000" autocomplete="tel">
+            </label>
+          </div>
+
+          <div class="bf bf-wide" style="margin-top:18px">
+            <span class="bf-k">飲食限制 · 可複選，沒有就留空</span>
+            <div class="bf-chips">
+              <label class="chip"><input type="checkbox" value="不吃鴨"><span>不吃鴨</span></label>
+              <label class="chip"><input type="checkbox" value="海鮮過敏"><span>海鮮過敏</span></label>
+              <label class="chip"><input type="checkbox" value="蛋奶過敏"><span>蛋奶過敏</span></label>
+              <label class="chip"><input type="checkbox" value="素食"><span>素食</span></label>
+              <label class="chip"><input type="checkbox" value="不吃辣"><span>不吃辣</span></label>
+            </div>
+          </div>
+
+          <div class="bf-terms">
+            <div class="bf-terms-k">預購前請知道</div>
+            <ul>
+              <li><strong>抵達</strong>Sunset 場 17:30–17:50、Night 場 19:50–20:05；遲到 15 分鐘以上視為棄權。</li>
+              <li><strong>天氣</strong>陸警／海警全額退費或免費換期；火舞需要乾燥天氣，表演當天遇雨（含小雨）、或風勢大到無法安全表演（由表演者現場判斷），當日整場免費改期。澎湖常有海風，一般風勢照常。</li>
+              <li><strong>退費</strong>場次前 5 天以上全額退、2–5 天退 50%、不足 2 天不退可換期；颱風／警報不受此限。</li>
+              <li><strong>付款</strong>送出後我們在 IG 回覆確認名額與付款方式；預購截止場次前一天 22:00。</li>
+            </ul>
+            <label class="bf-agree"><input type="checkbox" id="bfAgree"><span>我已閱讀並同意以上注意事項</span></label>
+          </div>
+
+          <button type="button" class="cta" id="bfGo">送出預購 → IG</button>
+          <div class="bf-hint" id="bfHint" role="status" aria-live="polite"></div>
+          <div class="bf-note">送出後內容會自動複製，IG 私訊貼上即可。每場 8–15 位，預購截止場次前一天 22:00。</div>
+        </form>
+        </div>
       </div>
     </div>
   </div>
@@ -1565,7 +1826,7 @@
         <div class="q"><span class="num">07.1</span>天氣</div>
         <div class="a">
           中央氣象署陸警／海警 → 全額退費或免費換期。<br>
-          表演當天降雨：小雨照常；中雨以上延後 30 分鐘觀察；19:30 仍持續，火舞當日取消（餐照出，可選下一場補火舞，不退費）。
+          火舞需要乾燥的天氣才能進行：表演當天只要下雨（含小雨），或風勢大到表演者判斷無法安全甩火，當日整場免費改期到往後任一場（餐與火舞一起順延，不拆開）。澎湖常有海風，一般風勢照常表演——是否取消由表演者現場判斷。
         </div>
       </div>
 
@@ -1873,6 +2134,90 @@
       heroVideo.addEventListener('play', stop);
     }
   }
+
+  // —— Reserve form: validate → compose → copy → open IG ——
+  (function(){
+    const go = document.getElementById('bfGo');
+    if (!go) return;
+    const hint = document.getElementById('bfHint');
+    const show = (m) => { hint.textContent = m; };
+    async function copyText(t){
+      try { await navigator.clipboard.writeText(t); return true; }
+      catch (e) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = t; ta.setAttribute('readonly','');
+          ta.style.position = 'fixed'; ta.style.opacity = '0';
+          document.body.appendChild(ta); ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          return ok;
+        } catch (e2) { return false; }
+      }
+    }
+    go.addEventListener('click', async () => {
+      const v = (id) => (document.getElementById(id).value || '').trim();
+      const date = v('bfDate'), time = v('bfTime'), pax = v('bfPax'), name = v('bfName'), tel = v('bfTel');
+      const diet = Array.from(document.querySelectorAll('.bf-chips input:checked')).map(c => c.value);
+      const agree = document.getElementById('bfAgree').checked;
+      if (!date || !time || !pax || !name || !tel) { show('請把場次、時段、人數、稱呼、電話都填好'); return; }
+      if (!agree) { show('送出前，請先勾選「已閱讀並同意注意事項」'); return; }
+      const msg =
+        '【夏夜火舞・預購】\n' +
+        '場次：' + date + '　' + time + '\n' +
+        '人數：' + pax + ' 位\n' +
+        '飲食限制：' + (diet.length ? diet.join('、') : '無') + '\n' +
+        '稱呼：' + name + '\n' +
+        '電話：' + tel + '\n' +
+        '（已閱讀並同意預購注意事項）';
+      const ok = await copyText(msg);
+      show(ok ? '已複製預購內容 ✓ 正在開 IG——私訊貼上送出即可' : '已開 IG，請把以下內容私訊給我們：\n' + msg);
+      window.open('https://www.instagram.com/container_no.7_penghu/', '_blank', 'noopener');
+    });
+  })();
+
+  // —— Booking modal: open from slots & button, fire burn-in ——
+  (function(){
+    const modal = document.getElementById('bookModal');
+    if (!modal) return;
+    const closeBtn = modal.querySelector('.modal-close');
+    const sel  = document.getElementById('bfDate');
+    const time = document.getElementById('bfTime');
+    let lastFocus = null;
+    function open(date){
+      lastFocus = document.activeElement;
+      if (date && sel) {
+        const opt = Array.from(sel.options).find(o => o.value === date);
+        if (opt) { sel.value = opt.value; sel.classList.remove('flash'); void sel.offsetWidth; sel.classList.add('flash'); }
+      }
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => { try { (date && time ? time : closeBtn).focus({ preventScroll: true }); } catch (e) {} }, 520);
+    }
+    function close(){
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
+    }
+    closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+    document.querySelectorAll('#schedule .slot:not(.beta)').forEach(slot => {
+      const dEl = slot.querySelector('.d');
+      if (!dEl) return;
+      const date = dEl.textContent.trim() + '（六）';
+      slot.setAttribute('role', 'button');
+      slot.setAttribute('tabindex', '0');
+      slot.setAttribute('aria-label', dEl.textContent.trim() + '（六）預購');
+      const go = () => open(date);
+      slot.addEventListener('click', go);
+      slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+    });
+    const ob = document.getElementById('openBook');
+    if (ob) ob.addEventListener('click', () => open());
+  })();
 </script>
 
 </body>
