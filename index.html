@@ -1000,35 +1000,39 @@
     letter-spacing: 0.02em; color: var(--paper-mute); text-align: center; text-wrap: pretty;
   }
 
-  /* —— 浮動「馬上預訂」按鈕 —— */
-  .fab-book {
+  /* —— 浮動早鳥優惠 + 馬上預訂卡（右下角）—— */
+  .fab-promo {
     position: fixed;
-    left: 50%;
+    right: max(16px, env(safe-area-inset-right, 0px));
+    left: auto;
     bottom: max(18px, env(safe-area-inset-bottom, 0px));
-    transform: translateX(-50%) translateY(14px);
     z-index: 90;
-    display: inline-flex; align-items: center; justify-content: center;
-    background: var(--fire); color: #0a0a0a;
-    font-family: var(--sans); font-weight: 600; font-size: 15px; letter-spacing: 0.04em;
-    padding: 15px 30px; border-radius: 999px;
-    text-decoration: none; cursor: pointer; white-space: nowrap;
-    min-height: 48px;
-    box-shadow: 0 10px 34px rgba(209,72,32,0.42), 0 2px 10px rgba(0,0,0,0.5);
+    width: 212px;
+    background: rgba(14,14,14,0.96);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 13px 15px 15px;
+    box-shadow: 0 16px 44px rgba(0,0,0,0.6), 0 0 0 1px rgba(209,72,32,0.18);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-family: var(--sans);
     opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear .32s, filter .2s ease;
+    transform: translateY(16px);
+    transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear .32s;
     -webkit-tap-highlight-color: transparent;
   }
-  .fab-book.show {
-    opacity: 1; visibility: visible; pointer-events: auto;
-    transform: translateX(-50%) translateY(0);
-    transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s, filter .2s ease;
-  }
-  .fab-book:hover { filter: brightness(1.08); }
-  .fab-book:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
-  body.menu-open .fab-book { opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(-50%) translateY(14px); transition: opacity .2s ease, visibility 0s linear .2s; }
-  @media (prefers-reduced-motion: reduce) {
-    .fab-book, .fab-book.show { transition: opacity .2s linear, visibility 0s; }
-  }
+  .fab-promo.show { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s; }
+  body.menu-open .fab-promo { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(16px); transition: opacity .2s ease, visibility 0s linear .2s; }
+  .fab-promo .fp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+  .fab-promo .fp-tag { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fire); font-weight: 700; }
+  .fab-promo .fp-count { font-size: 13.5px; font-variant-numeric: tabular-nums; color: var(--paper); font-weight: 600; letter-spacing: 0.02em; }
+  .fab-promo .fp-price { margin-bottom: 11px; line-height: 1.25; }
+  .fab-promo .fp-price b { color: var(--paper); font-size: 22px; font-weight: 700; white-space: nowrap; }
+  .fab-promo .fp-price .fp-per { color: var(--paper-mute); font-size: 12px; margin-left: 5px; }
+  .fab-promo .fp-price s { display: block; color: var(--paper-mute); font-size: 12px; margin-top: 1px; }
+  .fab-promo .fp-btn { display: block; text-align: center; background: var(--fire); color: #0a0a0a; font-weight: 700; font-size: 14px; letter-spacing: 0.04em; padding: 11px; border-radius: 8px; text-decoration: none; min-height: 44px; line-height: 22px; transition: filter .2s ease; }
+  .fab-promo .fp-btn:hover { filter: brightness(1.08); }
+  .fab-promo .fp-btn:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .fab-promo, .fab-promo.show { transition: opacity .2s linear, visibility 0s; } }
 
   /* —— Booking modal + fire burn-in —— */
   .modal-overlay {
@@ -1988,7 +1992,11 @@
   </div>
 </footer>
 
-<a href="book.html" class="fab-book" id="fabBook">馬上預訂</a>
+<div class="fab-promo" id="fabBook" aria-label="早鳥優惠倒數與預訂">
+  <div class="fp-top"><span class="fp-tag">早鳥優惠</span><span class="fp-count" id="epCount">24:00:00</span></div>
+  <div class="fp-price"><b>NT$ 2,000</b><span class="fp-per">／人</span><s>原價 NT$ 2,500</s></div>
+  <a class="fp-btn" href="book.html">馬上預訂</a>
+</div>
 
 <script>
   // fade-in on scroll, with staggered entrance for grid children
@@ -2135,6 +2143,28 @@
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
     update();
+  })();
+
+  // —— 早鳥優惠倒數（每位訪客 24 小時，存 localStorage、過期自動續期）——
+  (function(){
+    const el = document.getElementById('epCount');
+    if (!el) return;
+    const KEY = 'c7_earlybird_until', DUR = 24 * 60 * 60 * 1000;
+    function deadline(){
+      let d = parseInt(localStorage.getItem(KEY) || '0', 10);
+      if (!d || d <= Date.now()) { d = Date.now() + DUR; try { localStorage.setItem(KEY, String(d)); } catch (e) {} }
+      return d;
+    }
+    let until = deadline();
+    const p = n => (n < 10 ? '0' : '') + n;
+    function tick(){
+      let ms = until - Date.now();
+      if (ms <= 0) { until = deadline(); ms = until - Date.now(); }
+      const s = Math.floor(ms / 1000);
+      el.textContent = p(Math.floor(s / 3600)) + ':' + p(Math.floor((s % 3600) / 60)) + ':' + p(s % 60);
+    }
+    tick();
+    setInterval(tick, 1000);
   })();
 
   // Custom cursor (only on devices with fine pointer) — 1:1 tracking, GPU
