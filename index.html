@@ -1000,6 +1000,36 @@
     letter-spacing: 0.02em; color: var(--paper-mute); text-align: center; text-wrap: pretty;
   }
 
+  /* —— 浮動「馬上預訂」按鈕 —— */
+  .fab-book {
+    position: fixed;
+    left: 50%;
+    bottom: max(18px, env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%) translateY(14px);
+    z-index: 90;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--fire); color: #0a0a0a;
+    font-family: var(--sans); font-weight: 600; font-size: 15px; letter-spacing: 0.04em;
+    padding: 15px 30px; border-radius: 999px;
+    text-decoration: none; cursor: pointer; white-space: nowrap;
+    min-height: 48px;
+    box-shadow: 0 10px 34px rgba(209,72,32,0.42), 0 2px 10px rgba(0,0,0,0.5);
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear .32s, filter .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fab-book.show {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+    transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s, filter .2s ease;
+  }
+  .fab-book:hover { filter: brightness(1.08); }
+  .fab-book:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
+  body.menu-open .fab-book { opacity: 0; visibility: hidden; pointer-events: none; transform: translateX(-50%) translateY(14px); transition: opacity .2s ease, visibility 0s linear .2s; }
+  @media (prefers-reduced-motion: reduce) {
+    .fab-book, .fab-book.show { transition: opacity .2s linear, visibility 0s; }
+  }
+
   /* —— Booking modal + fire burn-in —— */
   .modal-overlay {
     position: fixed; inset: 0; z-index: 9999;
@@ -1958,6 +1988,8 @@
   </div>
 </footer>
 
+<a href="book.html" class="fab-book" id="fabBook">馬上預訂</a>
+
 <script>
   // fade-in on scroll, with staggered entrance for grid children
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2073,11 +2105,13 @@
       navLinks.classList.remove('open');
       burger.classList.remove('open');
       burger.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('menu-open');
     }
     burger.addEventListener('click', () => {
       const open = navLinks.classList.toggle('open');
       burger.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', String(open));
+      document.body.classList.toggle('menu-open', open);
     });
     navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
     // Esc closes the menu and returns focus to the burger
@@ -2088,6 +2122,20 @@
       }
     });
   }
+
+  // —— 浮動「馬上預訂」按鈕：捲動過 hero 後出現 ——
+  (function(){
+    const fab = document.getElementById('fabBook');
+    if (!fab) return;
+    let shown = false;
+    function update(){
+      const past = window.scrollY > window.innerHeight * 0.5;
+      if (past !== shown) { shown = past; fab.classList.toggle('show', past); }
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+  })();
 
   // Custom cursor (only on devices with fine pointer) — 1:1 tracking, GPU
   const supportsCustom = matchMedia('(hover: hover) and (pointer: fine)').matches
