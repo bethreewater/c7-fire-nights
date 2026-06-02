@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>夏夜火舞 · 訂位後台</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============================================================
+       A. 登入閘（Firebase Auth — Email/Password）
+       ============================================================ -->
+  <section id="login" class="login" aria-label="後台登入">
+    <div class="pg-kicker">後台 / ADMIN</div>
+    <h1 class="pg-h1">登入</h1>
+    <form id="loginForm" novalidate>
+      <div class="fld" id="emailFld">
+        <label for="email">帳號（e-mail）</label>
+        <input type="email" id="email" autocomplete="username" autocapitalize="off" spellcheck="false" inputmode="email" placeholder="you@example.com">
+      </div>
+      <div class="fld" id="pwFld">
+        <label for="pw">密碼</label>
+        <input type="password" id="pw" autocomplete="current-password" autocapitalize="off" spellcheck="false">
+        <div class="err" id="loginErr">帳號或密碼不對</div>
+      </div>
+      <button type="submit" class="btn btn-fire" id="loginBtn">進入</button>
+    </form>
+  </section>
+
+  <!-- ============================================================
+       B. 後台主體（登入後顯示）
+       ============================================================ -->
+  <main id="admin" hidden>
+    <header class="site-head">
+      <div class="brand">CONTAINER NO.7 · 訂位後台</div>
+      <a href="#" class="back" id="logout">登出</a>
+    </header>
+
+    <!-- 01 名額總覽 -->
+    <div class="sec-h"><span class="idx">01</span><h2>名額總覽</h2><span class="en">Capacity</span></div>
+    <div id="caps"><!-- caps 或 empty 由 JS 注入 --></div>
+
+    <!-- 02 訂位管理 -->
+    <div class="sec-h"><span class="idx">02</span><h2>訂位管理</h2><span class="en">Bookings</span></div>
+    <div class="seg" id="filters" role="tablist" aria-label="訂位篩選">
+      <button type="button" data-filter="all" class="on" aria-pressed="true">全部</button>
+      <button type="button" data-filter="pending" aria-pressed="false">待匯款</button>
+      <button type="button" data-filter="confirmed" aria-pressed="false">已確認</button>
+      <button type="button" data-filter="ended" aria-pressed="false">已過期</button>
+    </div>
+    <div id="list"><!-- 表格或 empty 由 JS 注入 --></div>
+  </main>
+
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Firebase（compat 版，提供全域 firebase 物件給 booking-store.js 使用） -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="booking-store.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ----------------------------------------------------------------
+     小工具
+  ---------------------------------------------------------------- */
+  var $ = function (sel, root) { return (root || document).querySelector(sel); };
+
+  // 把使用者輸入安全地放進 innerHTML（避免姓名/電話含特殊字元破版）
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+  // createAt（毫秒）→ "M/D HH:MM"
+  function fmtWhen(ms) {
+    var d = new Date(ms);
+    return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+  }
+
+  // sessionId "6/20|night" → "6/20 Night"（用 sessions() 取正式 label）
+  var SESSION_LABEL = {};
+  function buildSessionLabels() {
+    SESSION_LABEL = {};
+    C7.sessions().forEach(function (s) { SESSION_LABEL[s.id] = s.date + ' ' + s.label; });
+  }
+  function sessionLabel(id) { return SESSION_LABEL[id] || id; }
+
+  var STATUS = {
+    pending:   { cls: 'pend',      txt: '待匯款' },
+    confirmed: { cls: 'conf',      txt: '已確認' },
+    expired:   { cls: 'exp',       txt: '已過期' },
+    cancelled: { cls: 'cancelled', txt: '已取消' }
+  };
+
+  var toastTimer = null;
+  function toast(msg) {
+    var el = $('#toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+  }
+
+  /* ================================================================
+     A. 登入閘（Firebase Auth — Email/Password）
+  ================================================================ */
+  function showAdmin() {
+    $('#login').hidden = true;
+    $('#admin').hidden = false;
+    startAdmin();
+  }
+  function showLogin() {
+    $('#admin').hidden = true;
+    $('#login').hidden = false;
+    $('#pwFld').classList.remove('invalid');
+  }
+
+  $('#loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('#email').value.trim();
+    var pw = $('#pw').value;
+    var fld = $('#pwFld');
+    var btn = $('#loginBtn');
+    fld.classList.remove('invalid');
+    btn.disabled = true;
+    C7.signIn(email, pw).then(function () {
+      // 登入成功 → 下方 C7.onAuth 會切到後台
+    }).catch(function () {
+      fld.classList.add('invalid');
+      $('#pw').focus(); $('#pw').select();
+    }).then(function () { btn.disabled = false; });
+  });
+
+  $('#logout').addEventListener('click', function (e) {
+    e.preventDefault();
+    C7.signOut();   // onAuth 會切回登入畫面
+  });
+
+  // 登入狀態變化（含重新整理自動恢復）→ 切換畫面
+  C7.onAuth(function (user) {
+    if (user && user.email === 'mryomryo@gmail.com') showAdmin();
+    else showLogin();
+  });
+
+  /* ================================================================
+     B. 後台渲染
+  ================================================================ */
+
+  // --- 01 名額總覽 -------------------------------------------------
+  // 只顯示有任何 confirmed 或 pending 的場次，以免 24 格全空。
+  function renderCaps() {
+    var host = $('#caps');
+    var rows = [];
+    C7.sessions().forEach(function (s) {
+      var c = C7.capacity(s.id);
+      if (c.confirmed + c.pending <= 0) return;     // 跳過完全沒人的場次
+
+      var pct = Math.min(100, Math.round((c.confirmed + c.pending) / c.cap * 100));
+      var metaLeft = '上限 ' + c.cap + ' · 確認 ' + c.confirmed +
+                     (c.pending > 0 ? ' · 保留 ' + c.pending : '');
+      var right = c.full
+        ? '<span class="left full">已滿</span>'
+        : '<span class="left">剩 ' + c.remaining + '</span>';
+
+      rows.push(
+        '<div class="cap">' +
+          '<div class="ct">' + esc(s.date + ' ' + s.label) + '</div>' +
+          '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
+          '<div class="meta"><span>' + metaLeft + '</span>' + right + '</div>' +
+        '</div>'
+      );
+    });
+
+    host.innerHTML = rows.length
+      ? '<div class="caps">' + rows.join('') + '</div>'
+      : '<div class="empty">目前沒有訂位</div>';
+  }
+
+  // --- 02 訂位管理 -------------------------------------------------
+  var filter = 'all';
+
+  // 篩選分桶：已取消與已過期同屬「終結」狀態，歸到「已過期」分頁。
+  function passesFilter(b) {
+    if (filter === 'all')       return true;
+    if (filter === 'pending')   return b.status === 'pending';
+    if (filter === 'confirmed') return b.status === 'confirmed';
+    if (filter === 'ended')     return b.status === 'expired' || b.status === 'cancelled';
+    return true;
+  }
+
+  function sessionsCell(b) {
+    var labels = b.sessionIds.map(function (id) { return esc(sessionLabel(id)); });
+    var html = '<b>' + labels.join(' ＋ ') + '</b>';
+    if (b.sessionIds.length > 1) html += ' <span class="phone">· 兩場</span>';
+    return html;
+  }
+
+  // 倒數欄（依狀態決定內容；pending 的數值由 tick() 每秒刷新）
+  function countdownCell(b) {
+    if (b.status === 'pending') {
+      var left = b.holdUntil - Date.now();
+      return '<span class="cd" data-hold="' + b.holdUntil + '">' + C7.fmtCountdown(left) + '</span>';
+    }
+    if (b.status === 'expired')   return '<span class="cd none">已釋放</span>';
+    return '<span class="cd none">—</span>';            // confirmed / cancelled
+  }
+
+  function actionCell(b) {
+    if (b.status === 'pending') {
+      return '<div class="act">' +
+               '<button type="button" class="btn btn-sm btn-confirm" data-act="confirm" data-id="' + b.id + '">確認到帳</button>' +
+               '<button type="button" class="btn btn-sm btn-ghost" data-act="cancel" data-id="' + b.id + '">取消</button>' +
+             '</div>';
+    }
+    if (b.status === 'confirmed') {
+      return '<div class="act">' +
+               '<button type="button" class="btn btn-sm btn-ghost" data-act="cancel" data-id="' + b.id + '">取消</button>' +
+             '</div>';
+    }
+    if (b.status === 'expired')  return '<div class="act"><span class="done">名額已放回</span></div>';
+    return '<div class="act"><span class="done">已取消</span></div>';   // cancelled
+  }
+
+  function rowHtml(b) {
+    var st = STATUS[b.status] || STATUS.expired;
+    var five = b.last5
+      ? '<span class="five">' + esc(b.last5) + '</span>'
+      : '<span class="five" style="color:var(--mute)">—</span>';
+
+    return '<tr>' +
+      '<td><span class="when">' + fmtWhen(b.createdAt) + '</span></td>' +
+      '<td>' + sessionsCell(b) + '</td>' +
+      '<td><span class="num">' + esc(b.party) + '</span></td>' +
+      '<td><b>' + esc(b.name || '—') + '</b><br><span class="phone">' + esc(b.phone) + '</span></td>' +
+      '<td>' + five + '</td>' +
+      '<td><span class="st ' + st.cls + '"><span class="d"></span>' + st.txt + '</span></td>' +
+      '<td>' + countdownCell(b) + '</td>' +
+      '<td>' + actionCell(b) + '</td>' +
+    '</tr>';
+  }
+
+  function renderList() {
+    var host = $('#list');
+    var rows = C7.bookings().filter(passesFilter);
+
+    if (!rows.length) {
+      host.innerHTML = '<div class="empty">這個篩選下沒有訂位</div>';
+      return;
+    }
+
+    host.innerHTML =
+      '<div class="tbl-wrap"><table>' +
+        '<thead><tr>' +
+          '<th>送出</th><th>場次</th><th>人</th><th>稱呼 · 電話</th>' +
+          '<th>後五碼</th><th>狀態</th><th>倒數</th><th>操作</th>' +
+        '</tr></thead>' +
+        '<tbody>' + rows.map(rowHtml).join('') + '</tbody>' +
+      '</table></div>';
+  }
+
+  function renderAll() {
+    buildSessionLabels();
+    renderCaps();
+    renderList();
+  }
+
+  /* --- 操作（事件委派）------------------------------------------- */
+  $('#list').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    var id = btn.getAttribute('data-id');
+
+    if (btn.getAttribute('data-act') === 'confirm') {
+      btn.disabled = true;
+      C7.confirm(id).then(function () {
+        toast('已確認 · 名額已算入');
+      }).catch(function (err) {
+        toast('確認失敗：' + (err && err.message ? err.message : '請重試'));
+        btn.disabled = false;
+      });
+    } else if (btn.getAttribute('data-act') === 'cancel') {
+      // 破壞性動作：二次確認
+      if (window.confirm('確定取消這筆訂位？名額會放回。')) {
+        btn.disabled = true;
+        C7.cancel(id).then(function () {
+          toast('已取消');
+        }).catch(function (err) {
+          toast('取消失敗：' + (err && err.message ? err.message : '請重試'));
+          btn.disabled = false;
+        });
+      }
+    }
+  });
+
+  /* --- 篩選列 ----------------------------------------------------- */
+  $('#filters').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-filter]');
+    if (!btn) return;
+    filter = btn.getAttribute('data-filter');
+    Array.prototype.forEach.call(this.querySelectorAll('button'), function (b) {
+      var on = b === btn;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    renderList();
+  });
+
+  /* --- 倒數每秒刷新（只改 pending 列的文字，不整表重繪）---------- */
+  function tick() {
+    var now = Date.now();
+    Array.prototype.forEach.call(document.querySelectorAll('.cd[data-hold]'), function (el) {
+      el.textContent = C7.fmtCountdown(Number(el.getAttribute('data-hold')) - now);
+    });
+  }
+
+  /* ================================================================
+     啟動後台（登入後才呼叫一次）
+  ================================================================ */
+  var started = false;
+  function startAdmin() {
+    if (started) { renderAll(); return; }
+    started = true;
+
+    C7.releaseExpired();        // 先把逾時 pending 落地、釋放名額，再首次渲染
+    renderAll();
+
+    C7.subscribe(renderAll);    // 任何資料變動 → 全表重繪
+    setInterval(tick, 1000);    // 倒數每秒更新（歸零的列會在下次 releaseExpired 重繪時轉「已過期」）
+    setInterval(function () { C7.releaseExpired(); }, 30000);   // 每 30 秒釋放逾時名額
+  }
+
+  /* --- 初始畫面由上方 C7.onAuth 決定（Firebase 會記住登入狀態）--- */
+
+})();
+</script>
+</body>
+</html>

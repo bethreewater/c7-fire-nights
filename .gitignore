@@ -6,3 +6,12 @@
 
 # Internal tools — never commit
 internal/
+
+# Node / Firebase
+node_modules/
+functions/node_modules/
+firebase-debug.log
+*.log
+.firebase/
+.runtimeconfig.json
+functions/.env

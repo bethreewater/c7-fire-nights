@@ -1,0 +1,54 @@
+rules_version = '2';
+
+// 夏夜火舞 · 訂位系統 Firestore 安全規則
+// 原則：客人能訂位、能看到「剩幾位」，但看不到別人的姓名電話；
+//       只有後台（管理員帳號）登入後讀得到完整訂位。
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 後台 = 指定的管理員 e-mail（只有這個帳號算 admin）。
+    // 即使有人自行註冊 Auth 帳號，email 不符也讀不到任何個資。
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'mryomryo@gmail.com';
+    }
+
+    // JS SDK 寫入的數字可能是 int 或 float（double），兩者都接受。
+    function isNum(v) { return v is int || v is float; }
+
+    // 場次：公開可讀（只有名額數字、無個資）；僅後台可寫
+    match /sessions/{sid} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 保留（hold）：放在 sessions/{sid}/holds/{id}，但前台用 collectionGroup 查詢，
+    // 需用遞迴萬用比對才涵蓋 collection group。欄位只允許座位數/到期/連結 id，無個資。
+    match /{path=**}/holds/{holdId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['seats', 'until', 'bookingId', 'createdAt'])
+                     && isNum(request.resource.data.seats)
+                     && request.resource.data.seats >= 1
+                     && request.resource.data.seats <= 15
+                     && isNum(request.resource.data.until);
+      allow update, delete: if isAdmin();
+    }
+
+    // 訂位：含個資。只有後台可讀／改／刪；任何人可送出一筆 pending（欄位受限）
+    match /bookings/{bid} {
+      allow read, update, delete: if isAdmin();
+      allow create: if request.resource.data.status == 'pending'
+                     && isNum(request.resource.data.party)
+                     && request.resource.data.party >= 1
+                     && request.resource.data.party <= 15
+                     && request.resource.data.name is string
+                     && request.resource.data.name.size() > 0
+                     && request.resource.data.name.size() <= 40
+                     && request.resource.data.phone is string
+                     && request.resource.data.phone.size() >= 6
+                     && request.resource.data.phone.size() <= 20
+                     && request.resource.data.sessionIds is list
+                     && isNum(request.resource.data.holdUntil);
+    }
+  }
+}

@@ -1701,7 +1701,7 @@
           </div>
         </div>
         <p class="reserve-how">
-          預購方式：IG 私訊
+          線上預購：按下方按鈕即時選位、看剩餘名額。也可 IG 私訊
           <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="inline-link">@container_no.7_penghu&nbsp;↗</a>
           或電話
           <a href="tel:+886963059889" class="inline-link">0963-059-889</a>。
@@ -1710,7 +1710,7 @@
 
       <div class="cta-block">
         <button type="button" class="cta" id="openBook">預購 · Reserve</button>
-        <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，直接填預購表。</p>
+        <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，線上即時選位預購。</p>
       </div>
 
       <div class="modal-overlay" id="bookModal" aria-hidden="true">
@@ -2169,49 +2169,19 @@
     });
   })();
 
-  // —— Booking modal: open from slots & button, fire burn-in ——
+  // —— 場次卡 / 預購按鈕 → 線上訂位頁（book.html）——
   (function(){
-    const modal = document.getElementById('bookModal');
-    if (!modal) return;
-    // move modal to <body> so position:fixed isn't trapped by #schedule.reveal's transform
-    if (modal.parentElement !== document.body) document.body.appendChild(modal);
-    const closeBtn = modal.querySelector('.modal-close');
-    const sel  = document.getElementById('bfDate');
-    const time = document.getElementById('bfTime');
-    let lastFocus = null;
-    function open(date){
-      lastFocus = document.activeElement;
-      if (date && sel) {
-        const opt = Array.from(sel.options).find(o => o.value === date);
-        if (opt) { sel.value = opt.value; sel.classList.remove('flash'); void sel.offsetWidth; sel.classList.add('flash'); }
-      }
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      setTimeout(() => { try { (date && time ? time : closeBtn).focus({ preventScroll: true }); } catch (e) {} }, 520);
-    }
-    function close(){
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
-      if (lastFocus) try { lastFocus.focus({ preventScroll: true }); } catch (e) {}
-    }
-    closeBtn.addEventListener('click', close);
-    modal.addEventListener('click', e => { if (e.target === modal) close(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+    function goBook(){ window.location.href = 'book.html'; }
     document.querySelectorAll('#schedule .slot:not(.beta)').forEach(slot => {
       const dEl = slot.querySelector('.d');
-      if (!dEl) return;
-      const date = dEl.textContent.trim() + '（六）';
       slot.setAttribute('role', 'button');
       slot.setAttribute('tabindex', '0');
-      slot.setAttribute('aria-label', dEl.textContent.trim() + '（六）預購');
-      const go = () => open(date);
-      slot.addEventListener('click', go);
-      slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+      slot.setAttribute('aria-label', (dEl ? dEl.textContent.trim() + '（六）' : '') + '預購');
+      slot.addEventListener('click', goBook);
+      slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goBook(); } });
     });
     const ob = document.getElementById('openBook');
-    if (ob) ob.addEventListener('click', () => open());
+    if (ob) ob.addEventListener('click', goBook);
   })();
 </script>
 

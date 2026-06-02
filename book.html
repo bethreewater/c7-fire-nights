@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>線上訂位 · 夏夜火舞 · CONTAINER NO.7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="booking.css">
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 1. 頁首 -->
+  <header class="site-head">
+    <span class="brand">CONTAINER NO.7 · 夏夜火舞</span>
+    <span class="back"><a href="index.html">← 回首頁</a></span>
+  </header>
+
+  <!-- 3. 頁首大標 -->
+  <p class="pg-kicker">線上訂位 / RESERVE</p>
+  <h1 class="pg-h1">訂位</h1>
+  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 24 小時。<b>NT$ 2,000</b>／人，一個晚上 <b>110 分鐘</b>、<b>四段火舞</b>、<b>四道菜</b>。</p>
+
+  <!-- 4. Step 01 選場次 -->
+  <section id="step1">
+    <div class="sec-h"><span class="idx">01</span><h2>選場次</h2><span class="en">PICK A NIGHT</span></div>
+    <div class="sessions" id="sessions"></div>
+  </section>
+
+  <!-- 5. Step 02 你的資料 -->
+  <section id="step2">
+    <div class="sec-h"><span class="idx">02</span><h2>你的資料</h2><span class="en">YOUR DETAILS</span></div>
+    <form class="form" id="form" novalidate>
+
+      <!-- 已選場次（唯讀） -->
+      <div class="fld" id="fldPicked">
+        <label>場次</label>
+        <div id="pickedView" class="help">請先在上方選擇場次</div>
+      </div>
+
+      <!-- 加訂另一場 -->
+      <div class="fld" id="fldAddon" hidden>
+        <label>加訂另一場</label>
+        <label class="addon" id="addon">
+          <input type="checkbox" id="addonChk">
+          <span class="lab" id="addonLab"></span>
+          <span style="display:flex;align-items:center;gap:12px;">
+            <span class="meta" id="addonMeta"></span>
+            <span class="tick" id="addonTick" aria-hidden="true">✓</span>
+          </span>
+        </label>
+      </div>
+
+      <!-- 人數 -->
+      <div class="fld" id="fldParty">
+        <label>人數<span class="req">*</span></label>
+        <select id="party" name="party">
+          <option value="">請選擇人數</option>
+        </select>
+        <div class="err" id="errParty">請選擇人數。</div>
+      </div>
+
+      <!-- 稱呼 -->
+      <div class="fld" id="fldName">
+        <label>稱呼<span class="req">*</span></label>
+        <input type="text" id="name" name="name" autocomplete="name" placeholder="怎麼稱呼你">
+        <div class="err" id="errName">請填寫稱呼。</div>
+      </div>
+
+      <!-- 電話 -->
+      <div class="fld" id="fldPhone">
+        <label>電話<span class="req">*</span></label>
+        <input type="tel" inputmode="tel" id="phone" name="phone" autocomplete="tel" placeholder="0900 000 000">
+        <div class="err" id="errPhone">請填寫有效電話（至少 8 碼數字）。</div>
+      </div>
+
+      <!-- Email（選填，想收確認信再填）-->
+      <div class="fld" id="fldEmail">
+        <label>Email · 選填（想收一封確認信再填）</label>
+        <input type="email" inputmode="email" id="email" name="email" autocomplete="email" placeholder="you@example.com">
+      </div>
+
+      <!-- 飲食限制 -->
+      <div class="fld">
+        <label>飲食限制 · 可複選</label>
+        <div class="checks" id="diet">
+          <label><input type="checkbox" value="不吃鴨">不吃鴨</label>
+          <label><input type="checkbox" value="海鮮過敏">海鮮過敏</label>
+          <label><input type="checkbox" value="蛋奶過敏">蛋奶過敏</label>
+          <label><input type="checkbox" value="素食">素食</label>
+          <label><input type="checkbox" value="不吃辣">不吃辣</label>
+        </div>
+      </div>
+
+      <!-- 匯款後五碼 -->
+      <div class="fld">
+        <label>匯款帳號後五碼 · 匯款後補也行</label>
+        <input type="text" inputmode="numeric" maxlength="5" id="last5" name="last5" placeholder="00000">
+      </div>
+
+      <!-- 送出 -->
+      <button type="submit" class="btn btn-fire" id="submit" disabled>送出訂位 · 保留 24 小時</button>
+      <p class="note">送出後，我們會以電話與你確認。</p>
+    </form>
+  </section>
+
+  <!-- 6. Step 03 確認頁 -->
+  <section id="step3" hidden>
+    <div class="sec-h"><span class="idx">03</span><h2>已送出</h2><span class="en">CONFIRMED</span></div>
+    <div class="confirm">
+      <p class="check" id="confHead">已為你保留 0 位</p>
+      <p class="meta" id="confMeta"></p>
+      <div class="bank">
+        <div><span class="k">銀行</span>國泰世華（013）</div>
+        <div><span class="k">帳號</span><span class="num">128700003341</span></div>
+        <div><span class="k">金額</span><span class="num" id="confAmt">NT$ 0</span></div>
+      </div>
+      <p class="foot">匯款後不必再通知——我們對帳到帳會以電話與你確認。有問題打 0963-059-889。</p>
+      <div style="margin-top:24px;">
+        <button type="button" class="btn btn-ghost" id="again">再訂一筆</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Firebase（compat 版，提供全域 firebase 物件給 booking-store.js 使用） -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="booking-store.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ---- 偏好：reduced-motion ----
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---- DOM ----
+  var $ = function (id) { return document.getElementById(id); };
+  var sessionsEl = $('sessions');
+  var step1 = $('step1'), step2 = $('step2'), step3 = $('step3');
+  var pickedView = $('pickedView'), fldPicked = $('fldPicked');
+  var fldAddon = $('fldAddon'), addon = $('addon'), addonChk = $('addonChk'),
+      addonLab = $('addonLab'), addonMeta = $('addonMeta');
+  var partySel = $('party'), fldParty = $('fldParty'), errParty = $('errParty');
+  var nameInput = $('name'), fldName = $('fldName');
+  var phoneInput = $('phone'), fldPhone = $('fldPhone');
+  var last5Input = $('last5');
+  var emailInput = $('email');
+  var dietEl = $('diet');
+  var submitBtn = $('submit');
+  var toastEl = $('toast');
+
+  // ---- 狀態 ----
+  // selected: 主選場次 id（"6/20|night"）；addonId: 加訂的同日另一場 id（或 null）
+  var selected = null;
+  var addonId = null;
+
+  // ---- 工具 ----
+  // 由 session id 推回 {date, sitting}
+  function parseId(id) {
+    var i = id.indexOf('|');
+    return { date: id.slice(0, i), sitting: id.slice(i + 1) };
+  }
+  // 找某 id 的 session 物件（資料層為非同步即時快取，每次資料變動重建索引）
+  var SESSION_BY_ID = {};
+  function rebuildIndex() {
+    SESSION_BY_ID = {};
+    C7.sessions().forEach(function (s) { SESSION_BY_ID[s.id] = s; });
+  }
+  rebuildIndex();
+  function sess(id) { return SESSION_BY_ID[id]; }
+  // 同日另一時段的 id
+  function siblingId(id) {
+    var p = parseId(id);
+    var other = p.sitting === 'sunset' ? 'night' : 'sunset';
+    return p.date + '|' + other;
+  }
+  // 目前所有選定的 session id（一或兩場）
+  function chosenIds() {
+    var ids = [];
+    if (selected) ids.push(selected);
+    if (addonId) ids.push(addonId);
+    return ids;
+  }
+  // 可選最大人數 = 已選場次 remaining 的較小值
+  function maxParty() {
+    var ids = chosenIds();
+    if (!ids.length) return 0;
+    var m = Infinity;
+    ids.forEach(function (id) { m = Math.min(m, C7.capacity(id).remaining); });
+    return m === Infinity ? 0 : m;
+  }
+  function describe(id) {
+    var s = sess(id);
+    return s.date + ' ' + s.label + ' ' + s.time;
+  }
+
+  function smoothScrollTo(el) {
+    el.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  // ---- Toast ----
+  var toastTimer = null;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2500);
+  }
+
+  // ============================================================
+  //  Step 01 — 場次卡
+  // ============================================================
+  function renderSessions() {
+    // 依日期分組
+    var order = [];
+    var byDate = {};
+    C7.sessions().forEach(function (s) {
+      if (!byDate[s.date]) { byDate[s.date] = []; order.push(s.date); }
+      byDate[s.date].push(s);
+    });
+
+    var frag = document.createDocumentFragment();
+
+    order.forEach(function (date) {
+      var list = byDate[date];
+      var caps = list.map(function (s) { return C7.capacity(s.id); });
+      var allFull = caps.every(function (c) { return c.full; });
+
+      var card = document.createElement('div');
+      card.className = 'scard';
+
+      var dt = document.createElement('div');
+      dt.className = 'dt';
+      dt.textContent = date;
+      card.appendChild(dt);
+
+      var dow = document.createElement('div');
+      dow.className = 'dow';
+      dow.textContent = 'SAT';
+      card.appendChild(dow);
+
+      if (allFull) {
+        card.classList.add('full');
+        var so = document.createElement('div');
+        so.className = 'soldout';
+        so.textContent = '兩場皆已滿';
+        card.appendChild(so);
+      } else {
+        list.forEach(function (s) {
+          var cap = C7.capacity(s.id);
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'row pick';
+          btn.dataset.id = s.id;
+          if (s.id === selected) btn.classList.add('sel');
+
+          var lbl = document.createElement('span');
+          lbl.textContent = s.label;
+          btn.appendChild(lbl);
+
+          var seat = document.createElement('span');
+          seat.className = 'seat';
+          if (cap.full) {
+            seat.classList.add('zero');
+            seat.textContent = '已滿';
+            btn.disabled = true;
+            btn.setAttribute('aria-disabled', 'true');
+          } else {
+            if (cap.remaining <= 3) seat.classList.add('low');
+            seat.textContent = '剩 ' + cap.remaining;
+          }
+          btn.appendChild(seat);
+
+          btn.setAttribute('aria-label', s.label + ' ' + s.time + '，' + (cap.full ? '已滿' : '剩 ' + cap.remaining + ' 位'));
+          btn.addEventListener('click', function () { pick(s.id); });
+          card.appendChild(btn);
+        });
+      }
+
+      frag.appendChild(card);
+    });
+
+    sessionsEl.innerHTML = '';
+    sessionsEl.appendChild(frag);
+  }
+
+  // 點某時段
+  function pick(id) {
+    selected = id;
+    addonId = null;            // 換主場次時，清掉舊的加訂
+    // 視覺：清掉所有 .sel，標記目前這顆
+    var all = sessionsEl.querySelectorAll('.row.pick');
+    for (var i = 0; i < all.length; i++) {
+      all[i].classList.toggle('sel', all[i].dataset.id === id);
+    }
+    syncForm();
+    smoothScrollTo(step2);
+  }
+
+  // ============================================================
+  //  Step 02 — 表單同步
+  // ============================================================
+  // 依目前選取重繪：已選場次顯示、加訂列、人數選項、送出鈕狀態
+  function syncForm() {
+    // 已選場次唯讀顯示
+    if (!selected) {
+      pickedView.className = 'help';
+      pickedView.textContent = '請先在上方選擇場次';
+    } else {
+      pickedView.className = '';
+      pickedView.style.color = 'var(--paper)';
+      pickedView.style.fontSize = '15px';
+      var txt = describe(selected);
+      if (addonId) txt += '　＋　' + describe(addonId);
+      pickedView.textContent = txt;
+    }
+
+    syncAddon();
+    syncPartyOptions();
+    updateSubmit();
+  }
+
+  // 加訂另一場開關：同日另一時段還有位才顯示
+  function syncAddon() {
+    if (!selected) { fldAddon.hidden = true; return; }
+    var sibId = siblingId(selected);
+    var sib = sess(sibId);
+    var cap = sib ? C7.capacity(sibId) : null;
+
+    if (!sib || !cap || cap.full) {
+      // 另一場滿或不存在 → 不顯示
+      fldAddon.hidden = true;
+      addonId = null;
+      addon.classList.remove('on');
+      addonChk.checked = false;
+      return;
+    }
+
+    fldAddon.hidden = false;
+    addonLab.textContent = '也想訂同日 ' + sib.label + ' ' + sib.time + '？';
+    addonMeta.textContent = '剩 ' + cap.remaining;
+    var on = (addonId === sibId);
+    addon.classList.toggle('on', on);
+    addonChk.checked = on;
+  }
+
+  // 人數選項 1..maxParty
+  function syncPartyOptions() {
+    var prev = partySel.value;
+    var max = maxParty();
+    partySel.innerHTML = '';
+    var ph = document.createElement('option');
+    ph.value = '';
+    ph.textContent = max > 0 ? '請選擇人數' : '尚無可選名額';
+    partySel.appendChild(ph);
+    for (var n = 1; n <= max; n++) {
+      var o = document.createElement('option');
+      o.value = String(n);
+      o.textContent = n + ' 位';
+      partySel.appendChild(o);
+    }
+    // 保留先前選擇（若仍在範圍內）
+    if (prev && Number(prev) >= 1 && Number(prev) <= max) {
+      partySel.value = prev;
+    } else {
+      partySel.value = '';
+    }
+  }
+
+  // 加訂列點擊
+  addon.addEventListener('click', function (e) {
+    // label 內含隱藏 checkbox：阻止預設以自管狀態，避免雙重 toggle
+    e.preventDefault();
+    if (!selected) return;
+    var sibId = siblingId(selected);
+    var cap = C7.capacity(sibId);
+    if (!sess(sibId) || cap.full) return;
+    addonId = addonId === sibId ? null : sibId;
+    syncForm();
+  });
+  addon.addEventListener('keydown', function (e) {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); addon.click(); }
+  });
+
+  // ---- 驗證 ----
+  function phoneValid(v) {
+    var digits = (v || '').replace(/[^0-9]/g, '');
+    // 只允許數字、連字號、空白
+    if (/[^0-9\-\s]/.test(v || '')) return false;
+    return digits.length >= 8;
+  }
+
+  // 必填是否齊全（用於送出鈕 enable/disable，不顯示錯誤）
+  function formReady() {
+    if (!selected) return false;
+    if (!partySel.value) return false;
+    if (!nameInput.value.trim()) return false;
+    if (!phoneInput.value.trim()) return false;
+    return true;
+  }
+
+  function updateSubmit() {
+    submitBtn.disabled = !formReady();
+  }
+
+  // 完整驗證（送出時），標 .invalid 並寫原因
+  function validate() {
+    var ok = true;
+    // 場次
+    if (!selected) {
+      ok = false;
+      fldPicked.classList.add('invalid');
+    } else {
+      fldPicked.classList.remove('invalid');
+    }
+    // 人數
+    var max = maxParty();
+    var party = Number(partySel.value);
+    if (!partySel.value) {
+      errParty.textContent = '請選擇人數。';
+      fldParty.classList.add('invalid'); ok = false;
+    } else if (party > max) {
+      errParty.textContent = '人數超過剩餘名額（剩 ' + max + '）。';
+      fldParty.classList.add('invalid'); ok = false;
+    } else {
+      fldParty.classList.remove('invalid');
+    }
+    // 稱呼
+    if (!nameInput.value.trim()) {
+      fldName.classList.add('invalid'); ok = false;
+    } else {
+      fldName.classList.remove('invalid');
+    }
+    // 電話
+    if (!phoneValid(phoneInput.value)) {
+      fldPhone.classList.add('invalid'); ok = false;
+    } else {
+      fldPhone.classList.remove('invalid');
+    }
+    return ok;
+  }
+
+  // ---- 即時清錯 + 重算送出鈕 ----
+  function liveClear(fld) { return function () { fld.classList.remove('invalid'); updateSubmit(); }; }
+  partySel.addEventListener('change', liveClear(fldParty));
+  nameInput.addEventListener('input', liveClear(fldName));
+  phoneInput.addEventListener('input', liveClear(fldPhone));
+  // last5 只允許數字
+  last5Input.addEventListener('input', function () {
+    last5Input.value = last5Input.value.replace(/[^0-9]/g, '').slice(0, 5);
+  });
+
+  // ============================================================
+  //  送出
+  // ============================================================
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) {
+      // 捲到第一個錯誤欄位
+      var firstErr = document.querySelector('.fld.invalid');
+      if (firstErr) smoothScrollTo(firstErr);
+      return;
+    }
+
+    submitBtn.disabled = true;   // 處理中短暫鎖定
+
+    var diet = [];
+    dietEl.querySelectorAll('input:checked').forEach(function (c) { diet.push(c.value); });
+
+    var booking = C7.createBooking({
+      sessionIds: chosenIds(),
+      party: Number(partySel.value),
+      name: nameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      diet: diet,
+      last5: last5Input.value.trim(),
+      email: emailInput.value.trim()
+    });
+
+    toast('已送出 · 已為你保留 24 小時');
+    showConfirm(booking);
+  });
+
+  // ============================================================
+  //  Step 03 — 確認頁
+  // ============================================================
+  var cdTimer = null;
+  function showConfirm(booking) {
+    step1.hidden = true;
+    step2.hidden = true;
+    step3.hidden = false;
+
+    var ids = booking.sessionIds;
+    var party = booking.party;
+    var sessionCount = ids.length;
+
+    $('confHead').textContent = '已為你保留 ' + party + ' 位';
+
+    // meta：場次列表 + 倒數
+    var lines = ids.map(function (id) { return describe(id); }).join('、');
+    $('confMeta').innerHTML = lines +
+      '。請在 <span class="countdown" id="cd">24:00:00</span> 內完成匯款，逾時位子自動釋放。';
+
+    // 金額 = party × 2000 × 場次數
+    var amt = party * C7.PRICE * sessionCount;
+    $('confAmt').textContent = 'NT$ ' + amt.toLocaleString('en-US');
+
+    // 倒數每秒更新
+    var cdEl = $('cd');
+    function tick() {
+      var ms = booking.holdUntil - Date.now();
+      if (ms <= 0) { cdEl.textContent = '已逾時'; clearInterval(cdTimer); cdTimer = null; return; }
+      cdEl.textContent = C7.fmtCountdown(ms);
+    }
+    if (cdTimer) clearInterval(cdTimer);
+    tick();
+    cdTimer = setInterval(tick, 1000);
+
+    smoothScrollTo(step3);
+  }
+
+  // 再訂一筆 → 回 Step 01
+  $('again').addEventListener('click', function () {
+    if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
+    // 重設狀態
+    selected = null;
+    addonId = null;
+    // 重設表單欄位
+    $('form').reset();
+    last5Input.value = '';
+    // 清錯誤
+    [fldPicked, fldParty, fldName, fldPhone].forEach(function (f) { f.classList.remove('invalid'); });
+    // 還原 pickedView inline 樣式
+    pickedView.removeAttribute('style');
+
+    step3.hidden = true;
+    step1.hidden = false;
+    step2.hidden = false;
+
+    renderSessions();
+    syncForm();
+    smoothScrollTo(step1);
+  });
+
+  // ============================================================
+  //  即時性
+  // ============================================================
+  // 當資料層通知變動時：只重繪名額（場次卡）與表單可選範圍，
+  // 但若使用者正在看確認頁（step3），不打擾。
+  function onStoreChange() {
+    rebuildIndex();
+    if (!step3.hidden) return;
+    renderSessions();
+    // 若目前選的場次已被別人訂滿，提示並清除選取
+    if (selected && C7.capacity(selected).full) {
+      toast('你選的場次剛剛被訂滿了，請重新選擇');
+      selected = null;
+      addonId = null;
+    } else if (addonId && C7.capacity(addonId).full) {
+      addonId = null;
+    }
+    syncForm();
+  }
+
+  // 初始：先釋放逾時，再渲染
+  C7.releaseExpired();
+  renderSessions();
+  syncForm();
+
+  C7.subscribe(onStoreChange);
+  // 每 30 秒釋放逾時 pending（releaseExpired 內部會 notify → onStoreChange 重繪）
+  setInterval(function () { C7.releaseExpired(); }, 30000);
+
+})();
+</script>
+</body>
+</html>
