@@ -373,7 +373,14 @@
   .mural-bg.mural-contain { background-size: contain; background-position: center; }
   .has-mural > :not(.mural-bg) { position: relative; z-index: 1; }
   @media (max-width: 720px) {
-    .mural-bg:not(.mural-contain) { background-position: center !important; }
+    /* 手機：壁畫蓋滿高高的段落會把直式圖裁成一條 → 貼齊頂端、約一個螢幕高、底部淡出，露出完整構圖 */
+    .mural-bg:not(.mural-contain) {
+      top: 0; bottom: auto;
+      height: 100vh; height: 100svh;
+      background-position: center 35% !important;
+      -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+      mask-image: linear-gradient(180deg, #000 60%, transparent 100%);
+    }
     .mural-bg::after {
       background: linear-gradient(180deg, rgba(10,10,10,0.6), rgba(10,10,10,0.42) 40%, rgba(10,10,10,0.66));
     }
