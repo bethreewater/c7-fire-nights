@@ -1022,6 +1022,12 @@
   }
   .fab-promo.show { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(-50%) translateX(0); transition: opacity .32s ease, transform .32s cubic-bezier(0.16,1,0.3,1), visibility 0s linear 0s; }
   body.menu-open .fab-promo { opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-50%) translateX(18px); transition: opacity .2s ease, visibility 0s linear .2s; }
+  /* 手機：螢幕窄、中間會擋內容 → 改回右下角 */
+  @media (max-width: 600px) {
+    .fab-promo { top: auto; bottom: max(16px, env(safe-area-inset-bottom, 0px)); transform: translateY(20px); }
+    .fab-promo.show { transform: translateY(0); }
+    body.menu-open .fab-promo { transform: translateY(20px); }
+  }
   .fab-promo .fp-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
   .fab-promo .fp-tag { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fire); font-weight: 700; }
   .fab-promo .fp-count { font-size: 13.5px; font-variant-numeric: tabular-nums; color: var(--paper); font-weight: 600; letter-spacing: 0.02em; }
