@@ -2144,7 +2144,9 @@
     let shown = false;
     function update(){
       const past = window.scrollY > window.innerHeight * 0.5;
-      if (past !== shown) { shown = past; fab.classList.toggle('show', past); }
+      const nearBottom = (window.scrollY + window.innerHeight) > (document.documentElement.scrollHeight - window.innerHeight * 0.6);
+      const show = past && !nearBottom;
+      if (show !== shown) { shown = show; fab.classList.toggle('show', show); }
     }
     window.addEventListener('scroll', update, { passive: true });
     window.addEventListener('resize', update, { passive: true });
