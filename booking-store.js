@@ -29,7 +29,7 @@
 
   var CAP = 15;
   var HOLD_MS = 24 * 60 * 60 * 1000;
-  var PRICE = 2000;
+  var PRICE = 1999;
   var ADMIN_EMAIL = 'mryomryo@gmail.com';
 
   if (!window.firebase || !firebase.initializeApp) {
