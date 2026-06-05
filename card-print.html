@@ -21,14 +21,12 @@
 
   .card{position:relative;overflow:hidden;background:var(--bg);color:var(--paper);
     -webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .bg{position:absolute;inset:0;background:url('img/mural-island.webp') center 20%/cover;}
+  .bg{position:absolute;inset:0;background:url('img/mural-island.webp') center 20%/cover;filter:brightness(1.18) saturate(1.06);}
   .bg::after{content:'';position:absolute;inset:0;background:
-    radial-gradient(125% 80% at 50% 30%, rgba(0,0,0,.05), rgba(0,0,0,.66) 66%, rgba(0,0,0,.93)),
-    linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.3) 38%, rgba(0,0,0,.92));}
-  .glow{position:absolute;left:50%;top:62%;width:70mm;height:70mm;transform:translate(-50%,-50%);
-    background:radial-gradient(circle, rgba(209,72,32,.30), rgba(209,72,32,.08) 45%, transparent 66%);}
-  .card::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;mix-blend-mode:overlay;opacity:.5;
-    background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0 0.87 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+    radial-gradient(125% 82% at 50% 30%, rgba(0,0,0,0) 0%, rgba(0,0,0,.48) 64%, rgba(0,0,0,.85) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.4), rgba(0,0,0,.2) 40%, rgba(0,0,0,.85));}
+  .glow{position:absolute;left:50%;top:62%;width:72mm;height:72mm;transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(209,72,32,.34), rgba(209,72,32,.10) 45%, transparent 66%);}
 
   .content{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;align-items:center;
     justify-content:center;text-align:center;padding:8mm 7mm;}

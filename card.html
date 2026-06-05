@@ -67,6 +67,7 @@
     html,body{background:#000;}
     body{padding:0;gap:0;min-height:0;}
     .card{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .card::after{display:none;}  /* 顆粒層的 mix-blend 在列印/PDF 會糊圖，列印時關掉 */
     .screen-only{display:none !important;}
   }
 </style>
