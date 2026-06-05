@@ -51,6 +51,7 @@
   var _sessions = {};          // docId -> {docId,pid,date,sitting,label,time,cap,confirmedSeats,order}
   var _holdsBySession = {};    // docId -> [{id,seats,until,bookingId}]
   var _bookings = [];          // 後台才有（含個資）
+  var _feedback = [];          // 後台才有（內測回饋）
   var _isAdmin = false;
   var _authCb = null;
   var listeners = [];
@@ -214,10 +215,13 @@
     return batch.commit().then(function () { return true; }).catch(function (e) { console.error('[C7] releaseExpired', e); return false; });
   }
 
+  function feedback() { return _feedback.slice(); }
+
   function reset() { console.warn('[C7] reset() 在正式版停用（資料在 Firestore）'); }
 
   // ---- Auth ----
   var bookingsUnsub = null;
+  var feedbackUnsub = null;
   function signIn(email, password) { return auth.signInWithEmailAndPassword(email, password); }
   function signOut() { return auth.signOut(); }
   function onAuth(cb) { _authCb = cb; return auth.onAuthStateChanged(cb); }
@@ -234,9 +238,19 @@
           notify();
         }, function (e) { console.error('[C7] bookings 監聽錯誤', e); });
       }
+      if (!feedbackUnsub) {
+        feedbackUnsub = db.collection('feedback').orderBy('createdAt', 'desc').onSnapshot(function (snap) {
+          var arr = [];
+          snap.forEach(function (d) { var x = d.data(); x.id = d.id; arr.push(x); });
+          _feedback = arr;
+          notify();
+        }, function (e) { console.error('[C7] feedback 監聽錯誤', e); });
+      }
     } else {
       if (bookingsUnsub) { bookingsUnsub(); bookingsUnsub = null; }
+      if (feedbackUnsub) { feedbackUnsub(); feedbackUnsub = null; }
       _bookings = [];
+      _feedback = [];
     }
     notify();
   });
@@ -253,7 +267,7 @@
 
   window.C7 = {
     CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS,
-    sessions: sessions, capacity: capacity, bookings: bookings,
+    sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel,
     releaseExpired: releaseExpired, reset: reset,
     subscribe: subscribe, fmtCountdown: fmtCountdown,

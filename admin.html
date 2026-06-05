@@ -9,6 +9,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="booking.css">
+<style>
+  .fb-card{border:1px solid var(--line2);border-radius:8px;padding:18px 20px;margin-bottom:14px;}
+  .fb-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .fb-when{font-family:var(--mono);font-size:11px;color:var(--mute);}
+  .fb-ses{font-family:var(--mono);font-size:11px;color:var(--fire);letter-spacing:.04em;}
+  .fb-name{font-weight:500;color:var(--paper);}
+  .fb-first{font-size:11px;color:var(--soft);}
+  .fb-q{display:flex;gap:12px;padding:4px 0;font-size:13.5px;line-height:1.7;}
+  .fb-lab{color:var(--mute);flex:none;min-width:11em;font-size:12.5px;}
+  .fb-val{color:var(--soft);}
+  .fb-key{margin:0 0 8px;padding:10px 12px;border-left:2px solid var(--fire);background:rgba(209,72,32,.06);border-radius:0 4px 4px 0;}
+  .fb-key .fb-lab{color:var(--fire);}
+  .fb-key .fb-val{color:var(--paper);}
+  @media(max-width:600px){ .fb-q{flex-direction:column;gap:1px;} .fb-lab{min-width:0;} }
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -55,6 +70,10 @@
       <button type="button" data-filter="ended" aria-pressed="false">已過期</button>
     </div>
     <div id="list"><!-- 表格或 empty 由 JS 注入 --></div>
+
+    <!-- 03 內測回饋 -->
+    <div class="sec-h"><span class="idx">03</span><h2>內測回饋</h2><span class="en">Feedback</span></div>
+    <div id="fblist"><!-- 回饋卡或 empty 由 JS 注入 --></div>
   </main>
 
 </div>
@@ -271,10 +290,58 @@
       '</table></div>';
   }
 
+  // --- 03 內測回饋 -------------------------------------------------
+  var FB_FIELDS = [
+    ['q1_length', '110 分鐘長度'],
+    ['q2_again', '願意再參加'], ['q2_why', '　原因'],
+    ['q3_price', '票價 2,500 感受'], ['q3_note', '　補充'],
+    ['q4_dance', '最愛火舞段'], ['q4_why', '　原因'], ['q4a_light', '第一段光線(Sunset)'],
+    ['q5_pace', '出餐節奏'], ['q5_stuck', '　最卡的一波'],
+    ['q6_service', '服務'], ['q6_note', '　具體'],
+    ['q7_fav', '最愛餐點'],
+    ['q8_weak', '最弱餐點'], ['q8_why', '　原因'],
+    ['q9_portion', '份量'],
+    ['q10_view', '座位視野'], ['q10_seat', '　座位'],
+    ['q11_comfort', '草皮舒適度'], ['q11_note', '　具體'],
+    ['q12_rec', '會推薦朋友'], ['q12_who', '　推薦給誰／原因'],
+    ['consent', '引用同意'], ['ig', 'IG／Threads']
+  ];
+
+  function fbVal(v) { return Array.isArray(v) ? v.join('、') : (v == null ? '' : String(v)); }
+
+  function fbCard(f) {
+    var rows = FB_FIELDS.map(function (p) {
+      var v = fbVal(f[p[0]]);
+      if (!v) return '';
+      return '<div class="fb-q"><span class="fb-lab">' + esc(p[1]) + '</span><span class="fb-val">' + esc(v) + '</span></div>';
+    }).join('');
+    var key = fbVal(f.q13_improve);
+    var keyHtml = key
+      ? '<div class="fb-q fb-key"><span class="fb-lab">★ 最想改</span><span class="fb-val">' + esc(key) + '</span></div>'
+      : '';
+    var head = '<div class="fb-head">' +
+      '<span class="fb-when">' + (f.createdAt ? fmtWhen(f.createdAt) : '') + '</span>' +
+      (f.session ? '<span class="fb-ses">' + esc(f.session) + '</span>' : '') +
+      '<span class="fb-name">' + esc(f.name || '匿名') + '</span>' +
+      (f.firstVisit ? '<span class="fb-first">· 首次 ' + esc(f.firstVisit) + '</span>' : '') +
+      '</div>';
+    return '<div class="fb-card">' + head + keyHtml + rows + '</div>';
+  }
+
+  function renderFeedback() {
+    var host = $('#fblist');
+    if (!host) return;
+    var arr = (C7.feedback ? C7.feedback() : []);
+    host.innerHTML = arr.length
+      ? arr.map(fbCard).join('')
+      : '<div class="empty">目前沒有回饋</div>';
+  }
+
   function renderAll() {
     buildSessionLabels();
     renderCaps();
     renderList();
+    renderFeedback();
   }
 
   /* --- 操作（事件委派）------------------------------------------- */
