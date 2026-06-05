@@ -10,47 +10,63 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500&family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#EFEAE0; --ink:#1a1714; --ink-soft:#4a443b; --fire:#D14820; --mute:#8a857b; --line:#d8d1c4;
+    --bg:#0a0a0a; --paper:#EFEAE0; --paper-soft:#CFC8BA; --paper-mute:#938D81;
+    --fire:#D14820; --fire-soft:#E8A158; --line:#2a2a27;
     --serif:'Noto Serif TC',serif; --display:'Anton',sans-serif; --sans:'IBM Plex Sans','Noto Sans TC',sans-serif;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{background:#0a0a0a;}
+  html,body{background:#000;}
   body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:26px;padding:34px 18px;font-family:var(--sans);}
+    gap:26px;padding:34px 18px;font-family:var(--sans);-webkit-font-smoothing:antialiased;}
 
   .card{
-    width:105mm;height:148mm;background:var(--paper);color:var(--ink);
-    border-top:5px solid var(--fire);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-    padding:11mm 10mm;box-shadow:0 22px 64px rgba(0,0,0,.55);position:relative;overflow:hidden;}
+    width:105mm;height:148mm;position:relative;overflow:hidden;background:var(--bg);color:var(--paper);
+    box-shadow:0 26px 70px rgba(0,0,0,.6);}
 
-  .kicker{font-family:var(--sans);font-weight:500;font-size:8.5pt;letter-spacing:.26em;
-    text-transform:uppercase;color:var(--fire);}
-  .title{font-family:var(--serif);font-weight:700;font-size:33pt;letter-spacing:.08em;
-    line-height:1;margin-top:5mm;}
-  .en{font-family:var(--display);font-size:8.5pt;letter-spacing:.32em;color:var(--mute);
-    text-transform:uppercase;margin-top:3.5mm;}
+  /* 火山島壁畫底 + 雙層壓暗（同故事頁 hero）*/
+  .bg{position:absolute;inset:0;background:url('img/mural-island.webp') center 20%/cover;}
+  .bg::after{content:'';position:absolute;inset:0;background:
+    radial-gradient(125% 80% at 50% 30%, rgba(0,0,0,.05), rgba(0,0,0,.66) 66%, rgba(0,0,0,.93)),
+    linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.3) 38%, rgba(0,0,0,.92));}
+  /* 火光暈 */
+  .glow{position:absolute;left:50%;top:62%;width:78mm;height:78mm;transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(209,72,32,.30), rgba(209,72,32,.08) 45%, transparent 66%);}
+  /* 顆粒 */
+  .card::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;mix-blend-mode:overlay;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0 0.87 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
 
-  .qr{margin:7mm 0 6mm;padding:3.5mm;background:#fff;border:1px solid var(--line);border-radius:2px;}
-  .qr img{width:50mm;height:50mm;display:block;image-rendering:pixelated;}
+  .content{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:11mm 9mm;}
 
-  .lead{font-family:var(--serif);font-weight:500;font-size:15pt;line-height:1.5;}
-  .sub{font-size:10.5pt;color:var(--ink-soft);margin-top:2.5mm;line-height:1.6;}
-  .sub .fire{color:var(--fire);font-weight:500;}
+  .kicker{font-family:var(--sans);font-weight:400;font-size:8pt;letter-spacing:.36em;text-transform:uppercase;
+    color:var(--paper-soft);}
+  .title{font-family:var(--serif);font-weight:700;font-size:33pt;letter-spacing:.08em;line-height:1;
+    margin-top:4.5mm;text-shadow:0 2px 30px rgba(0,0,0,.7);}
+  .en{font-family:var(--display);font-size:8pt;letter-spacing:.34em;text-transform:uppercase;
+    color:var(--fire-soft);margin-top:3.5mm;}
+  .poem{font-family:var(--serif);font-weight:500;font-size:12pt;line-height:1.7;color:var(--paper-soft);
+    margin-top:5mm;max-width:80mm;text-wrap:balance;}
 
-  .foot{font-family:var(--sans);font-size:7.5pt;letter-spacing:.12em;color:var(--mute);margin-top:8mm;}
+  .qr{margin:6.5mm 0 5.5mm;padding:4mm;background:var(--paper);border-radius:2px;
+    box-shadow:0 0 0 1px rgba(209,72,32,.55), 0 10px 30px rgba(0,0,0,.55);}
+  .qr img{width:45mm;height:45mm;display:block;image-rendering:pixelated;}
 
-  /* 螢幕用：列印鈕（列印時隱藏）*/
+  .scan{font-family:var(--sans);font-size:9.5pt;line-height:1.7;color:var(--paper-soft);}
+  .scan .fire{color:var(--fire-soft);font-weight:500;}
+  .foot{font-family:var(--sans);font-size:7pt;letter-spacing:.14em;color:var(--paper-mute);margin-top:6mm;}
+
+  /* 螢幕用 */
   .print-btn{font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.04em;
     background:var(--fire);color:#0a0a0a;border:none;border-radius:5px;padding:13px 26px;cursor:pointer;}
   .print-btn:hover{filter:brightness(1.08);}
-  .hint{font-family:var(--sans);font-size:12px;color:#8a857b;text-align:center;max-width:30em;line-height:1.7;}
+  .hint{font-family:var(--sans);font-size:12px;color:#8a857b;text-align:center;max-width:32em;line-height:1.75;}
+  .hint b{color:#CFC8BA;font-weight:500;}
 
   @media print{
     @page{size:A6 portrait;margin:0;}
-    html,body{background:#fff;}
+    html,body{background:#000;}
     body{padding:0;gap:0;min-height:0;}
-    .card{box-shadow:none;}
+    .card{box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
     .screen-only{display:none !important;}
   }
 </style>
@@ -58,17 +74,21 @@
 <body>
 
   <div class="card">
-    <div class="kicker">Container No.7 · 夏夜火舞</div>
-    <div class="title">火生的島</div>
-    <div class="en">A Night Made of Fire</div>
-    <div class="qr"><img src="img/story-qr.png" alt="掃碼讀今晚的故事"></div>
-    <div class="lead">掃碼，讀今晚這桌的故事。</div>
-    <div class="sub">讀到最後，<span class="fire">留一句話給我們</span>。</div>
-    <div class="foot">@container_no.7_penghu　·　澎湖</div>
+    <div class="bg"></div>
+    <div class="glow"></div>
+    <div class="content">
+      <div class="kicker">七號貨櫃 · 夏夜火舞 · 澎湖</div>
+      <div class="title">火生的島</div>
+      <div class="en">A Night Made of Fire</div>
+      <div class="poem">一千七百萬年的一團火，<br>長成你眼前這一桌。</div>
+      <div class="qr"><img src="img/story-qr.png" alt="掃碼讀今晚的故事"></div>
+      <div class="scan">掃碼，讀今晚的故事。<br>讀到最後，<span class="fire">留一句話給我們</span>。</div>
+      <div class="foot">@container_no.7_penghu</div>
+    </div>
   </div>
 
   <button class="print-btn screen-only" onclick="window.print()">列印這張卡（⌘P / Ctrl+P）</button>
-  <p class="hint screen-only">列印設定選 <b>A6</b>、邊界「無」最剛好；用 A4 印也行，印完沿卡緣裁切即可。深色背景是螢幕預覽用，紙卡本身是紙白底、省墨好掃。</p>
+  <p class="hint screen-only">列印選 <b>A6</b>、邊界「無」、並勾選<b>「列印背景圖形 / Background graphics」</b>（不然底圖和火光不會印出來）。深色卡氛圍足、但吃墨——想要省墨的紙白版，跟我說一聲我換回來。</p>
 
 </body>
 </html>
