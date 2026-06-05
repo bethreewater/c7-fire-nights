@@ -50,5 +50,15 @@ service cloud.firestore {
                      && request.resource.data.sessionIds is list
                      && isNum(request.resource.data.holdUntil);
     }
+
+    // 內測回饋：任何人可送出一筆（欄位數與長文受限，防濫用）；只有後台可讀／改／刪
+    match /feedback/{fid} {
+      allow read, update, delete: if isAdmin();
+      allow create: if isNum(request.resource.data.createdAt)
+                     && request.resource.data.size() <= 40
+                     && (!('q13_improve' in request.resource.data) || request.resource.data.q13_improve.size() <= 2000)
+                     && (!('q2_why' in request.resource.data) || request.resource.data.q2_why.size() <= 2000)
+                     && (!('name' in request.resource.data) || request.resource.data.name.size() <= 40);
+    }
   }
 }

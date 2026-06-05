@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex,nofollow">
+<title>留一句話 — 夏夜火舞 · 七號貨櫃</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@300;400;500&family=Noto+Serif+TC:wght@400;500;700&family=Noto+Sans+TC:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #000000;
+    --bg-2: #0A0A0A;
+    --paper: #EFEAE0;
+    --paper-soft: #C8C2B5;
+    --paper-mute: #8A857B;
+    --fire: #D14820;
+    --fire-soft: #E8A158;
+    --line: #1F1F1D;
+
+    --display: 'Anton', 'Noto Sans TC', sans-serif;
+    --serif: 'Noto Serif TC', Georgia, serif;
+    --sans: 'IBM Plex Sans', 'Noto Sans TC', -apple-system, sans-serif;
+    --zh-serif: 'Noto Serif TC', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { background: var(--bg); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--zh-serif); font-weight: 400;
+    background: var(--bg); color: var(--paper);
+    line-height: 1.9; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 3;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0 0.87 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.55; mix-blend-mode: overlay;
+  }
+  ::selection { background: var(--fire); color: var(--paper); }
+  a { color: inherit; text-decoration: none; transition: color 0.4s; }
+  a:hover { color: var(--fire); }
+  a:focus-visible { outline: 2px solid var(--fire); outline-offset: 3px; }
+
+  .skip-link {
+    position: fixed; top: 8px; left: 8px; z-index: 200;
+    padding: 12px 20px; background: var(--fire); color: #000;
+    font-family: var(--sans); font-size: 12px; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transform: translateY(-150%); transition: transform 0.3s ease;
+  }
+  .skip-link:focus { transform: translateY(0); outline: 2px solid var(--paper); outline-offset: 2px; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative; min-height: 66svh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 92px 26px 64px; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-image: url('img/mural-share.webp');
+    background-size: cover; background-position: center 30%;
+  }
+  .hero-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 70%, rgba(0,0,0,0.92) 100%),
+      linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.92) 100%);
+  }
+  .hero > :not(.hero-bg) { position: relative; z-index: 1; }
+  .hero .kicker {
+    font-family: var(--sans); font-size: 11px; font-weight: 400;
+    letter-spacing: 0.42em; text-transform: uppercase; color: var(--paper-soft); margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: var(--zh-serif); font-weight: 700;
+    font-size: clamp(50px, 14vw, 96px); letter-spacing: 0.06em; line-height: 1.02;
+    text-shadow: 0 2px 40px rgba(0,0,0,0.6);
+  }
+  .hero .lead {
+    font-family: var(--zh-serif); font-weight: 400;
+    font-size: clamp(16px, 4.4vw, 19px); line-height: 2; color: var(--paper);
+    max-width: 24em; margin: 30px auto 0; text-wrap: balance;
+  }
+
+  /* ---------- FORM ---------- */
+  main { position: relative; z-index: 1; padding-bottom: 40px; }
+  .fsec { max-width: 38rem; margin: 0 auto; padding: 0 26px; }
+  .fsec-h {
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--fire-soft); margin: 50px 0 26px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+
+  .q { margin-bottom: 34px; }
+  .q .qt {
+    font-family: var(--serif); font-weight: 500; font-size: clamp(16.5px, 4.4vw, 18px);
+    color: var(--paper); margin-bottom: 14px; line-height: 1.6;
+  }
+  .q .qt b { color: var(--fire); font-weight: 700; }
+  .q .note { font-family: var(--sans); font-size: 12.5px; color: var(--paper-mute); font-weight: 400; }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 10px; }
+  .opt { position: relative; }
+  .opt input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; cursor: pointer; margin: 0; }
+  .opt span {
+    display: flex; align-items: center; min-height: 44px;
+    padding: 10px 16px; border: 1px solid var(--line); border-radius: 2px;
+    font-family: var(--sans); font-size: 15px; color: var(--paper-soft); transition: 0.22s;
+  }
+  .opt input:checked + span { background: var(--fire); border-color: var(--fire); color: #000; font-weight: 500; }
+  .opt input:focus-visible + span { outline: 2px solid var(--fire-soft); outline-offset: 2px; }
+  .opt:hover span { border-color: var(--paper-mute); }
+
+  .q textarea, .q input[type=text] {
+    width: 100%; margin-top: 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 2px;
+    color: var(--paper); font-family: var(--sans); font-size: 15px; padding: 12px 14px; line-height: 1.7; resize: vertical;
+  }
+  .q textarea:focus, .q input[type=text]:focus { outline: none; border-color: var(--fire); }
+  .q textarea::placeholder, .q input::placeholder { color: var(--paper-mute); }
+  .q .sub { margin-top: 12px; }
+  .q .sub .qt { font-size: 15.5px; font-weight: 400; color: var(--paper-soft); }
+  #q4a { display: none; }
+  #q4a.show { display: block; }
+
+  .submit-wrap { max-width: 38rem; margin: 46px auto 0; padding: 0 26px; }
+  .btn-submit {
+    width: 100%; padding: 18px; background: var(--fire); color: #000; border: none; border-radius: 2px;
+    font-family: var(--display); font-size: 19px; letter-spacing: 0.12em; cursor: pointer; transition: 0.22s;
+  }
+  .btn-submit:hover { background: var(--fire-soft); }
+  .btn-submit:disabled { opacity: 0.55; cursor: default; }
+  .submit-note { font-family: var(--sans); font-size: 12.5px; color: var(--paper-mute); text-align: center; margin-top: 16px; line-height: 1.7; }
+
+  /* ---------- THANKS ---------- */
+  .thanks { display: none; text-align: center; padding: clamp(110px, 22vh, 220px) 26px; }
+  .thanks.show { display: block; }
+  .thanks .ch-num { font-family: var(--zh-serif); font-weight: 700; font-size: 30px; color: var(--fire); display: block; margin-bottom: 22px; }
+  .thanks h2 { font-family: var(--zh-serif); font-weight: 700; font-size: clamp(30px, 8vw, 46px); color: var(--paper); margin-bottom: 26px; line-height: 1.3; }
+  .thanks p { color: var(--paper-soft); font-size: clamp(17px, 4.6vw, 19px); max-width: 26em; margin: 0 auto; }
+  .thanks .fire-line { color: var(--fire); font-weight: 700; margin-top: 26px; display: block; font-size: clamp(20px, 5.6vw, 24px); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    position: relative; z-index: 1; border-top: 1px solid var(--line);
+    padding: 50px 26px 64px; display: flex; flex-wrap: wrap; gap: 30px;
+    justify-content: space-between; align-items: flex-end;
+  }
+  footer .mark { font-family: var(--display); font-size: clamp(30px, 8vw, 48px); line-height: 0.92; color: var(--paper); }
+  footer .mark .it { color: var(--fire); }
+  footer .info { font-family: var(--sans); font-size: 12px; letter-spacing: 0.06em; color: var(--paper-mute); line-height: 2; text-align: right; }
+
+  @media (max-width: 720px) {
+    footer { flex-direction: column; align-items: flex-start; gap: 20px; }
+    footer .info { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#form">跳到表單</a>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="kicker">七號貨櫃 · 夏夜火舞 · 內測</div>
+  <h1>留一句話</h1>
+  <p class="lead">謝謝你今晚來。<br>這份回饋會直接決定正式場要調什麼——請誠實，不用客氣。約 5 分鐘。</p>
+</header>
+
+<main id="form">
+<form id="fb" novalidate>
+
+  <!-- 基本資料 -->
+  <section class="fsec">
+    <div class="fsec-h">基本資料</div>
+    <div class="q">
+      <div class="qt">你的稱呼</div>
+      <input type="text" name="name" maxlength="40" placeholder="怎麼稱呼你（可留空）">
+    </div>
+    <div class="q">
+      <div class="qt">今晚哪一場？</div>
+      <div class="opts" data-radio="session">
+        <label class="opt"><input type="radio" name="session" value="Sunset 18:00"><span>Sunset 18:00</span></label>
+        <label class="opt"><input type="radio" name="session" value="Night 20:00"><span>Night 20:00</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <div class="qt">是第一次來七號貨櫃嗎？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="firstVisit" value="是"><span>是</span></label>
+        <label class="opt"><input type="radio" name="firstVisit" value="否"><span>否</span></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 整體感受 -->
+  <section class="fsec">
+    <div class="fsec-h">整體感受</div>
+    <div class="q">
+      <div class="qt"><b>Q1.</b> 110 分鐘的長度感受？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q1_length" value="太短"><span>太短</span></label>
+        <label class="opt"><input type="radio" name="q1_length" value="剛好"><span>剛好</span></label>
+        <label class="opt"><input type="radio" name="q1_length" value="太長"><span>太長</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q2.</b> 整體願意再參加嗎？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q2_again" value="會"><span>會</span></label>
+        <label class="opt"><input type="radio" name="q2_again" value="不會"><span>不會</span></label>
+      </div>
+      <textarea name="q2_why" rows="2" maxlength="2000" placeholder="為什麼？"></textarea>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q3.</b> NT$2,500 的票價（正式場價格）你的感受？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q3_price" value="划算"><span>划算</span></label>
+        <label class="opt"><input type="radio" name="q3_price" value="合理"><span>合理</span></label>
+        <label class="opt"><input type="radio" name="q3_price" value="偏高"><span>偏高</span></label>
+      </div>
+      <textarea name="q3_note" rows="2" maxlength="1000" placeholder="補充（可留空）"></textarea>
+    </div>
+  </section>
+
+  <!-- 節目細節 -->
+  <section class="fsec">
+    <div class="fsec-h">節目細節</div>
+    <div class="q">
+      <div class="qt"><b>Q4.</b> 火舞 4 段，最喜歡哪一段？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q4_dance" value="第一段（暖場）"><span>第一段（暖場）</span></label>
+        <label class="opt"><input type="radio" name="q4_dance" value="第二段"><span>第二段</span></label>
+        <label class="opt"><input type="radio" name="q4_dance" value="第三段"><span>第三段</span></label>
+        <label class="opt"><input type="radio" name="q4_dance" value="第四段（收尾）"><span>第四段（收尾）</span></label>
+      </div>
+      <textarea name="q4_why" rows="2" maxlength="1000" placeholder="為什麼？"></textarea>
+      <div class="sub" id="q4a">
+        <div class="qt">第一段在 18:30，當時光線：<span class="note">Sunset 場才填</span></div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="q4a_light" value="看得很清楚"><span>看得很清楚</span></label>
+          <label class="opt"><input type="radio" name="q4a_light" value="還可以"><span>還可以</span></label>
+          <label class="opt"><input type="radio" name="q4a_light" value="偏暗看不清"><span>偏暗看不清</span></label>
+          <label class="opt"><input type="radio" name="q4a_light" value="偏亮看不清"><span>偏亮看不清</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q5.</b> 出餐的節奏感受？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q5_pace" value="太快"><span>太快</span></label>
+        <label class="opt"><input type="radio" name="q5_pace" value="剛好"><span>剛好</span></label>
+        <label class="opt"><input type="radio" name="q5_pace" value="太慢"><span>太慢</span></label>
+      </div>
+      <div class="sub">
+        <div class="qt">特別卡的一波：</div>
+        <div class="opts">
+          <label class="opt"><input type="radio" name="q5_stuck" value="入場"><span>入場</span></label>
+          <label class="opt"><input type="radio" name="q5_stuck" value="前菜"><span>前菜</span></label>
+          <label class="opt"><input type="radio" name="q5_stuck" value="調飲"><span>調飲</span></label>
+          <label class="opt"><input type="radio" name="q5_stuck" value="主餐"><span>主餐</span></label>
+          <label class="opt"><input type="radio" name="q5_stuck" value="甜點"><span>甜點</span></label>
+          <label class="opt"><input type="radio" name="q5_stuck" value="都不卡"><span>都不卡</span></label>
+        </div>
+      </div>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q6.</b> 服務的細節（招呼、引導、解說、收桌）？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q6_service" value="很好"><span>很好</span></label>
+        <label class="opt"><input type="radio" name="q6_service" value="普通"><span>普通</span></label>
+        <label class="opt"><input type="radio" name="q6_service" value="需改進"><span>需改進</span></label>
+      </div>
+      <textarea name="q6_note" rows="2" maxlength="1000" placeholder="具體（可留空）"></textarea>
+    </div>
+  </section>
+
+  <!-- 食物與飲品 -->
+  <section class="fsec">
+    <div class="fsec-h">食物與飲品</div>
+    <div class="q">
+      <div class="qt"><b>Q7.</b> 最喜歡哪一道？<span class="note">可複選最多 3 項</span></div>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="q7_fav" value="迎賓麵包＋抹醬"><span>迎賓麵包＋抹醬</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="仙人掌風茹康普茶"><span>仙人掌風茹康普茶</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="新鮮小管沙拉"><span>新鮮小管沙拉</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="你選的那杯調飲"><span>你選的那杯調飲</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="煎鴨胸＋野生明蝦"><span>煎鴨胸＋野生明蝦</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="仙人掌水果冰沙"><span>仙人掌水果冰沙</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q8.</b> 最不喜歡 / 最弱的一道？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q8_weak" value="迎賓麵包＋抹醬"><span>迎賓麵包＋抹醬</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="仙人掌風茹康普茶"><span>仙人掌風茹康普茶</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="新鮮小管沙拉"><span>新鮮小管沙拉</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="你選的那杯調飲"><span>你選的那杯調飲</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="煎鴨胸＋野生明蝦"><span>煎鴨胸＋野生明蝦</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="仙人掌水果冰沙"><span>仙人掌水果冰沙</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="都不錯"><span>都不錯</span></label>
+      </div>
+      <textarea name="q8_why" rows="2" maxlength="1000" placeholder="為什麼？"></textarea>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q9.</b> 份量感受？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q9_portion" value="太少"><span>太少</span></label>
+        <label class="opt"><input type="radio" name="q9_portion" value="剛好"><span>剛好</span></label>
+        <label class="opt"><input type="radio" name="q9_portion" value="太多"><span>太多</span></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 場地 -->
+  <section class="fsec">
+    <div class="fsec-h">場地</div>
+    <div class="q">
+      <div class="qt"><b>Q10.</b> 你的座位視野如何？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q10_view" value="表演看得很清楚"><span>看得很清楚</span></label>
+        <label class="opt"><input type="radio" name="q10_view" value="有一點視角受限"><span>有點受限</span></label>
+        <label class="opt"><input type="radio" name="q10_view" value="看不到某些段落"><span>看不到某些段落</span></label>
+      </div>
+      <input type="text" name="q10_seat" maxlength="200" placeholder="你坐草皮哪一邊？（可留空）">
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q11.</b> 草皮就座的舒適度？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q11_comfort" value="舒適"><span>舒適</span></label>
+        <label class="opt"><input type="radio" name="q11_comfort" value="普通"><span>普通</span></label>
+        <label class="opt"><input type="radio" name="q11_comfort" value="不舒適"><span>不舒適</span></label>
+      </div>
+      <textarea name="q11_note" rows="2" maxlength="1000" placeholder="具體（可留空）"></textarea>
+    </div>
+  </section>
+
+  <!-- 最關鍵兩題 -->
+  <section class="fsec">
+    <div class="fsec-h">最關鍵的兩題</div>
+    <div class="q">
+      <div class="qt"><b>Q12.</b> 你會推薦朋友來嗎？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="q12_rec" value="會"><span>會</span></label>
+        <label class="opt"><input type="radio" name="q12_rec" value="不會"><span>不會</span></label>
+      </div>
+      <textarea name="q12_who" rows="2" maxlength="1000" placeholder="會的話——推薦給哪一種朋友？（例如「來澎湖玩 3 天的台北情侶」）／不會的話——為什麼？"></textarea>
+    </div>
+    <div class="q">
+      <div class="qt"><b>Q13.</b> 如果有「一件你最希望改的事」，你會選什麼？<span class="note">這題比讚美更有用，拜託寫具體</span></div>
+      <textarea name="q13_improve" rows="3" maxlength="2000" placeholder="一件最想改的事…"></textarea>
+    </div>
+  </section>
+
+  <!-- 可選 -->
+  <section class="fsec">
+    <div class="fsec-h">可選</div>
+    <div class="q">
+      <div class="qt">願意你的話被引用到我們的社群或官網嗎？</div>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="consent" value="願意（具名）"><span>願意（具名）</span></label>
+        <label class="opt"><input type="radio" name="consent" value="願意（匿名）"><span>願意（匿名）</span></label>
+        <label class="opt"><input type="radio" name="consent" value="不願意"><span>不願意</span></label>
+      </div>
+      <input type="text" name="ig" maxlength="60" placeholder="你的 IG / Threads（不強制）">
+    </div>
+  </section>
+
+  <div class="submit-wrap">
+    <button type="submit" class="btn-submit" id="btn">送出回饋</button>
+    <p class="submit-note">送出後直接進我們的系統。有任何不方便寫的，口頭跟我們說也完全可以。</p>
+  </div>
+
+</form>
+
+<!-- 感謝畫面 -->
+<div class="thanks" id="thanks">
+  <span class="ch-num">謝</span>
+  <h2>收到了，謝謝你。</h2>
+  <p>你寫的每一句，我們都會在 6/13 正式場之前消化進去。</p>
+  <span class="fire-line">下一次，換你帶人來。</span>
+</div>
+</main>
+
+<footer>
+  <div class="mark">火生的島<br><span class="it">夏夜火舞.</span></div>
+  <div class="info">
+    <div>七號貨櫃 Container No.7</div>
+    <div>澎湖 Penghu · 2026</div>
+    <div><a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener">@container_no.7_penghu ↗</a></div>
+  </div>
+</footer>
+
+<!-- Firebase（compat 版，與 book.html 同一套；只需 app + firestore）-->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script>
+  (function () {
+    'use strict';
+
+    var firebaseConfig = {
+      apiKey: 'AIzaSyBXaOPYXcA-0_CrjwPrIxczXzCF5XrBqWk',
+      authDomain: 'fire-nights.firebaseapp.com',
+      projectId: 'fire-nights',
+      storageBucket: 'fire-nights.firebasestorage.app',
+      messagingSenderId: '1015755791708',
+      appId: '1:1015755791708:web:86d331521465acf6b53599'
+    };
+
+    var form = document.getElementById('fb');
+    var btn = document.getElementById('btn');
+    var thanks = document.getElementById('thanks');
+
+    var db = null;
+    if (window.firebase && firebase.initializeApp) {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+    } else {
+      console.error('[C7] Firebase SDK 未載入');
+    }
+
+    // Q4-a 只在 Sunset 場顯示
+    var q4a = document.getElementById('q4a');
+    form.querySelectorAll('input[name="session"]').forEach(function (r) {
+      r.addEventListener('change', function () {
+        if (r.value.indexOf('Sunset') === 0 && r.checked) q4a.classList.add('show');
+        else q4a.classList.remove('show');
+      });
+    });
+
+    function radio(name) { var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+    function checks(name) {
+      return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function (e) { return e.value; });
+    }
+    function text(name) { var el = form.querySelector('[name="' + name + '"]'); return el ? el.value.trim() : ''; }
+
+    function collect() {
+      var d = {
+        name: text('name'),
+        session: radio('session'),
+        firstVisit: radio('firstVisit'),
+        q1_length: radio('q1_length'),
+        q2_again: radio('q2_again'), q2_why: text('q2_why'),
+        q3_price: radio('q3_price'), q3_note: text('q3_note'),
+        q4_dance: radio('q4_dance'), q4_why: text('q4_why'), q4a_light: radio('q4a_light'),
+        q5_pace: radio('q5_pace'), q5_stuck: radio('q5_stuck'),
+        q6_service: radio('q6_service'), q6_note: text('q6_note'),
+        q7_fav: checks('q7_fav'),
+        q8_weak: radio('q8_weak'), q8_why: text('q8_why'),
+        q9_portion: radio('q9_portion'),
+        q10_view: radio('q10_view'), q10_seat: text('q10_seat'),
+        q11_comfort: radio('q11_comfort'), q11_note: text('q11_note'),
+        q12_rec: radio('q12_rec'), q12_who: text('q12_who'),
+        q13_improve: text('q13_improve'),
+        consent: radio('consent'), ig: text('ig')
+      };
+      // 限制 Q7 最多 3 項
+      if (d.q7_fav.length > 3) d.q7_fav = d.q7_fav.slice(0, 3);
+      return d;
+    }
+
+    function hasAnything(d) {
+      for (var k in d) {
+        var v = d[k];
+        if (Array.isArray(v) ? v.length : v) return true;
+      }
+      return false;
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var d = collect();
+      if (!hasAnything(d)) { alert('再填一點點再送 :)'); return; }
+      if (!db) { alert('連線還沒準備好，請重新整理頁面再試一次。'); return; }
+
+      d.createdAt = Date.now();
+      btn.disabled = true; btn.textContent = '送出中…';
+
+      db.collection('feedback').add(d).then(function () {
+        form.style.display = 'none';
+        var hero = document.querySelector('.hero'); if (hero) hero.style.display = 'none';
+        thanks.classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }).catch(function (err) {
+        console.error('[C7] feedback 送出失敗', err);
+        btn.disabled = false; btn.textContent = '再送一次';
+        alert('送出失敗，請再試一次；或直接口頭跟我們說都行。');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
