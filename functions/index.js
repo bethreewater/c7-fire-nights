@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 
 const GMAIL_PASS = defineSecret('GMAIL_PASS');   // 應用程式密碼（部署時設定，不入碼）
 const GMAIL_USER = 'mryomryo@gmail.com';
-const PRICE = 1999;
+const PRICE = 2500;
 
 const SITTING = {
   sunset: { label: 'Sunset', time: '18:00', arrive: '17:30–17:50' },
