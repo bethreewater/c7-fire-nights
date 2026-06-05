@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<title>桌卡列印 A4 · 4-up · 夏夜火舞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500&family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a0a; --paper:#EFEAE0; --paper-soft:#CFC8BA; --paper-mute:#938D81;
+    --fire:#D14820; --fire-soft:#E8A158;
+    --serif:'Noto Serif TC',serif; --display:'Anton',sans-serif; --sans:'IBM Plex Sans','Noto Sans TC',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  @page{size:A4 portrait;margin:0;}
+  html,body{background:#fff;}
+  .sheet{width:210mm;height:297mm;padding:7mm;background:#fff;
+    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:1.4mm;}
+
+  .card{position:relative;overflow:hidden;background:var(--bg);color:var(--paper);
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .bg{position:absolute;inset:0;background:url('img/mural-island.webp') center 20%/cover;}
+  .bg::after{content:'';position:absolute;inset:0;background:
+    radial-gradient(125% 80% at 50% 30%, rgba(0,0,0,.05), rgba(0,0,0,.66) 66%, rgba(0,0,0,.93)),
+    linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.3) 38%, rgba(0,0,0,.92));}
+  .glow{position:absolute;left:50%;top:62%;width:70mm;height:70mm;transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(209,72,32,.30), rgba(209,72,32,.08) 45%, transparent 66%);}
+  .card::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;mix-blend-mode:overlay;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.94 0 0 0 0 0.91 0 0 0 0 0.87 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+
+  .content{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:8mm 7mm;}
+  .kicker{font-family:var(--sans);font-weight:400;font-size:7.5pt;letter-spacing:.32em;text-transform:uppercase;color:var(--paper-soft);}
+  .title{font-family:var(--serif);font-weight:700;font-size:29pt;letter-spacing:.08em;line-height:1;margin-top:4mm;text-shadow:0 2px 26px rgba(0,0,0,.7);}
+  .en{font-family:var(--display);font-size:7.5pt;letter-spacing:.32em;text-transform:uppercase;color:var(--fire-soft);margin-top:3mm;}
+  .poem{font-family:var(--serif);font-weight:500;font-size:11pt;line-height:1.7;color:var(--paper-soft);margin-top:4.5mm;}
+  .qr{margin:5.5mm 0 5mm;padding:3.2mm;background:var(--paper);border-radius:2px;box-shadow:0 0 0 1px rgba(209,72,32,.55);}
+  .qr img{width:40mm;height:40mm;display:block;image-rendering:pixelated;}
+  .scan{font-family:var(--sans);font-size:9pt;line-height:1.7;color:var(--paper-soft);}
+  .scan .fire{color:var(--fire-soft);font-weight:500;}
+  .foot{font-family:var(--sans);font-size:6.5pt;letter-spacing:.14em;color:var(--paper-mute);margin-top:5mm;}
+</style>
+</head>
+<body>
+  <div class="sheet" id="sheet"></div>
+  <script>
+    var card =
+      '<div class="card">' +
+        '<div class="bg"></div><div class="glow"></div>' +
+        '<div class="content">' +
+          '<div class="kicker">七號貨櫃 · 夏夜火舞 · 澎湖</div>' +
+          '<div class="title">火生的島</div>' +
+          '<div class="en">A Night Made of Fire</div>' +
+          '<div class="poem">一千七百萬年的一團火，<br>長成你眼前這一桌。</div>' +
+          '<div class="qr"><img src="img/story-qr.png" alt="掃碼讀今晚的故事"></div>' +
+          '<div class="scan">掃碼，讀今晚的故事。<br>讀到最後，<span class="fire">留一句話給我們</span>。</div>' +
+          '<div class="foot">@container_no.7_penghu</div>' +
+        '</div>' +
+      '</div>';
+    document.getElementById('sheet').innerHTML = card + card + card + card;
+  </script>
+</body>
+</html>
