@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>桌卡 · 火生的島 · 夏夜火舞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans:wght@400;500&family=Noto+Serif+TC:wght@500;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EFEAE0; --ink:#1a1714; --ink-soft:#4a443b; --fire:#D14820; --mute:#8a857b; --line:#d8d1c4;
+    --serif:'Noto Serif TC',serif; --display:'Anton',sans-serif; --sans:'IBM Plex Sans','Noto Sans TC',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{background:#0a0a0a;}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:26px;padding:34px 18px;font-family:var(--sans);}
+
+  .card{
+    width:105mm;height:148mm;background:var(--paper);color:var(--ink);
+    border-top:5px solid var(--fire);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:11mm 10mm;box-shadow:0 22px 64px rgba(0,0,0,.55);position:relative;overflow:hidden;}
+
+  .kicker{font-family:var(--sans);font-weight:500;font-size:8.5pt;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--fire);}
+  .title{font-family:var(--serif);font-weight:700;font-size:33pt;letter-spacing:.08em;
+    line-height:1;margin-top:5mm;}
+  .en{font-family:var(--display);font-size:8.5pt;letter-spacing:.32em;color:var(--mute);
+    text-transform:uppercase;margin-top:3.5mm;}
+
+  .qr{margin:7mm 0 6mm;padding:3.5mm;background:#fff;border:1px solid var(--line);border-radius:2px;}
+  .qr img{width:50mm;height:50mm;display:block;image-rendering:pixelated;}
+
+  .lead{font-family:var(--serif);font-weight:500;font-size:15pt;line-height:1.5;}
+  .sub{font-size:10.5pt;color:var(--ink-soft);margin-top:2.5mm;line-height:1.6;}
+  .sub .fire{color:var(--fire);font-weight:500;}
+
+  .foot{font-family:var(--sans);font-size:7.5pt;letter-spacing:.12em;color:var(--mute);margin-top:8mm;}
+
+  /* 螢幕用：列印鈕（列印時隱藏）*/
+  .print-btn{font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.04em;
+    background:var(--fire);color:#0a0a0a;border:none;border-radius:5px;padding:13px 26px;cursor:pointer;}
+  .print-btn:hover{filter:brightness(1.08);}
+  .hint{font-family:var(--sans);font-size:12px;color:#8a857b;text-align:center;max-width:30em;line-height:1.7;}
+
+  @media print{
+    @page{size:A6 portrait;margin:0;}
+    html,body{background:#fff;}
+    body{padding:0;gap:0;min-height:0;}
+    .card{box-shadow:none;}
+    .screen-only{display:none !important;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="kicker">Container No.7 · 夏夜火舞</div>
+    <div class="title">火生的島</div>
+    <div class="en">A Night Made of Fire</div>
+    <div class="qr"><img src="img/story-qr.png" alt="掃碼讀今晚的故事"></div>
+    <div class="lead">掃碼，讀今晚這桌的故事。</div>
+    <div class="sub">讀到最後，<span class="fire">留一句話給我們</span>。</div>
+    <div class="foot">@container_no.7_penghu　·　澎湖</div>
+  </div>
+
+  <button class="print-btn screen-only" onclick="window.print()">列印這張卡（⌘P / Ctrl+P）</button>
+  <p class="hint screen-only">列印設定選 <b>A6</b>、邊界「無」最剛好；用 A4 印也行，印完沿卡緣裁切即可。深色背景是螢幕預覽用，紙卡本身是紙白底、省墨好掃。</p>
+
+</body>
+</html>
