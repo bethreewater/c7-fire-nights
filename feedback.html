@@ -124,8 +124,6 @@
   .q textarea::placeholder, .q input::placeholder { color: var(--paper-mute); }
   .q .sub { margin-top: 12px; }
   .q .sub .qt { font-size: 15.5px; font-weight: 400; color: var(--paper-soft); }
-  #q4a { display: none; }
-  #q4a.show { display: block; }
 
   .submit-wrap { max-width: 38rem; margin: 46px auto 0; padding: 0 26px; }
   .btn-submit {
@@ -185,8 +183,7 @@
     <div class="q">
       <div class="qt">今晚哪一場？</div>
       <div class="opts" data-radio="session">
-        <label class="opt"><input type="radio" name="session" value="Sunset 18:00"><span>Sunset 18:00</span></label>
-        <label class="opt"><input type="radio" name="session" value="Night 20:00"><span>Night 20:00</span></label>
+        <label class="opt"><input type="radio" name="session" value="19:07"><span>本場 19:07</span></label>
       </div>
     </div>
     <div class="q">
@@ -241,7 +238,7 @@
       </div>
       <textarea name="q4_why" rows="2" maxlength="1000" placeholder="為什麼？"></textarea>
       <div class="sub" id="q4a">
-        <div class="qt">第一段在 18:30，當時光線：<span class="note">Sunset 場才填</span></div>
+        <div class="qt">第一段開場時的光線：</div>
         <div class="opts">
           <label class="opt"><input type="radio" name="q4a_light" value="看得很清楚"><span>看得很清楚</span></label>
           <label class="opt"><input type="radio" name="q4a_light" value="還可以"><span>還可以</span></label>
@@ -423,15 +420,6 @@
     } else {
       console.error('[C7] Firebase SDK 未載入');
     }
-
-    // Q4-a 只在 Sunset 場顯示
-    var q4a = document.getElementById('q4a');
-    form.querySelectorAll('input[name="session"]').forEach(function (r) {
-      r.addEventListener('change', function () {
-        if (r.value.indexOf('Sunset') === 0 && r.checked) q4a.classList.add('show');
-        else q4a.classList.remove('show');
-      });
-    });
 
     function radio(name) { var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
     function checks(name) {

@@ -41,19 +41,6 @@
         <div id="pickedView" class="help">請先在上方選擇場次</div>
       </div>
 
-      <!-- 加訂另一場 -->
-      <div class="fld" id="fldAddon" hidden>
-        <label>加訂另一場</label>
-        <label class="addon" id="addon">
-          <input type="checkbox" id="addonChk">
-          <span class="lab" id="addonLab"></span>
-          <span style="display:flex;align-items:center;gap:12px;">
-            <span class="meta" id="addonMeta"></span>
-            <span class="tick" id="addonTick" aria-hidden="true">✓</span>
-          </span>
-        </label>
-      </div>
-
       <!-- 人數 -->
       <div class="fld" id="fldParty">
         <label>人數<span class="req">*</span></label>
@@ -148,8 +135,6 @@
   var sessionsEl = $('sessions');
   var step1 = $('step1'), step2 = $('step2'), step3 = $('step3');
   var pickedView = $('pickedView'), fldPicked = $('fldPicked');
-  var fldAddon = $('fldAddon'), addon = $('addon'), addonChk = $('addonChk'),
-      addonLab = $('addonLab'), addonMeta = $('addonMeta');
   var partySel = $('party'), fldParty = $('fldParty'), errParty = $('errParty');
   var nameInput = $('name'), fldName = $('fldName');
   var phoneInput = $('phone'), fldPhone = $('fldPhone');
@@ -160,16 +145,10 @@
   var toastEl = $('toast');
 
   // ---- 狀態 ----
-  // selected: 主選場次 id（"6/20|night"）；addonId: 加訂的同日另一場 id（或 null）
+  // selected: 已選場次 id（"6/20|evening"）
   var selected = null;
-  var addonId = null;
 
   // ---- 工具 ----
-  // 由 session id 推回 {date, sitting}
-  function parseId(id) {
-    var i = id.indexOf('|');
-    return { date: id.slice(0, i), sitting: id.slice(i + 1) };
-  }
   // 找某 id 的 session 物件（資料層為非同步即時快取，每次資料變動重建索引）
   var SESSION_BY_ID = {};
   function rebuildIndex() {
@@ -178,18 +157,9 @@
   }
   rebuildIndex();
   function sess(id) { return SESSION_BY_ID[id]; }
-  // 同日另一時段的 id
-  function siblingId(id) {
-    var p = parseId(id);
-    var other = p.sitting === 'sunset' ? 'night' : 'sunset';
-    return p.date + '|' + other;
-  }
-  // 目前所有選定的 session id（一或兩場）
+  // 目前選定的 session id（單場）
   function chosenIds() {
-    var ids = [];
-    if (selected) ids.push(selected);
-    if (addonId) ids.push(addonId);
-    return ids;
+    return selected ? [selected] : [];
   }
   // 可選最大人數 = 已選場次 remaining 的較小值
   function maxParty() {
@@ -201,7 +171,7 @@
   }
   function describe(id) {
     var s = sess(id);
-    return s.date + ' ' + s.label + ' ' + s.time;
+    return [s.date, s.label, s.time].filter(Boolean).join(' ');
   }
 
   function smoothScrollTo(el) {
@@ -253,7 +223,7 @@
         card.classList.add('full');
         var so = document.createElement('div');
         so.className = 'soldout';
-        so.textContent = '兩場皆已滿';
+        so.textContent = '已滿';
         card.appendChild(so);
       } else {
         list.forEach(function (s) {
@@ -265,7 +235,8 @@
           if (s.id === selected) btn.classList.add('sel');
 
           var lbl = document.createElement('span');
-          lbl.textContent = s.label;
+          // 單場：label 為空字串時顯示時間
+          lbl.textContent = s.label || s.time;
           btn.appendChild(lbl);
 
           var seat = document.createElement('span');
@@ -281,7 +252,7 @@
           }
           btn.appendChild(seat);
 
-          btn.setAttribute('aria-label', s.label + ' ' + s.time + '，' + (cap.full ? '已滿' : '剩 ' + cap.remaining + ' 位'));
+          btn.setAttribute('aria-label', [s.label, s.time].filter(Boolean).join(' ') + '，' + (cap.full ? '已滿' : '剩 ' + cap.remaining + ' 位'));
           btn.addEventListener('click', function () { pick(s.id); });
           card.appendChild(btn);
         });
@@ -297,7 +268,6 @@
   // 點某時段
   function pick(id) {
     selected = id;
-    addonId = null;            // 換主場次時，清掉舊的加訂
     // 視覺：清掉所有 .sel，標記目前這顆
     var all = sessionsEl.querySelectorAll('.row.pick');
     for (var i = 0; i < all.length; i++) {
@@ -310,7 +280,7 @@
   // ============================================================
   //  Step 02 — 表單同步
   // ============================================================
-  // 依目前選取重繪：已選場次顯示、加訂列、人數選項、送出鈕狀態
+  // 依目前選取重繪：已選場次顯示、人數選項、送出鈕狀態
   function syncForm() {
     // 已選場次唯讀顯示
     if (!selected) {
@@ -320,38 +290,11 @@
       pickedView.className = '';
       pickedView.style.color = 'var(--paper)';
       pickedView.style.fontSize = '15px';
-      var txt = describe(selected);
-      if (addonId) txt += '　＋　' + describe(addonId);
-      pickedView.textContent = txt;
+      pickedView.textContent = describe(selected);
     }
 
-    syncAddon();
     syncPartyOptions();
     updateSubmit();
-  }
-
-  // 加訂另一場開關：同日另一時段還有位才顯示
-  function syncAddon() {
-    if (!selected) { fldAddon.hidden = true; return; }
-    var sibId = siblingId(selected);
-    var sib = sess(sibId);
-    var cap = sib ? C7.capacity(sibId) : null;
-
-    if (!sib || !cap || cap.full) {
-      // 另一場滿或不存在 → 不顯示
-      fldAddon.hidden = true;
-      addonId = null;
-      addon.classList.remove('on');
-      addonChk.checked = false;
-      return;
-    }
-
-    fldAddon.hidden = false;
-    addonLab.textContent = '也想訂同日 ' + sib.label + ' ' + sib.time + '？';
-    addonMeta.textContent = '剩 ' + cap.remaining;
-    var on = (addonId === sibId);
-    addon.classList.toggle('on', on);
-    addonChk.checked = on;
   }
 
   // 人數選項 1..maxParty
@@ -376,21 +319,6 @@
       partySel.value = '';
     }
   }
-
-  // 加訂列點擊
-  addon.addEventListener('click', function (e) {
-    // label 內含隱藏 checkbox：阻止預設以自管狀態，避免雙重 toggle
-    e.preventDefault();
-    if (!selected) return;
-    var sibId = siblingId(selected);
-    var cap = C7.capacity(sibId);
-    if (!sess(sibId) || cap.full) return;
-    addonId = addonId === sibId ? null : sibId;
-    syncForm();
-  });
-  addon.addEventListener('keydown', function (e) {
-    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); addon.click(); }
-  });
 
   // ---- 驗證 ----
   function phoneValid(v) {
@@ -534,7 +462,6 @@
     if (cdTimer) { clearInterval(cdTimer); cdTimer = null; }
     // 重設狀態
     selected = null;
-    addonId = null;
     // 重設表單欄位
     $('form').reset();
     last5Input.value = '';
@@ -565,9 +492,6 @@
     if (selected && C7.capacity(selected).full) {
       toast('你選的場次剛剛被訂滿了，請重新選擇');
       selected = null;
-      addonId = null;
-    } else if (addonId && C7.capacity(addonId).full) {
-      addonId = null;
     }
     syncForm();
   }

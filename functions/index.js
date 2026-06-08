@@ -11,8 +11,7 @@ const GMAIL_USER = 'mryomryo@gmail.com';
 const PRICE = 2508;   // 每人實收 = 標價 2,280 + 一成服務費（2280 × 1.1）
 
 const SITTING = {
-  sunset: { label: 'Sunset', time: '18:00', arrive: '17:30–17:50' },
-  night:  { label: 'Night',  time: '20:00', arrive: '19:50–20:05' },
+  evening: { label: '', time: '19:07', arrive: '18:40–19:05' },
 };
 
 // "6/20|night" → { date:"6/20", label:"Night", time:"20:00", arrive:"19:50–20:05" }
@@ -46,7 +45,7 @@ exports.sendConfirmEmail = onDocumentUpdated(
 
     const rows = parsed.map((s) =>
       `<tr><td style="padding:6px 0;color:#555;">${esc(s.date)}（六）</td>` +
-      `<td style="padding:6px 0;text-align:right;font-weight:600;">${esc(s.label)} ${esc(s.time)}</td></tr>` +
+      `<td style="padding:6px 0;text-align:right;font-weight:600;">${s.label ? esc(s.label) + ' ' : ''}${esc(s.time)}</td></tr>` +
       `<tr><td colspan="2" style="padding:0 0 10px;color:#999;font-size:13px;">請於 ${esc(s.arrive)} 抵達</td></tr>`
     ).join('');
 
@@ -82,7 +81,7 @@ exports.sendConfirmEmail = onDocumentUpdated(
       await transporter.sendMail({
         from: `"夏夜火舞 · 七號貨櫃" <${GMAIL_USER}>`,
         to,
-        subject: `訂位已確認 · 夏夜火舞 ${parsed.map((s) => s.date + ' ' + s.label).join('、')}`,
+        subject: `訂位已確認 · 夏夜火舞 ${parsed.map((s) => s.date + ' ' + s.time).join('、')}`,
         html,
       });
       console.log('  ✓ 已寄出至 ' + to);
