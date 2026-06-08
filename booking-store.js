@@ -29,7 +29,7 @@
 
   var CAP = 15;
   var HOLD_MS = 24 * 60 * 60 * 1000;
-  var PRICE = 2500;
+  var PRICE = 2508;   // 每人實收 = 標價 2,280 + 一成服務費（2280 × 1.1）
   var ADMIN_EMAIL = 'mryomryo@gmail.com';
 
   if (!window.firebase || !firebase.initializeApp) {

@@ -8,7 +8,7 @@ const nodemailer = require('nodemailer');
 
 const GMAIL_PASS = defineSecret('GMAIL_PASS');   // 應用程式密碼（部署時設定，不入碼）
 const GMAIL_USER = 'mryomryo@gmail.com';
-const PRICE = 2500;
+const PRICE = 2508;   // 每人實收 = 標價 2,280 + 一成服務費（2280 × 1.1）
 
 const SITTING = {
   sunset: { label: 'Sunset', time: '18:00', arrive: '17:30–17:50' },
@@ -100,7 +100,7 @@ const FB_LABELS = [
   ['session', '場次'], ['name', '稱呼'], ['firstVisit', '首次來店'],
   ['q1_length', 'Q1 110 分鐘長度'],
   ['q2_again', 'Q2 願意再參加'], ['q2_why', '　└ 原因'],
-  ['q3_price', 'Q3 票價 2,500 感受'], ['q3_note', '　└ 補充'],
+  ['q3_price', 'Q3 票價 2,280 感受'], ['q3_note', '　└ 補充'],
   ['q4_dance', 'Q4 最愛火舞段'], ['q4_why', '　└ 原因'], ['q4a_light', 'Q4a 第一段光線(Sunset)'],
   ['q5_pace', 'Q5 出餐節奏'], ['q5_stuck', '　└ 最卡的一波'],
   ['q6_service', 'Q6 服務'], ['q6_note', '　└ 具體'],

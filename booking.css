@@ -181,6 +181,8 @@ td .phone{color:var(--mute);}
 /* ---- 空狀態 / 提示 ---- */
 .empty{text-align:center;color:var(--mute);font-size:14px;padding:48px 0;}
 .note{font-size:12.5px;color:var(--mute);margin-top:14px;line-height:1.8;}
+.price-note{font-size:13px;color:var(--mute);margin:0 0 12px;line-height:1.7;}
+.price-note b{color:var(--paper);font-weight:600;}
 
 /* ---- Toast ---- */
 .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);

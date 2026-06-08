@@ -22,7 +22,7 @@
   <!-- 3. 頁首大標 -->
   <p class="pg-kicker">線上訂位 / RESERVE</p>
   <h1 class="pg-h1">訂位</h1>
-  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 24 小時。<br><b>NT$ 2,500</b>／人（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>四段火舞</b>、<b>四道菜</b>。</p>
+  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 24 小時。<br><b>NT$ 2,280</b>／人<small>（另加一成服務費）</small>（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>四段火舞</b>、<b>四道菜</b>。</p>
 
   <!-- 4. Step 01 選場次 -->
   <section id="step1">
@@ -102,6 +102,7 @@
       </div>
 
       <!-- 送出 -->
+      <p class="price-note">標價 <b>NT$ 2,280</b>／人，另加一成服務費（每人實收約 <b>NT$ 2,508</b>）。</p>
       <button type="submit" class="btn btn-fire" id="submit" disabled>送出訂位 · 保留 24 小時</button>
       <p class="note">送出後，我們會以電話與你確認。</p>
     </form>
@@ -510,7 +511,7 @@
     $('confMeta').innerHTML = lines +
       '。請在 <span class="countdown" id="cd">24:00:00</span> 內完成匯款，逾時位子自動釋放。';
 
-    // 金額 = party × 2500 × 場次數
+    // 金額 = party × 2508（標價 2,280 + 一成服務費）× 場次數
     var amt = party * C7.PRICE * sessionCount;
     $('confAmt').textContent = 'NT$ ' + amt.toLocaleString('en-US');
 
