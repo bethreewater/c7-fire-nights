@@ -1468,10 +1468,16 @@
   /* ===== 夜行菜單（scroll-pinned：暮色→夜，天越暗火越亮）===== */
   .menu-night .mpin { display: none; }
   section.menu-live { overflow: visible; }   /* overflow:hidden 會殺掉 sticky */
+  .menu-sky {                                 /* 02 標題區＝暮色序章，往下無縫接舞台天空 */
+    position: absolute; top: 0; left: calc(50% - 50vw); width: 100vw; height: 130vh;
+    background: linear-gradient(180deg, #000 0%, #081019 38vh, #0e1420 62vh, #0e1420 100%);
+    pointer-events: none;
+  }
+  .menu-night > :not(.menu-sky) { position: relative; z-index: 1; }   /* 內容抬到天空之上（原 has-mural 的職責） */
+  .menu-night .display-h-zh { font-family: var(--zh-serif); font-weight: 500; letter-spacing: 0.06em; }
   .menu-live .mpin { display: block; position: relative; height: 460vh; margin-top: 30px; width: 100vw; margin-left: calc(50% - 50vw); }
   .menu-live .menu-fallback { display: none; }
   .menu-live.reveal { opacity: 1 !important; transform: none !important; }
-  .menu-live .mural-bg { height: 130vh; bottom: auto; }
   .mstage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
   .msky-night, .msky-dusk, .mstars, .mcourse, .mc-close { position: absolute; inset: 0; }
   .msky-night {
@@ -1729,8 +1735,8 @@
 </section>
 
 <!-- MENU -->
-<section id="menu" class="has-mural menu-night">
-  <div class="mural-bg" style="background-image:url('img/mural-fishing.webp')" aria-hidden="true"></div>
+<section id="menu" class="menu-night">
+  <div class="menu-sky" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
       <span class="num">02</span>
