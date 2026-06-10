@@ -7,6 +7,8 @@
 <title>線上訂位 · 夏夜火舞 · CONTAINER NO.7</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="booking.css">
 </head>
@@ -190,6 +192,31 @@
   // ============================================================
   //  Step 01 — 場次卡
   // ============================================================
+  // 資料還沒到時的骨架：12 個日期先站好位，名額同步中
+  var SKELETON_DATES = ['6/13', '6/20', '6/27', '7/04', '7/11', '7/18', '7/25', '8/01', '8/08', '8/15', '8/22', '8/29'];
+  function renderSkeleton() {
+    var frag = document.createDocumentFragment();
+    SKELETON_DATES.forEach(function (date) {
+      var card = document.createElement('div');
+      card.className = 'scard skel';
+      var dt = document.createElement('div');
+      dt.className = 'dt';
+      dt.textContent = date;
+      card.appendChild(dt);
+      var dow = document.createElement('div');
+      dow.className = 'dow';
+      dow.textContent = 'SAT';
+      card.appendChild(dow);
+      var s = document.createElement('div');
+      s.className = 'skel-line';
+      s.textContent = '名額同步中…';
+      card.appendChild(s);
+      frag.appendChild(card);
+    });
+    sessionsEl.innerHTML = '';
+    sessionsEl.appendChild(frag);
+  }
+
   function renderSessions() {
     // 依日期分組
     var order = [];
@@ -198,6 +225,11 @@
       if (!byDate[s.date]) { byDate[s.date] = []; order.push(s.date); }
       byDate[s.date].push(s);
     });
+
+    if (!order.length) {   // 資料還沒到：先畫骨架，第一筆資料到就會重繪覆蓋
+      renderSkeleton();
+      return;
+    }
 
     var frag = document.createDocumentFragment();
 

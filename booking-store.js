@@ -40,6 +40,10 @@
   var db = firebase.firestore();
   var auth = firebase.auth();
 
+  // 本機快取（IndexedDB）：回訪客場次「秒出」，背景再與伺服器同步。
+  // 失敗（私密視窗等）安靜略過，不影響功能。
+  try { db.enablePersistence({ synchronizeTabs: true }).catch(function () {}); } catch (e) {}
+
   // ---- id 映射：對外 "6/20|night"  ↔  Firestore doc id "6-20_night" ----
   function pageId(date, sitting) { return date + '|' + sitting; }
   function docId(pid) {
@@ -51,7 +55,7 @@
   var _sessions = {};          // docId -> {docId,pid,date,sitting,label,time,cap,confirmedSeats,order}
   var _holdsBySession = {};    // docId -> [{id,seats,until,bookingId}]
   var _bookings = [];          // 後台才有（含個資）
-  var _feedback = [];          // 後台才有（內測回饋）
+  var _feedback = [];          // 後台才有（場後回饋）
   var _isAdmin = false;
   var _authCb = null;
   var listeners = [];
@@ -64,6 +68,7 @@
   }
 
   // ---- 公開監聽：場次 + 保留 ----
+  var _live = false;   // 第一筆 onSnapshot 已到（之後 REST 種子一律不覆蓋）
   db.collection('sessions').orderBy('order').onSnapshot(function (snap) {
     var m = {};
     snap.forEach(function (d) {
@@ -74,9 +79,41 @@
         cap: (x.cap != null ? x.cap : CAP), confirmedSeats: (x.confirmedSeats || 0), order: (x.order || 0)
       };
     });
+    _live = true;
     _sessions = m;
     notify();
   }, function (e) { console.error('[C7] sessions 監聽錯誤', e); });
+
+  // ---- REST 搶跑：不等 SDK 建立連線，先用一發輕量 GET 把場次畫出來 ----
+  // 首次訪客 SDK 下載＋連線要 1–3 秒，這發通常 ~0.3 秒就回。
+  // 真快照（onSnapshot）一到就整批覆蓋；REST 只在還沒有任何資料時填入。
+  try {
+    fetch('https://firestore.googleapis.com/v1/projects/' + firebaseConfig.projectId +
+          '/databases/(default)/documents/sessions?key=' + firebaseConfig.apiKey + '&pageSize=50')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.documents || _live || Object.keys(_sessions).length) return;
+        var m = {};
+        j.documents.forEach(function (doc) {
+          var f = doc.fields || {};
+          var sv = function (k) { return f[k] && f[k].stringValue; };
+          var iv = function (k, dft) { return f[k] && f[k].integerValue != null ? Number(f[k].integerValue) : dft; };
+          var date = sv('date'), sitting = sv('sitting');
+          if (!date || !sitting) return;
+          var id = doc.name.split('/').pop();
+          m[id] = {
+            docId: id, pid: pageId(date, sitting),
+            date: date, sitting: sitting, label: sv('label') || '', time: sv('time') || '',
+            cap: iv('cap', CAP), confirmedSeats: iv('confirmedSeats', 0), order: iv('order', 0)
+          };
+        });
+        if (!_live && !Object.keys(_sessions).length && Object.keys(m).length) {
+          _sessions = m;
+          notify();
+        }
+      })
+      .catch(function () {});
+  } catch (e) {}
 
   db.collectionGroup('holds').onSnapshot(function (snap) {
     var m = {};

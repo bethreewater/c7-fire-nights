@@ -202,3 +202,17 @@ td .phone{color:var(--mute);}
   .sec-h .en{display:none;}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;}}
+
+/* 場次骨架：資料到前先把 12 個日期站好位（名額同步中） */
+.scard.skel { pointer-events: none; }
+.scard.skel .skel-line {
+  margin-top: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; letter-spacing: 0.08em;
+  color: var(--paper-mute, #8A857B);
+  animation: skelPulse 1.2s ease-in-out infinite;
+}
+@keyframes skelPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.9; } }
+@media (prefers-reduced-motion: reduce) {
+  .scard.skel .skel-line { animation: none; opacity: 0.6; }
+}
