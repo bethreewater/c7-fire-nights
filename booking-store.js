@@ -68,8 +68,11 @@
   }
 
   // ---- 公開監聽：場次 + 保留 ----
-  var _live = false;   // 第一筆 onSnapshot 已到（之後 REST 種子一律不覆蓋）
+  var _live = false;   // 伺服器快照已到（之後 REST 種子一律不覆蓋）
   db.collection('sessions').orderBy('order').onSnapshot(function (snap) {
+    // 空的「快取」快照不作數（enablePersistence 首次/離線會先吐空快照，
+    // 若拿它當權威會擋掉 REST 搶跑、骨架卡死）
+    if (snap.empty && snap.metadata.fromCache) return;
     var m = {};
     snap.forEach(function (d) {
       var x = d.data();
@@ -79,7 +82,7 @@
         cap: (x.cap != null ? x.cap : CAP), confirmedSeats: (x.confirmedSeats || 0), order: (x.order || 0)
       };
     });
-    _live = true;
+    if (!snap.metadata.fromCache) _live = true;   // 只有伺服器快照才鎖門
     _sessions = m;
     notify();
   }, function (e) { console.error('[C7] sessions 監聽錯誤', e); });

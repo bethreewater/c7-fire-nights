@@ -18,6 +18,12 @@
   <!-- 1. 頁首 -->
   <header class="site-head">
     <span class="brand">CONTAINER NO.7 · 夏夜火舞</span>
+    <span class="lang-switch" id="langSwitch" aria-label="Language">
+      <button type="button" data-l="zh" class="on">中</button>
+      <button type="button" data-l="en">EN</button>
+      <button type="button" data-l="ja">日</button>
+      <button type="button" data-l="ko">한</button>
+    </span>
     <span class="back"><a href="index.html">← 回首頁</a></span>
   </header>
 
@@ -125,6 +131,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="booking-store.js"></script>
+<script src="i18n.js"></script>
 <script>
 (function () {
   'use strict';
@@ -222,7 +229,7 @@
       card.appendChild(dow);
       var s = document.createElement('div');
       s.className = 'skel-line';
-      s.textContent = '名額同步中…';
+      s.textContent = (window.C7L || {}).syncing || '名額同步中…';
       card.appendChild(s);
       frag.appendChild(card);
     });
@@ -268,7 +275,7 @@
         card.classList.add('full');
         var so = document.createElement('div');
         so.className = 'soldout';
-        so.textContent = '已滿';
+        so.textContent = (window.C7L || {}).bFull || '已滿';
         card.appendChild(so);
       } else {
         list.forEach(function (s) {
@@ -286,24 +293,25 @@
 
           var seat = document.createElement('span');
           seat.className = 'seat';
+          var TT = window.C7L || {};
           if (cap.full) {
             seat.classList.add('zero');
-            seat.textContent = '已滿';
+            seat.textContent = TT.bFull || '已滿';
             btn.disabled = true;
             btn.setAttribute('aria-disabled', 'true');
           } else if (cap.remaining < 3) {
             seat.classList.add('urgent');
-            seat.textContent = '最後 ' + cap.remaining;
+            seat.textContent = (TT.bLast || '最後 {n}').replace('{n}', cap.remaining);
             seat.style.color = '#FF6B35';
           } else {
             if (cap.remaining <= 3) seat.classList.add('low');
-            seat.textContent = '剩 ' + cap.remaining;
+            seat.textContent = (TT.bLeft || '剩 {n}').replace('{n}', cap.remaining);
             seat.style.color = seatTone(cap.remaining);
           }
           btn.appendChild(seat);
 
           btn.setAttribute('aria-label', [s.label, s.time].filter(Boolean).join(' ') + '，' +
-            (cap.full ? '已滿' : (cap.remaining < 3 ? '最後 ' : '剩 ') + cap.remaining + ' 位'));
+            (cap.full ? (TT.bFull || '已滿') : (cap.remaining < 3 ? (TT.bLast || '最後 {n}') : (TT.bLeft || '剩 {n}')).replace('{n}', cap.remaining)));
           btn.addEventListener('click', function () { pick(s.id); });
           card.appendChild(btn);
         });
@@ -336,7 +344,7 @@
     // 已選場次唯讀顯示
     if (!selected) {
       pickedView.className = 'help';
-      pickedView.textContent = '請先在上方選擇場次';
+      pickedView.textContent = (window.C7L || {}).pickFirst || '請先在上方選擇場次';
     } else {
       pickedView.className = '';
       pickedView.style.color = 'var(--paper)';
@@ -355,12 +363,13 @@
     partySel.innerHTML = '';
     var ph = document.createElement('option');
     ph.value = '';
-    ph.textContent = max > 0 ? '請選擇人數' : '尚無可選名額';
+    var TP = window.C7L || {};
+    ph.textContent = max > 0 ? (TP.partyPh || '請選擇人數') : (TP.partyNone || '尚無可選名額');
     partySel.appendChild(ph);
     for (var n = 1; n <= max; n++) {
       var o = document.createElement('option');
       o.value = String(n);
-      o.textContent = n + ' 位';
+      o.textContent = (TP.partyN || '{n} 位').replace('{n}', n);
       partySel.appendChild(o);
     }
     // 保留先前選擇（若仍在範圍內）
@@ -406,10 +415,10 @@
     var max = maxParty();
     var party = Number(partySel.value);
     if (!partySel.value) {
-      errParty.textContent = '請選擇人數。';
+      errParty.textContent = (window.C7L || {}).errParty || '請選擇人數。';
       fldParty.classList.add('invalid'); ok = false;
     } else if (party > max) {
-      errParty.textContent = '人數超過剩餘名額（剩 ' + max + '）。';
+      errParty.textContent = ((window.C7L || {}).errOver || '人數超過剩餘名額（剩 {n}）。').replace('{n}', max);
       fldParty.classList.add('invalid'); ok = false;
     } else {
       fldParty.classList.remove('invalid');
@@ -466,7 +475,7 @@
       email: emailInput.value.trim()
     });
 
-    toast('已送出 · 已為你保留 24 小時');
+    toast((window.C7L || {}).sentToast || '已送出 · 已為你保留 24 小時');
     showConfirm(booking);
   });
 
@@ -483,12 +492,12 @@
     var party = booking.party;
     var sessionCount = ids.length;
 
-    $('confHead').textContent = '已為你保留 ' + party + ' 位';
+    $('confHead').textContent = ((window.C7L || {}).reserved || '已為你保留 {n} 位').replace('{n}', party);
 
     // meta：場次列表 + 倒數
     var lines = ids.map(function (id) { return describe(id); }).join('、');
     $('confMeta').innerHTML = lines +
-      '。請在 <span class="countdown" id="cd">24:00:00</span> 內完成匯款，逾時位子自動釋放。';
+      ((window.C7L || {}).confTail || '。請在 {cd} 內完成匯款，逾時位子自動釋放。').replace('{cd}', '<span class="countdown" id="cd">24:00:00</span>');
 
     // 金額 = party × 2508（標價 2,280 + 一成服務費）× 場次數
     var amt = party * C7.PRICE * sessionCount;
@@ -498,7 +507,7 @@
     var cdEl = $('cd');
     function tick() {
       var ms = booking.holdUntil - Date.now();
-      if (ms <= 0) { cdEl.textContent = '已逾時'; clearInterval(cdTimer); cdTimer = null; return; }
+      if (ms <= 0) { cdEl.textContent = (window.C7L || {}).expired || '已逾時'; clearInterval(cdTimer); cdTimer = null; return; }
       cdEl.textContent = C7.fmtCountdown(ms);
     }
     if (cdTimer) clearInterval(cdTimer);
@@ -541,7 +550,7 @@
     renderSessions();
     // 若目前選的場次已被別人訂滿，提示並清除選取
     if (selected && C7.capacity(selected).full) {
-      toast('你選的場次剛剛被訂滿了，請重新選擇');
+      toast((window.C7L || {}).fullToast || '你選的場次剛剛被訂滿了，請重新選擇');
       selected = null;
     }
     syncForm();
@@ -576,6 +585,12 @@
       setTimeout(function () { if (un) { un(); un = null; } }, 15000);
     }
   })();
+
+  document.addEventListener('c7lang', function () {
+    if (!step3.hidden) return;
+    renderSessions();
+    syncForm();
+  });
 
   C7.subscribe(onStoreChange);
   // 每 30 秒釋放逾時 pending（releaseExpired 內部會 notify → onStoreChange 重繪）

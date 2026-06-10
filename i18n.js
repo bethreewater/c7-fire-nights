@@ -362,6 +362,138 @@
     ['.fp-btn', '바로 예약']
   ];
 
+  /* ---------- 訂位頁（book.html）：靜態字串 ---------- */
+  var BOOK_EN = [
+    ['title', 'Reserve · Summer Nights · CONTAINER NO.7'],
+    ['.site-head .back a', '← Back'],
+    ['.pg-kicker', 'RESERVE'],
+    ['.pg-h1', 'Reserve'],
+    ['.pg-lede', 'Pick a date to see <b>live remaining seats</b> — once sent, we hold yours for 24 hours.<br><b>NT$ 2,280</b> per person<small> (+10% service)</small> (was <s>NT$ 2,980</s>) · <b>110 minutes</b>, <b>two fire dances</b>, <b>four courses</b>.'],
+    ['#step1 .sec-h h2', 'Pick a night'],
+    ['#step2 .sec-h h2', 'Your details'],
+    ['#step3 .sec-h h2', 'Sent'],
+    ['#fldPicked > label', 'Date'],
+    ['#fldParty > label', 'Party<span class="req">*</span>'],
+    ['#errParty', 'Please pick a party size.'],
+    ['#fldName > label', 'Name<span class="req">*</span>'],
+    ['#name', 'How should we call you?', 'ph'],
+    ['#errName', 'Please fill in a name.'],
+    ['#fldPhone > label', 'Phone<span class="req">*</span>'],
+    ['#errPhone', 'Please enter a valid phone (8+ digits).'],
+    ['#fldEmail > label', 'Email · optional (for a confirmation letter)'],
+    ['.fld:has(#diet) > label', 'Dietary · pick any'],
+    ['#diet label:nth-child(1)', '<input type="checkbox" value="不吃鴨">No duck'],
+    ['#diet label:nth-child(2)', '<input type="checkbox" value="海鮮過敏">Shellfish allergy'],
+    ['#diet label:nth-child(3)', '<input type="checkbox" value="蛋奶過敏">Egg / dairy allergy'],
+    ['#diet label:nth-child(4)', '<input type="checkbox" value="素食">Vegetarian'],
+    ['#diet label:nth-child(5)', '<input type="checkbox" value="不吃辣">No spice'],
+    ['.fld:has(#last5) > label', 'Last 5 digits of your transfer · can be added later'],
+    ['.price-note', 'Listed <b>NT$ 2,280</b> per person, +10% service (about <b>NT$ 2,508</b> per person).'],
+    ['#submit', 'Send — held for 24 hours'],
+    ['#form .note', 'After you send, we confirm by phone.'],
+    ['.bank div:nth-child(1)', '<span class="k">Bank</span>Cathay United Bank (013)'],
+    ['.bank div:nth-child(2)', '<span class="k">Account</span><span class="num">128700003341</span>'],
+    ['.bank div:nth-child(3) .k', 'Amount'],
+    ['.confirm .foot', 'No need to message us after the transfer — we reconcile and confirm by phone.<br>Questions: 0963-059-889.'],
+    ['#again', 'Book another']
+  ];
+  var BOOK_JA = [
+    ['title', '予約 · 夏夜火舞 · CONTAINER NO.7'],
+    ['.site-head .back a', '← トップへ'],
+    ['.pg-kicker', 'ご予約 / RESERVE'],
+    ['.pg-h1', 'ご予約'],
+    ['.pg-lede', '日付を選ぶと<b>残席がリアルタイム</b>で表示されます。送信後、24時間お席を確保します。<br><b>NT$ 2,280</b>／1名<small>（別途サービス料10%）</small>（通常 <s>NT$ 2,980</s>）・<b>110分</b>、<b>二幕の火の舞</b>、<b>四皿</b>。'],
+    ['#step1 .sec-h h2', '日付を選ぶ'],
+    ['#step2 .sec-h h2', 'お客様情報'],
+    ['#step3 .sec-h h2', '送信済み'],
+    ['#fldPicked > label', '日付'],
+    ['#fldParty > label', '人数<span class="req">*</span>'],
+    ['#errParty', '人数をお選びください。'],
+    ['#fldName > label', 'お名前<span class="req">*</span>'],
+    ['#name', 'お名前（呼び方）', 'ph'],
+    ['#errName', 'お名前をご記入ください。'],
+    ['#fldPhone > label', '電話番号<span class="req">*</span>'],
+    ['#errPhone', '有効な電話番号をご記入ください（数字8桁以上）。'],
+    ['#fldEmail > label', 'メール · 任意（確認メールが必要な方のみ）'],
+    ['.fld:has(#diet) > label', '食事制限 · 複数選択可'],
+    ['#diet label:nth-child(1)', '<input type="checkbox" value="不吃鴨">鴨なし'],
+    ['#diet label:nth-child(2)', '<input type="checkbox" value="海鮮過敏">シーフードアレルギー'],
+    ['#diet label:nth-child(3)', '<input type="checkbox" value="蛋奶過敏">卵・乳アレルギー'],
+    ['#diet label:nth-child(4)', '<input type="checkbox" value="素食">ベジタリアン'],
+    ['#diet label:nth-child(5)', '<input type="checkbox" value="不吃辣">辛味なし'],
+    ['.fld:has(#last5) > label', '振込口座の下5桁 · 後からでも可'],
+    ['.price-note', '表示価格 <b>NT$ 2,280</b>／1名、別途サービス料10%（お一人あたり約 <b>NT$ 2,508</b>）。'],
+    ['#submit', '送信 · 24時間お席を確保'],
+    ['#form .note', '送信後、お電話にて確認のご連絡をいたします。'],
+    ['.bank div:nth-child(1)', '<span class="k">銀行</span>国泰世華銀行（013）'],
+    ['.bank div:nth-child(2)', '<span class="k">口座</span><span class="num">128700003341</span>'],
+    ['.bank div:nth-child(3) .k', '金額'],
+    ['.confirm .foot', 'お振込み後のご連絡は不要です。入金を確認次第、お電話でご連絡します。<br>お問い合わせ：0963-059-889。'],
+    ['#again', 'もう一件予約']
+  ];
+  var BOOK_KO = [
+    ['title', '예약 · 夏夜火舞 · CONTAINER NO.7'],
+    ['.site-head .back a', '← 홈으로'],
+    ['.pg-kicker', '예약 / RESERVE'],
+    ['.pg-h1', '예약'],
+    ['.pg-lede', '날짜를 고르면 <b>실시간 잔여석</b>이 표시됩니다. 전송 후 24시간 동안 자리를 잡아둡니다.<br><b>NT$ 2,280</b>/1인<small> (봉사료 10% 별도)</small> (정가 <s>NT$ 2,980</s>) · <b>110분</b>, <b>두 번의 불춤</b>, <b>네 가지 코스</b>.'],
+    ['#step1 .sec-h h2', '날짜 선택'],
+    ['#step2 .sec-h h2', '예약 정보'],
+    ['#step3 .sec-h h2', '전송 완료'],
+    ['#fldPicked > label', '날짜'],
+    ['#fldParty > label', '인원<span class="req">*</span>'],
+    ['#errParty', '인원을 선택해 주세요.'],
+    ['#fldName > label', '성함<span class="req">*</span>'],
+    ['#name', '성함(호칭)', 'ph'],
+    ['#errName', '성함을 입력해 주세요.'],
+    ['#fldPhone > label', '전화번호<span class="req">*</span>'],
+    ['#errPhone', '유효한 전화번호를 입력해 주세요(숫자 8자리 이상).'],
+    ['#fldEmail > label', '이메일 · 선택(확인 메일을 원하시면 입력)'],
+    ['.fld:has(#diet) > label', '식이 제한 · 복수 선택 가능'],
+    ['#diet label:nth-child(1)', '<input type="checkbox" value="不吃鴨">오리 제외'],
+    ['#diet label:nth-child(2)', '<input type="checkbox" value="海鮮過敏">해산물 알레르기'],
+    ['#diet label:nth-child(3)', '<input type="checkbox" value="蛋奶過敏">계란·유제품 알레르기'],
+    ['#diet label:nth-child(4)', '<input type="checkbox" value="素食">채식'],
+    ['#diet label:nth-child(5)', '<input type="checkbox" value="不吃辣">맵지 않게'],
+    ['.fld:has(#last5) > label', '이체 계좌 끝 5자리 · 나중에 보내도 됩니다'],
+    ['.price-note', '표시 가격 <b>NT$ 2,280</b>/1인, 봉사료 10% 별도(1인 약 <b>NT$ 2,508</b>).'],
+    ['#submit', '전송 · 24시간 확보'],
+    ['#form .note', '전송 후 전화로 확인드립니다.'],
+    ['.bank div:nth-child(1)', '<span class="k">은행</span>국태세화은행 Cathay United (013)'],
+    ['.bank div:nth-child(2)', '<span class="k">계좌</span><span class="num">128700003341</span>'],
+    ['.bank div:nth-child(3) .k', '금액'],
+    ['.confirm .foot', '입금 후 따로 연락하실 필요 없습니다. 입금 확인 후 전화드립니다.<br>문의: 0963-059-889.'],
+    ['#again', '한 건 더 예약']
+  ];
+  DICT.en = DICT.en.concat(BOOK_EN);
+  DICT.ja = DICT.ja.concat(BOOK_JA);
+  DICT.ko = DICT.ko.concat(BOOK_KO);
+
+  /* ---------- 訂位頁：動態字串擴充 ---------- */
+  var LB = {
+    zh: { pickFirst: '請先在上方選擇場次', partyPh: '請選擇人數', partyNone: '尚無可選名額', partyN: '{n} 位',
+          errParty: '請選擇人數。', errOver: '人數超過剩餘名額（剩 {n}）。', syncing: '名額同步中…',
+          bFull: '已滿', bLast: '最後 {n}', bLeft: '剩 {n}', seatWord: '{n} 位',
+          sentToast: '已送出 · 已為你保留 24 小時', fullToast: '你選的場次剛剛被訂滿了，請重新選擇',
+          reserved: '已為你保留 {n} 位', confTail: '。請在 {cd} 內完成匯款，逾時位子自動釋放。', expired: '已逾時' },
+    en: { pickFirst: 'Pick a date above first', partyPh: 'How many of you?', partyNone: 'No seats available', partyN: '{n}',
+          errParty: 'Please pick a party size.', errOver: 'That’s more than the seats left ({n}).', syncing: 'Syncing seats…',
+          bFull: 'Full', bLast: 'Last {n}', bLeft: '{n} left', seatWord: '{n}',
+          sentToast: 'Sent — your seats are held for 24 hours', fullToast: 'That night just filled up — please pick another',
+          reserved: '{n} seats held for you', confTail: '. Please transfer within {cd} — after that the seats release automatically.', expired: 'Expired' },
+    ja: { pickFirst: 'まず上の日付をお選びください', partyPh: '人数をお選びください', partyNone: '空席がありません', partyN: '{n} 名',
+          errParty: '人数をお選びください。', errOver: '残席を超えています（残り {n}）。', syncing: '残席を確認中…',
+          bFull: '満席', bLast: '残り {n}', bLeft: '残り {n}', seatWord: '{n} 名',
+          sentToast: '送信しました · 24時間お席を確保します', fullToast: 'その日はちょうど満席になりました。別の日をお選びください',
+          reserved: '{n} 名分のお席を確保しました', confTail: '。{cd} 以内にお振込みください。期限を過ぎるとお席は自動的に解放されます。', expired: '期限切れ' },
+    ko: { pickFirst: '먼저 위에서 날짜를 선택해 주세요', partyPh: '인원을 선택해 주세요', partyNone: '남은 자리가 없습니다', partyN: '{n}명',
+          errParty: '인원을 선택해 주세요.', errOver: '남은 자리보다 많습니다(남은 {n}석).', syncing: '잔여석 확인 중…',
+          bFull: '매진', bLast: '마지막 {n}', bLeft: '{n} 남음', seatWord: '{n}명',
+          sentToast: '전송 완료 · 24시간 동안 자리를 잡아둡니다', fullToast: '방금 그 날짜가 매진되었습니다. 다른 날짜를 선택해 주세요',
+          reserved: '{n}석을 잡아두었습니다', confTail: '. {cd} 안에 입금해 주세요. 시간이 지나면 자리가 자동으로 풀립니다.', expired: '기한 만료' }
+  };
+  Object.keys(LB).forEach(function (k) { var t = LB[k]; for (var key in t) L[k][key] = t[key]; });
+
   /* ---------- 引擎 ---------- */
   var KEY = 'c7lang';
   var LANGS = ['zh', 'en', 'ja', 'ko'];
@@ -373,13 +505,25 @@
   // 動態字串先就位（index 的 IIFE 在本檔之後執行，讀得到）
   window.C7L = L[current];
 
-  var snapshot = null;   // selector -> 原始(中文) innerHTML
+  /* 條目格式：[selector, value] 換 innerHTML；[selector, value, 'ph'] 換 placeholder 屬性 */
+  function getVal(el, t) { return t === 'ph' ? (el.getAttribute('placeholder') || '') : el.innerHTML; }
+  function setVal(el, t, v) { if (t === 'ph') el.setAttribute('placeholder', v); else el.innerHTML = v; }
+
+  var snapshot = null;   // 'selector|type' -> 原始(中文)值
   function takeSnapshot() {
     if (snapshot) return;
     snapshot = {};
     DICT.en.forEach(function (pair) {
+      var t = pair[2] || 'html';
       var el = document.querySelector(pair[0]);
-      if (el) snapshot[pair[0]] = el.innerHTML;
+      if (el) snapshot[pair[0] + '|' + t] = getVal(el, t);
+    });
+  }
+  function restoreZh() {
+    Object.keys(snapshot).forEach(function (key) {
+      var i = key.lastIndexOf('|');
+      var el = document.querySelector(key.slice(0, i));
+      if (el) setVal(el, key.slice(i + 1), snapshot[key]);
     });
   }
 
@@ -387,20 +531,13 @@
     if (LANGS.indexOf(lang) < 0) lang = 'zh';
     takeSnapshot();
     if (lang === 'zh') {
-      Object.keys(snapshot).forEach(function (sel) {
-        var el = document.querySelector(sel);
-        if (el) el.innerHTML = snapshot[sel];
-      });
+      restoreZh();
     } else {
       var dict = DICT[lang] && DICT[lang].length ? DICT[lang] : DICT.en;  // 字典缺 → 先用英文
-      // 先還原成中文快照再套（避免從別的語言疊加）
-      Object.keys(snapshot).forEach(function (sel) {
-        var el = document.querySelector(sel);
-        if (el) el.innerHTML = snapshot[sel];
-      });
+      restoreZh();   // 先還原成中文快照再套（避免從別的語言疊加）
       dict.forEach(function (pair) {
         var el = document.querySelector(pair[0]);
-        if (el) el.innerHTML = pair[1];
+        if (el) setVal(el, pair[2] || 'html', pair[1]);
       });
     }
     current = lang;

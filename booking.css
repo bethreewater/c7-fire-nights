@@ -221,3 +221,13 @@ td .phone{color:var(--mute);}
 .seat.urgent { font-weight: 600; animation: seatPulse 1.15s ease-in-out infinite; }
 @keyframes seatPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
 @media (prefers-reduced-motion: reduce) { .seat.urgent { animation: none; } }
+
+/* 語言切換（book/admin 頁首） */
+.lang-switch { display: inline-flex; gap: 2px; align-items: center; }
+.lang-switch button {
+  appearance: none; background: none; border: none; cursor: pointer;
+  font-family: var(--mono, monospace); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--mute, #8A857B); padding: 6px 6px; transition: color 0.25s;
+}
+.lang-switch button:hover { color: var(--soft, #C8C2B5); }
+.lang-switch button.on { color: var(--fire, #D14820); }
