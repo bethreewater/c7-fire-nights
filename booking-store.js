@@ -235,6 +235,21 @@
     return batch.commit();
   }
 
+  // ---- 後台：手動調整「已確認席次」（IG／電話訂位入帳、釋放保留席）----
+  // 直接增減 sessions.confirmedSeats，鎖在 0..cap 之間。
+  function adjustSeats(pid, delta) {
+    if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
+    var ref = db.collection('sessions').doc(docId(pid));
+    return db.runTransaction(function (tx) {
+      return tx.get(ref).then(function (snap) {
+        var d = snap.data() || {};
+        var cap = d.cap != null ? d.cap : CAP;
+        var next = Math.max(0, Math.min(cap, (d.confirmedSeats || 0) + delta));
+        tx.update(ref, { confirmedSeats: next });
+      });
+    });
+  }
+
   // ---- 後台：釋放逾時 pending（標 expired + 刪 holds，放回名額）----
   // 公開端不需要：capacity() 已用 until>now 過濾逾時保留，不影響顯示。
   function releaseExpired() {
@@ -306,6 +321,7 @@
     CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS,
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel,
+    adjustSeats: adjustSeats,
     releaseExpired: releaseExpired, reset: reset,
     subscribe: subscribe, fmtCountdown: fmtCountdown,
     signIn: signIn, signOut: signOut, onAuth: onAuth, isAdmin: isAdmin

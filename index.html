@@ -2368,8 +2368,8 @@
         const av = document.createElement('div');
         av.className = 'avail';
         if (r <= 0)      { av.classList.add('full'); av.textContent = '● 已滿'; }
-        else if (r <= 5) { av.classList.add('low');  av.textContent = '◐ 剩 ' + r + ' 位'; }
-        else             { av.textContent = '○ 開放'; }
+        else if (r <= 9) { av.classList.add('low');  av.textContent = '◐ 剩 ' + r + ' 位'; }
+        else             { av.textContent = '○ 剩 ' + r + ' 位'; }
         slot.appendChild(av);
         shown++;
       });

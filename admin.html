@@ -23,6 +23,17 @@
   .fb-key .fb-lab{color:var(--fire);}
   .fb-key .fb-val{color:var(--paper);}
   @media(max-width:600px){ .fb-q{flex-direction:column;gap:1px;} .fb-lab{min-width:0;} }
+  /* 席次 ± 控制 */
+  .metaR{display:inline-flex;align-items:center;gap:10px;}
+  .seatadj{display:inline-flex;gap:6px;}
+  .seatbtn{
+    width:30px;height:30px;border:1px solid var(--line2);border-radius:6px;
+    background:none;color:var(--soft);font-size:16px;line-height:1;cursor:pointer;
+    font-family:var(--mono);transition:border-color .2s,color .2s;
+  }
+  .seatbtn:hover{border-color:var(--fire);color:var(--fire);}
+  .seatbtn:disabled{opacity:.4;cursor:default;}
+  .caps-note{font-size:12px;color:var(--mute);line-height:1.7;margin:10px 2px 0;}
 </style>
 </head>
 <body>
@@ -185,28 +196,43 @@
     var rows = [];
     C7.sessions().forEach(function (s) {
       var c = C7.capacity(s.id);
-      if (c.confirmed + c.pending <= 0) return;     // 跳過完全沒人的場次
 
       var pct = Math.min(100, Math.round((c.confirmed + c.pending) / c.cap * 100));
       var metaLeft = '上限 ' + c.cap + ' · 確認 ' + c.confirmed +
                      (c.pending > 0 ? ' · 保留 ' + c.pending : '');
-      var right = c.full
+      var right = (c.full
         ? '<span class="left full">已滿</span>'
-        : '<span class="left">剩 ' + c.remaining + '</span>';
+        : '<span class="left">剩 ' + c.remaining + '</span>') +
+        '<span class="seatadj">' +
+          '<button type="button" class="seatbtn" data-pid="' + esc(s.id) + '" data-d="-1" aria-label="減一席">−</button>' +
+          '<button type="button" class="seatbtn" data-pid="' + esc(s.id) + '" data-d="1" aria-label="加一席">＋</button>' +
+        '</span>';
 
       rows.push(
         '<div class="cap">' +
           '<div class="ct">' + esc(s.date + ' ' + s.label) + '</div>' +
           '<div class="bar"><i style="width:' + pct + '%"></i></div>' +
-          '<div class="meta"><span>' + metaLeft + '</span>' + right + '</div>' +
+          '<div class="meta"><span>' + metaLeft + '</span><span class="metaR">' + right + '</span></div>' +
         '</div>'
       );
     });
 
     host.innerHTML = rows.length
-      ? '<div class="caps">' + rows.join('') + '</div>'
-      : '<div class="empty">目前沒有訂位</div>';
+      ? '<div class="caps">' + rows.join('') + '</div>' +
+        '<p class="caps-note">＋／−＝手動調整「已確認席次」：IG／電話訂位入帳用＋，釋放席次用−（線上訂位確認會自動入帳，不用手動加）。</p>'
+      : '<div class="empty">場次同步中…</div>';
   }
+
+  // 席次 ± 按鈕（事件委派，重繪不掉監聽）
+  $('#caps').addEventListener('click', function (e) {
+    var b = e.target.closest('.seatbtn');
+    if (!b) return;
+    b.disabled = true;
+    C7.adjustSeats(b.dataset.pid, Number(b.dataset.d))
+      .then(function () { toast('已更新席次'); })
+      .catch(function (err) { toast('更新失敗：' + (err && err.message)); })
+      .finally(function () { b.disabled = false; });
+  });
 
   // --- 02 訂位管理 -------------------------------------------------
   var filter = 'all';
