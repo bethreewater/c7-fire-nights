@@ -1469,14 +1469,27 @@
   .spread > div { perspective: 900px; }
   section.reveal .display-h {
     opacity: 0;
-    transform: rotateX(16deg) translateY(26px);
+    transform: rotateX(26deg) translateY(34px);
     transform-origin: 50% 100%;
   }
   section.reveal.in .display-h {
     opacity: 1;
     transform: none;
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
-                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+    transition: opacity 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+                transform 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+  }
+  /* 場次卡：3D 翻牌入場（手機捲動也看得到） */
+  .slot.reveal {
+    transform: perspective(700px) translateY(34px) rotateX(26deg);
+    transform-origin: 50% 100%;
+  }
+  /* 手機：hero 標題緩慢立體呼吸（桌機由滑鼠視差接手） */
+  @media (hover: none) and (prefers-reduced-motion: no-preference) {
+    .hero .title-block { animation: heroFloat 9s ease-in-out infinite; }
+    @keyframes heroFloat {
+      0%, 100% { transform: perspective(1100px) rotateY(-2deg) rotateX(0.6deg); }
+      50%      { transform: perspective(1100px) rotateY(2deg) rotateX(-1.2deg); }
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     section.reveal .display-h { opacity: 1; transform: none; }
@@ -2517,6 +2530,12 @@
     if (hero && tb) {
       hero.style.perspective = '1100px';
       tb.style.willChange = 'transform';
+      tb.style.transformStyle = 'preserve-3d';
+      // 分層景深：中文副標最浮、引言次之 → 傾斜時拉開立體感
+      const zsub = tb.querySelector('.zh-sub');
+      const lead = tb.querySelector('.lead');
+      if (zsub) zsub.style.transform = 'translateZ(52px)';
+      if (lead) lead.style.transform = 'translateZ(26px)';
       let queued3d = false, hx = 0, hy = 0;
       hero.addEventListener('mousemove', e => {
         const r = hero.getBoundingClientRect();
@@ -2525,7 +2544,7 @@
         if (!queued3d) {
           queued3d = true;
           requestAnimationFrame(() => {
-            tb.style.transform = 'rotateY(' + (hx * 4).toFixed(2) + 'deg) rotateX(' + (-hy * 3).toFixed(2) + 'deg)';
+            tb.style.transform = 'rotateY(' + (hx * 7).toFixed(2) + 'deg) rotateX(' + (-hy * 5).toFixed(2) + 'deg)';
             queued3d = false;
           });
         }
@@ -2544,16 +2563,16 @@
         const r = el.getBoundingClientRect();
         const x = (e.clientX - r.left) / r.width - 0.5;
         const y = (e.clientY - r.top) / r.height - 0.5;
-        el.style.transform = 'perspective(700px) rotateY(' + (x * deg).toFixed(2) + 'deg) rotateX(' + (-y * deg).toFixed(2) + 'deg) translateZ(8px)';
+        el.style.transform = 'perspective(700px) rotateY(' + (x * deg).toFixed(2) + 'deg) rotateX(' + (-y * deg).toFixed(2) + 'deg) translateZ(16px)';
       }, { passive: true });
       el.addEventListener('mouseleave', () => {
         el.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
         el.style.transform = '';
       });
     }
-    document.querySelectorAll('#schedule .slot').forEach(el => tiltify(el, 7));
+    document.querySelectorAll('#schedule .slot').forEach(el => tiltify(el, 11));
     const fab = document.getElementById('fabBook');
-    if (fab) tiltify(fab, 5);
+    if (fab) tiltify(fab, 8);
   })();
 
   // —— Hero 餘燼粒子（reduced-motion 不跑；hero 離開視窗或分頁隱藏即暫停）——
@@ -2655,7 +2674,7 @@
         let o = 0;
         if (d > 0 && d < 1) o = Math.min(clamp01(d / 0.16), clamp01((1 - d) / 0.16));
         c.style.opacity = o.toFixed(3);
-        c.style.transform = 'perspective(900px) translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px) rotateX(' + ((0.5 - d) * 9).toFixed(2) + 'deg)';
+        c.style.transform = 'perspective(900px) translateY(' + ((0.5 - d) * 52).toFixed(1) + 'px) rotateX(' + ((0.5 - d) * 16).toFixed(2) + 'deg)';
       });
       ticks.forEach((t, i) => t.classList.toggle('on', seg >= i + 0.2));
       // 四張餐點蝕刻壁畫各配一道菜，跟著自己的段落淡入淡出
