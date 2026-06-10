@@ -2378,7 +2378,7 @@
         slot.appendChild(av);
         return;
       }
-      const goBook = () => { window.location.href = 'book.html?d=' + encodeURIComponent(d); };
+      const goBook = () => { const lg = (window.C7I18N && C7I18N.lang !== 'zh') ? '&lang=' + C7I18N.lang : ''; window.location.href = 'book.html?d=' + encodeURIComponent(d) + lg; };
       slot.setAttribute('role', 'button');
       slot.setAttribute('tabindex', '0');
       slot.setAttribute('aria-label', d + '（六）19:07 預購');
@@ -2386,7 +2386,7 @@
       slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goBook(); } });
     });
     const ob = document.getElementById('openBook');
-    if (ob) ob.addEventListener('click', () => { window.location.href = 'book.html'; });
+    if (ob) ob.addEventListener('click', () => { const lg = (window.C7I18N && C7I18N.lang !== 'zh') ? '?lang=' + C7I18N.lang : ''; window.location.href = 'book.html' + lg; });
   })();
 
   // —— 席次溫度：剩越少顏色越燒（灰褐 → 沙金 → 火橘）——

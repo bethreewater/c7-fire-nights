@@ -498,9 +498,16 @@
   var KEY = 'c7lang';
   var LANGS = ['zh', 'en', 'ja', 'ko'];
   var HTML_LANG = { zh: 'zh-Hant', en: 'en', ja: 'ja', ko: 'ko' };
-  var saved = null;
-  try { saved = localStorage.getItem(KEY); } catch (e) {}
-  var current = LANGS.indexOf(saved) > -1 ? saved : 'zh';
+  function detectLang() {
+    var m = /[?&]lang=(zh|en|ja|ko)\b/.exec(location.search);
+    if (m) return m[1];                              // 連結帶語言 → 最優先（跨頁邏輯硬通）
+    try {
+      var s2 = localStorage.getItem(KEY);
+      if (LANGS.indexOf(s2) > -1) return s2;
+    } catch (e) {}
+    return 'zh';
+  }
+  var current = detectLang();
 
   // 動態字串先就位（index 的 IIFE 在本檔之後執行，讀得到）
   window.C7L = L[current];
@@ -547,18 +554,44 @@
     document.querySelectorAll('#langSwitch button').forEach(function (b) {
       b.classList.toggle('on', b.dataset.l === lang);
     });
+    syncLinks();
+    syncUrl();
     document.dispatchEvent(new CustomEvent('c7lang', { detail: { lang: lang } }));
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
+  // 站內互連（index ↔ book）的 <a> 一律帶上目前語言，跨頁不靠快取也通
+  function syncLinks() {
+    document.querySelectorAll('a[href]').forEach(function (a) {
+      var href = a.getAttribute('href') || '';
+      if (!/^(index|book)\.html/.test(href)) return;
+      var base = href.split('#')[0].replace(/([?&])lang=[a-z]+&?/, '$1').replace(/[?&]$/, '');
+      var hash = href.indexOf('#') > -1 ? href.slice(href.indexOf('#')) : '';
+      if (current !== 'zh') base += (base.indexOf('?') > -1 ? '&' : '?') + 'lang=' + current;
+      a.setAttribute('href', base + hash);
+    });
+  }
+  // 網址列同步（重新整理、分享連結都保住語言）
+  function syncUrl() {
+    if (!window.history || !history.replaceState) return;
+    var q = location.search.replace(/([?&])lang=[a-z]+&?/, '$1').replace(/[?&]$/, '');
+    if (current !== 'zh') q += (q.indexOf('?') > -1 ? '&' : '?') + 'lang=' + current;
+    history.replaceState(null, '', location.pathname + q + location.hash);
+  }
+
+  (function init() {
     var sw = document.getElementById('langSwitch');
     if (sw) sw.addEventListener('click', function (e) {
       var b = e.target.closest('button[data-l]');
       if (b && b.dataset.l !== current) apply(b.dataset.l);
     });
-    if (current !== 'zh') apply(current);
-    else document.documentElement.lang = 'zh-Hant';
-  });
+    if (current !== 'zh') {
+      apply(current);            // 立即換字，不閃中文
+    } else {
+      document.documentElement.lang = 'zh-Hant';
+      syncLinks();
+      syncUrl();
+    }
+  })();
 
   window.C7I18N = { apply: apply, get lang() { return current; } };
 })();
