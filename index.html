@@ -1465,6 +1465,20 @@
   /* ===== Embers / next-up countdown / 19:07 / live availability ===== */
   .hero .bottom-meta { gap: 22px; }
 
+  /* 語言切換 */
+  .lang-switch { display: flex; gap: 2px; align-items: center; }
+  .lang-switch button {
+    appearance: none; background: none; border: none; cursor: pointer;
+    font-family: var(--sans); font-weight: 400; font-size: 11px; letter-spacing: 0.08em;
+    color: var(--paper-mute); padding: 6px 7px; transition: color 0.25s;
+  }
+  .lang-switch button:hover { color: var(--paper); }
+  .lang-switch button.on { color: var(--fire); }
+  .lang-switch button:focus-visible { outline: 2px solid var(--fire); outline-offset: 2px; }
+  /* 日／韓系統字體（不另載 webfont） */
+  html[lang="ja"] { --zh-serif: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif JP', serif; --zh-display: 'Hiragino Sans', 'Noto Sans JP', sans-serif; }
+  html[lang="ko"] { --zh-serif: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; --zh-display: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; }
+
   /* ===== 夜行菜單（scroll-pinned：暮色→夜，天越暗火越亮）===== */
   .menu-night .mpin { display: none; }
   section.menu-live { overflow: visible; }   /* overflow:hidden 會殺掉 sticky */
@@ -1616,6 +1630,12 @@
 
 <nav class="runner" id="runner">
   <div class="left">C/7 · <span class="ac">FIRE</span> / 2026</div>
+  <div class="lang-switch" id="langSwitch" aria-label="Language">
+    <button type="button" data-l="zh" class="on">中</button>
+    <button type="button" data-l="en">EN</button>
+    <button type="button" data-l="ja">日</button>
+    <button type="button" data-l="ko">한</button>
+  </div>
   <button class="nav-burger" id="navBurger" aria-label="選單" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <div class="right" id="navLinks">
     <a href="#island" data-sec="island">Island</a>
@@ -1976,7 +1996,7 @@
 </section>
 
 <!-- TERMS -->
-<section>
+<section id="terms">
   <div class="spread">
     <div class="index">
       <span class="num">06</span>
@@ -2149,6 +2169,7 @@
   <a class="fp-btn" href="book.html">馬上預訂</a>
 </div>
 
+<script src="i18n.js"></script>
 <script>
   // fade-in on scroll, with staggered entrance for grid children
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2353,7 +2374,7 @@
         slot.setAttribute('aria-disabled', 'true');
         const av = document.createElement('div');
         av.className = 'avail';
-        av.textContent = '已落幕';
+        av.textContent = (window.C7L || {}).ended || '已落幕';
         slot.appendChild(av);
         return;
       }
@@ -2395,27 +2416,37 @@
         const used = Number((f.confirmedSeats && f.confirmedSeats.integerValue) || 0);
         left[date] = Math.max(0, cap - used);
       });
-      let shown = 0;
-      document.querySelectorAll('#schedule .slot').forEach(slot => {
-        if (slot.classList.contains('past')) return;
-        const dEl = slot.querySelector('.d');
-        const d = dEl ? dEl.textContent.trim() : '';
-        if (!(d in left)) return;
-        const r = left[d];
-        const av = document.createElement('div');
-        av.className = 'avail';
-        if (r <= 0)      { av.classList.add('full'); av.textContent = '● 已滿'; }
-        else if (r < 3)  { av.classList.add('urgent'); av.textContent = '◐ 最後 ' + r + ' 位'; av.style.color = '#FF6B35'; }
-        else {
-          av.textContent = (r >= 10 ? '○ 剩 ' : '◐ 剩 ') + r + ' 位';
-          av.style.color = seatTone(r);
-        }
-        slot.appendChild(av);
-        shown++;
-      });
-      const lg = document.getElementById('schedLive');
-      if (lg && shown) lg.classList.add('on');
+      window.__renderAvail = function () {
+        const T = window.C7L || {};
+        let shown = 0;
+        document.querySelectorAll('#schedule .slot').forEach(slot => {
+          if (slot.classList.contains('past')) {
+            const pav = slot.querySelector('.avail');
+            if (pav) pav.textContent = T.ended || '已落幕';
+            return;
+          }
+          const dEl = slot.querySelector('.d');
+          const d = dEl ? dEl.textContent.trim() : '';
+          if (!(d in left)) return;
+          const r = left[d];
+          let av = slot.querySelector('.avail');
+          if (!av) { av = document.createElement('div'); av.className = 'avail'; slot.appendChild(av); }
+          av.classList.remove('full', 'urgent');
+          av.style.color = '';
+          if (r <= 0)      { av.classList.add('full'); av.textContent = T.full || '● 已滿'; }
+          else if (r < 3)  { av.classList.add('urgent'); av.textContent = (T.last || '◐ 最後 {n} 位').replace('{n}', r); av.style.color = '#FF6B35'; }
+          else {
+            av.textContent = (r >= 10 ? (T.more || '○ 剩 {n} 位') : (T.some || '◐ 剩 {n} 位')).replace('{n}', r);
+            av.style.color = seatTone(r);
+          }
+          shown++;
+        });
+        const lg = document.getElementById('schedLive');
+        if (lg && shown) lg.classList.add('on');
+      };
+      window.__renderAvail();
     }).catch(() => {});
+    document.addEventListener('c7lang', () => { if (window.__renderAvail) window.__renderAvail(); });
   })();
 
   // —— Hero：下一場倒數（預購截止＝前一天 22:00，過了自動指向下一週）——
@@ -2429,14 +2460,15 @@
     const pad = n => (n < 10 ? '0' : '') + n;
     function tick() {
       const now = new Date();
+      const T = window.C7L || {};
       const next = SAT_DATES.find(d => now < cutoff(d));
-      if (!next) { el.textContent = '本季十二場已收官 — 明年夏天見'; return; }
+      if (!next) { el.textContent = T.seasonOver || '本季十二場已收官 — 明年夏天見'; return; }
       const ms = sessionStart(next) - now;
       const day = Math.floor(ms / 86400000);
       const hh = Math.floor(ms % 86400000 / 3600000);
       const mm = Math.floor(ms % 3600000 / 60000);
       const ss = Math.floor(ms % 60000 / 1000);
-      el.innerHTML = 'Next — <b>' + next + '（六）19:07</b>　<span class="tick">' +
+      el.innerHTML = 'Next — <b>' + next + ((window.C7L || {}).sat || '（六）') + '19:07</b>　<span class="tick">' +
         (day > 0 ? day + 'd ' : '') + pad(hh) + ':' + pad(mm) + ':' + pad(ss) + '</span>';
     }
     tick();
@@ -2450,8 +2482,11 @@
     b.addEventListener('click', () => {
       if (b.classList.contains('done')) return;
       b.classList.add('done');
-      b.textContent = '來了就知道。';
+      b.textContent = (window.C7L || {}).why || '來了就知道。';
       b.setAttribute('aria-disabled', 'true');
+    });
+    document.addEventListener('c7lang', () => {
+      if (b.classList.contains('done')) b.textContent = (window.C7L || {}).why || '來了就知道。';
     });
   })();
 
