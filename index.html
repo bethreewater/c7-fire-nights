@@ -1464,6 +1464,84 @@
 
   /* ===== Embers / next-up countdown / 19:07 / live availability ===== */
   .hero .bottom-meta { gap: 22px; }
+
+  /* ===== 夜行菜單（scroll-pinned：暮色→夜，天越暗火越亮）===== */
+  .menu-night .mpin { display: none; }
+  section.menu-live { overflow: visible; }   /* overflow:hidden 會殺掉 sticky */
+  .menu-live .mpin { display: block; position: relative; height: 460vh; margin-top: 30px; width: 100vw; margin-left: calc(50% - 50vw); }
+  .menu-live .menu-fallback { display: none; }
+  .menu-live.reveal { opacity: 1 !important; transform: none !important; }
+  .menu-live .mural-bg { height: 130vh; bottom: auto; }
+  .mstage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+  .msky-night, .msky-dusk, .mstars, .mcourse, .mc-close { position: absolute; inset: 0; }
+  .msky-night {
+    background: radial-gradient(130% 80% at 50% 110%, #120c08 0%, #050505 55%, #000 100%);
+  }
+  .msky-dusk { will-change: opacity;
+    background: linear-gradient(180deg, #0e1420 0%, #1d2230 34%, #4a2f24 60%, #8a3d1e 75%, #c4541f 84%, #1a0e08 95%, #000 100%);
+  }
+  .mstars { opacity: 0; will-change: opacity; background-size: 420px 420px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><g fill='%23EFEAE0'><circle cx='23' cy='41' r='1'/><circle cx='86' cy='14' r='0.6' opacity='.6'/><circle cx='151' cy='67' r='0.8' opacity='.8'/><circle cx='212' cy='25' r='1.1'/><circle cx='287' cy='58' r='0.6' opacity='.5'/><circle cx='356' cy='33' r='0.9' opacity='.7'/><circle cx='398' cy='96' r='0.6' opacity='.6'/><circle cx='44' cy='128' r='0.7' opacity='.7'/><circle cx='119' cy='154' r='1'/><circle cx='189' cy='117' r='0.6' opacity='.5'/><circle cx='258' cy='143' r='0.8' opacity='.8'/><circle cx='331' cy='171' r='0.6' opacity='.6'/><circle cx='27' cy='219' r='0.9' opacity='.8'/><circle cx='97' cy='246' r='0.6' opacity='.5'/><circle cx='169' cy='208' r='1'/><circle cx='243' cy='235' r='0.7' opacity='.7'/><circle cx='317' cy='262' r='0.9'/><circle cx='389' cy='224' r='0.6' opacity='.6'/><circle cx='58' cy='312' r='0.8' opacity='.7'/><circle cx='139' cy='338' r='0.6' opacity='.5'/><circle cx='216' cy='301' r='1' opacity='.9'/><circle cx='291' cy='347' r='0.7' opacity='.6'/><circle cx='364' cy='318' r='0.8' opacity='.8'/><circle cx='33' cy='389' r='0.6' opacity='.6'/><circle cx='112' cy='402' r='0.9' opacity='.7'/><circle cx='247' cy='394' r='0.6' opacity='.5'/><circle cx='338' cy='406' r='1'/></g></svg>");
+  }
+  .mfire {
+    position: absolute; left: 0; right: 0; bottom: -22vh; height: 62vh;
+    opacity: 0.2; will-change: opacity, transform; transform-origin: 50% 100%;
+    background: radial-gradient(52% 58% at 50% 100%, rgba(209,72,32,0.5) 0%, rgba(232,161,88,0.16) 42%, rgba(0,0,0,0) 72%);
+  }
+  .mcourse {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 0 26px;
+    opacity: 0; will-change: opacity, transform; pointer-events: none;
+  }
+  .mc-top {
+    display: flex; gap: 20px; align-items: baseline;
+    font-family: var(--sans); font-weight: 400; font-size: 12px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--paper-soft);
+    margin-bottom: 30px;
+  }
+  .mc-time { color: var(--fire-soft); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .mc-num { font-family: var(--serif); font-size: 17px; letter-spacing: 0.3em; color: var(--fire); margin-bottom: 14px; }
+  .mc-zh {
+    font-family: var(--zh-serif); font-weight: 500;
+    font-size: clamp(64px, 13vw, 150px); line-height: 1.1; letter-spacing: 0.12em; color: var(--paper);
+  }
+  .mc-name {
+    font-family: var(--sans); font-weight: 300;
+    font-size: clamp(14px, 2.6vw, 19px); letter-spacing: 0.3em; color: var(--paper-soft); margin-top: 26px;
+  }
+  .mc-line {
+    font-family: var(--zh-serif); font-size: clamp(15px, 2.4vw, 18px);
+    letter-spacing: 0.06em; color: var(--paper-mute); margin-top: 18px;
+  }
+  .mc-close {
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    padding: 0 clamp(26px, 14vw, 180px);
+    font-family: var(--zh-serif); font-weight: 500;
+    font-size: clamp(22px, 4.6vw, 34px); letter-spacing: 0.14em; color: var(--paper);
+    opacity: 0; will-change: opacity; pointer-events: none;
+  }
+  .mc-hint {
+    position: absolute; left: 0; right: 0; bottom: 34px; text-align: center;
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--paper-mute); will-change: opacity;
+  }
+  .mrail {
+    position: absolute; left: 28px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 26px;
+  }
+  .mtick {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--sans); font-size: 10.5px; letter-spacing: 0.18em;
+    color: var(--paper-mute); font-variant-numeric: tabular-nums;
+    transition: color 0.4s;
+  }
+  .mtick i { display: block; width: 14px; height: 1px; background: var(--paper-mute); transition: background 0.4s, width 0.4s; }
+  .mtick.on { color: var(--fire-soft); }
+  .mtick.on i { background: var(--fire); width: 22px; }
+  @media (max-width: 720px) {
+    .menu-live .mpin { height: 430vh; }
+    .mrail { display: none; }
+  }
   #embers {
     position: absolute; inset: 0; z-index: 1;
     pointer-events: none; opacity: 0.85;
@@ -1637,7 +1715,7 @@
 </section>
 
 <!-- MENU -->
-<section id="menu" class="has-mural">
+<section id="menu" class="has-mural menu-night">
   <div class="mural-bg" style="background-image:url('img/mural-fishing.webp')" aria-hidden="true"></div>
   <div class="spread">
     <div class="index">
@@ -1653,6 +1731,56 @@
     </div>
   </div>
 
+  <!-- 夜行菜單：捲動＝從暮色走進夜裡（reduced-motion／無 JS 自動退回下方四格） -->
+  <div class="mpin" id="mpin">
+    <div class="mstage">
+      <div class="msky-night" aria-hidden="true"></div>
+      <div class="msky-dusk" id="mDusk" aria-hidden="true"></div>
+      <div class="mstars" id="mStars" aria-hidden="true"></div>
+      <div class="mfire" id="mFire" aria-hidden="true"></div>
+
+      <article class="mcourse">
+        <div class="mc-top"><span class="mc-time">19:07</span><span class="mc-when">On Arrival</span></div>
+        <div class="mc-num">i</div>
+        <h3 class="mc-zh">迎賓</h3>
+        <div class="mc-name">麵包・抹醬・仙人掌風茹康普茶</div>
+        <p class="mc-line">天剛要暗。第一杯，是島上最老的草。</p>
+      </article>
+      <article class="mcourse">
+        <div class="mc-top"><span class="mc-time">19:22</span><span class="mc-when">Starter</span></div>
+        <div class="mc-num">ii</div>
+        <h3 class="mc-zh">前菜</h3>
+        <div class="mc-name">新鮮小管沙拉</div>
+        <p class="mc-line">礁石下的小管，今天清晨還在魚市場。</p>
+      </article>
+      <article class="mcourse">
+        <div class="mc-top"><span class="mc-time">19:57</span><span class="mc-when">Main</span></div>
+        <div class="mc-num">iii</div>
+        <h3 class="mc-zh">主餐</h3>
+        <div class="mc-name">煎鴨胸・澎湖野生明蝦</div>
+        <p class="mc-line">火進了盤子。蝦是現煎的，急不得。</p>
+      </article>
+      <article class="mcourse">
+        <div class="mc-top"><span class="mc-time">20:22</span><span class="mc-when">Dessert</span></div>
+        <div class="mc-num">iv</div>
+        <h3 class="mc-zh">甜點</h3>
+        <div class="mc-name">當季水果冰沙</div>
+        <p class="mc-line">熱了一整晚，該涼一下了。</p>
+      </article>
+
+      <p class="mc-close" id="mClose">最後，火會回到你手上。</p>
+      <p class="mc-hint" id="mHint" aria-hidden="true">往下 — 跟著夜走</p>
+
+      <div class="mrail" id="mRail" aria-hidden="true">
+        <div class="mtick"><i></i><span>19:07</span></div>
+        <div class="mtick"><i></i><span>19:22</span></div>
+        <div class="mtick"><i></i><span>19:57</span></div>
+        <div class="mtick"><i></i><span>20:22</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-fallback">
   <div class="course-grid">
     <div class="course-tile">
       <div class="num">i</div>
@@ -1680,6 +1808,7 @@
     </div>
   </div>
   <p style="text-align:center;font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:0.06em;color:var(--paper-soft);margin:40px auto 0;max-width:34em;">小管與明蝦，都是當天清晨在魚市場現買的——保證新鮮。</p>
+  </div>
 </section>
 
 <!-- PERFORMER -->
@@ -2347,6 +2476,53 @@
     document.addEventListener('visibilitychange', () => setRun(inView && !document.hidden));
     window.addEventListener('resize', size, { passive: true });
     setRun(true);
+  })();
+
+  // —— 夜行菜單：捲動進度 → 暮色變夜、星星浮出、火越亮、四道菜逐道浮現 ——
+  (function(){
+    const sec = document.getElementById('menu');
+    const pin = document.getElementById('mpin');
+    if (!sec || !pin || prefersReducedMotion) return;
+    sec.classList.add('menu-live');
+    const dusk = document.getElementById('mDusk');
+    const stars = document.getElementById('mStars');
+    const fire = document.getElementById('mFire');
+    const closeLine = document.getElementById('mClose');
+    const hint = document.getElementById('mHint');
+    const courses = Array.from(pin.querySelectorAll('.mcourse'));
+    const ticks = Array.from(pin.querySelectorAll('.mtick'));
+    const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+    const smooth = t => t * t * (3 - 2 * t);
+    let queued = false;
+    function update() {
+      queued = false;
+      const vh = window.innerHeight;
+      const r = pin.getBoundingClientRect();
+      if (r.top > vh || r.bottom < 0) return;        // 不在視窗，不算
+      const total = r.height - vh;
+      if (total <= 0) return;
+      const p = clamp01(-r.top / total);
+      const e = smooth(p);
+      dusk.style.opacity = (1 - e).toFixed(3);
+      stars.style.opacity = clamp01((p - 0.22) / 0.55).toFixed(3);
+      fire.style.opacity = (0.2 + e * 0.8).toFixed(3);
+      fire.style.transform = 'scale(' + (0.92 + e * 0.3).toFixed(3) + ')';
+      const seg = p * 4.4;                            // 4 道菜＋0.4 段收尾句
+      courses.forEach((c, i) => {
+        const d = seg - i;                            // 此道菜的區段進度 0..1
+        let o = 0;
+        if (d > 0 && d < 1) o = Math.min(clamp01(d / 0.16), clamp01((1 - d) / 0.16));
+        c.style.opacity = o.toFixed(3);
+        c.style.transform = 'translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px)';
+      });
+      ticks.forEach((t, i) => t.classList.toggle('on', seg >= i + 0.2));
+      closeLine.style.opacity = clamp01((seg - 4.05) / 0.25).toFixed(3);
+      hint.style.opacity = clamp01(1 - p * 14).toFixed(3);
+    }
+    function onS() { if (!queued) { queued = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onS, { passive: true });
+    window.addEventListener('resize', onS, { passive: true });
+    update();
   })();
 </script>
 
