@@ -465,9 +465,37 @@
     ['.confirm .foot', '입금 후 따로 연락하실 필요 없습니다. 입금 확인 후 전화드립니다.<br>문의: 0963-059-889.'],
     ['#again', '한 건 더 예약']
   ];
-  DICT.en = DICT.en.concat(BOOK_EN);
-  DICT.ja = DICT.ja.concat(BOOK_JA);
-  DICT.ko = DICT.ko.concat(BOOK_KO);
+  /* ---------- 導覽列（en 保持原樣以納入快照；ja/ko 在地化） ---------- */
+  var NAV_EN = [
+    ['#navLinks a[data-sec="island"]', 'Island'],
+    ['#navLinks a[data-sec="sessions"]', 'Sessions'],
+    ['#navLinks a[data-sec="menu"]', 'Menu'],
+    ['#navLinks a[data-sec="performer"]', 'Performer'],
+    ['#navLinks a[data-sec="schedule"]', 'Dates'],
+    ['#navLinks a[data-sec="faq"]', 'Q&amp;A'],
+    ['#navLinks a[data-sec="visit"]', 'Visit']
+  ];
+  var NAV_JA = [
+    ['#navLinks a[data-sec="island"]', '島'],
+    ['#navLinks a[data-sec="sessions"]', '開演'],
+    ['#navLinks a[data-sec="menu"]', 'メニュー'],
+    ['#navLinks a[data-sec="performer"]', '舞い手'],
+    ['#navLinks a[data-sec="schedule"]', '日程'],
+    ['#navLinks a[data-sec="faq"]', 'Q&amp;A'],
+    ['#navLinks a[data-sec="visit"]', 'アクセス']
+  ];
+  var NAV_KO = [
+    ['#navLinks a[data-sec="island"]', '섬'],
+    ['#navLinks a[data-sec="sessions"]', '시간'],
+    ['#navLinks a[data-sec="menu"]', '메뉴'],
+    ['#navLinks a[data-sec="performer"]', '공연자'],
+    ['#navLinks a[data-sec="schedule"]', '일정'],
+    ['#navLinks a[data-sec="faq"]', 'Q&amp;A'],
+    ['#navLinks a[data-sec="visit"]', '오시는 길']
+  ];
+  DICT.en = DICT.en.concat(NAV_EN, BOOK_EN);
+  DICT.ja = DICT.ja.concat(NAV_JA, BOOK_JA);
+  DICT.ko = DICT.ko.concat(NAV_KO, BOOK_KO);
 
   /* ---------- 訂位頁：動態字串擴充 ---------- */
   var LB = {
