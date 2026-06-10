@@ -216,3 +216,8 @@ td .phone{color:var(--mute);}
 @media (prefers-reduced-motion: reduce) {
   .scard.skel .skel-line { animation: none; opacity: 0.6; }
 }
+
+/* 席次警示（<3）：最亮火色＋脈動 */
+.seat.urgent { font-weight: 600; animation: seatPulse 1.15s ease-in-out infinite; }
+@keyframes seatPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .seat.urgent { animation: none; } }
