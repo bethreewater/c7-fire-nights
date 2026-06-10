@@ -1480,6 +1480,11 @@
   .msky-dusk { will-change: opacity;
     background: linear-gradient(180deg, #0e1420 0%, #1d2230 34%, #4a2f24 60%, #8a3d1e 75%, #c4541f 84%, #1a0e08 95%, #000 100%);
   }
+  .mmural {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center 40%;
+    opacity: 0; will-change: opacity;
+  }
   .mstars { opacity: 0; will-change: opacity; background-size: 420px 420px;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><g fill='%23EFEAE0'><circle cx='23' cy='41' r='1'/><circle cx='86' cy='14' r='0.6' opacity='.6'/><circle cx='151' cy='67' r='0.8' opacity='.8'/><circle cx='212' cy='25' r='1.1'/><circle cx='287' cy='58' r='0.6' opacity='.5'/><circle cx='356' cy='33' r='0.9' opacity='.7'/><circle cx='398' cy='96' r='0.6' opacity='.6'/><circle cx='44' cy='128' r='0.7' opacity='.7'/><circle cx='119' cy='154' r='1'/><circle cx='189' cy='117' r='0.6' opacity='.5'/><circle cx='258' cy='143' r='0.8' opacity='.8'/><circle cx='331' cy='171' r='0.6' opacity='.6'/><circle cx='27' cy='219' r='0.9' opacity='.8'/><circle cx='97' cy='246' r='0.6' opacity='.5'/><circle cx='169' cy='208' r='1'/><circle cx='243' cy='235' r='0.7' opacity='.7'/><circle cx='317' cy='262' r='0.9'/><circle cx='389' cy='224' r='0.6' opacity='.6'/><circle cx='58' cy='312' r='0.8' opacity='.7'/><circle cx='139' cy='338' r='0.6' opacity='.5'/><circle cx='216' cy='301' r='1' opacity='.9'/><circle cx='291' cy='347' r='0.7' opacity='.6'/><circle cx='364' cy='318' r='0.8' opacity='.8'/><circle cx='33' cy='389' r='0.6' opacity='.6'/><circle cx='112' cy='402' r='0.9' opacity='.7'/><circle cx='247' cy='394' r='0.6' opacity='.5'/><circle cx='338' cy='406' r='1'/></g></svg>");
   }
@@ -1739,6 +1744,7 @@
     <div class="mstage">
       <div class="msky-night" aria-hidden="true"></div>
       <div class="msky-dusk" id="mDusk" aria-hidden="true"></div>
+      <div class="mmural" id="mMural" style="background-image:url('img/mural-fishing.webp')" aria-hidden="true"></div>
       <div class="mstars" id="mStars" aria-hidden="true"></div>
       <div class="mfire" id="mFire" aria-hidden="true"></div>
 
@@ -2504,6 +2510,7 @@
     if (!sec || !pin || prefersReducedMotion) return;
     sec.classList.add('menu-live');
     const dusk = document.getElementById('mDusk');
+    const mural = document.getElementById('mMural');
     const stars = document.getElementById('mStars');
     const fire = document.getElementById('mFire');
     const closeLine = document.getElementById('mClose');
@@ -2535,6 +2542,10 @@
         c.style.transform = 'translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px)';
       });
       ticks.forEach((t, i) => t.classList.toggle('on', seg >= i + 0.2));
+      // 漁火壁畫：只在「前菜・小管」那一段淡淡浮出（漁火引小管）
+      const d1 = seg - 1;
+      const mw = (d1 > 0 && d1 < 1) ? Math.min(clamp01(d1 / 0.22), clamp01((1 - d1) / 0.22)) : 0;
+      mural.style.opacity = (mw * 0.16).toFixed(3);
       closeLine.style.opacity = clamp01((seg - 4.05) / 0.25).toFixed(3);
       hint.style.opacity = clamp01(1 - p * 14).toFixed(3);
     }
