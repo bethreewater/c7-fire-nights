@@ -1483,12 +1483,13 @@
   .mmural {
     position: absolute; inset: 0;
     background-repeat: no-repeat;
-    background-position: center 40%;
-    background-size: auto min(58vh, 560px);
+    background-position: center 38%;
+    background-size: cover;
+    transform: scale(1.14);              /* 裁掉畫作自帶的邊框 */
     opacity: 0; will-change: opacity;
-  }
-  @media (max-width: 720px) {
-    .mmural { background-size: min(86vw, 420px) auto; background-position: center 42%; }
+    /* 邊緣溶進夜空：沒有框、沒有硬邊 */
+    -webkit-mask-image: radial-gradient(92% 82% at 50% 42%, #000 28%, transparent 76%);
+            mask-image: radial-gradient(92% 82% at 50% 42%, #000 28%, transparent 76%);
   }
   .mstars { opacity: 0; will-change: opacity; background-size: 420px 420px;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><g fill='%23EFEAE0'><circle cx='23' cy='41' r='1'/><circle cx='86' cy='14' r='0.6' opacity='.6'/><circle cx='151' cy='67' r='0.8' opacity='.8'/><circle cx='212' cy='25' r='1.1'/><circle cx='287' cy='58' r='0.6' opacity='.5'/><circle cx='356' cy='33' r='0.9' opacity='.7'/><circle cx='398' cy='96' r='0.6' opacity='.6'/><circle cx='44' cy='128' r='0.7' opacity='.7'/><circle cx='119' cy='154' r='1'/><circle cx='189' cy='117' r='0.6' opacity='.5'/><circle cx='258' cy='143' r='0.8' opacity='.8'/><circle cx='331' cy='171' r='0.6' opacity='.6'/><circle cx='27' cy='219' r='0.9' opacity='.8'/><circle cx='97' cy='246' r='0.6' opacity='.5'/><circle cx='169' cy='208' r='1'/><circle cx='243' cy='235' r='0.7' opacity='.7'/><circle cx='317' cy='262' r='0.9'/><circle cx='389' cy='224' r='0.6' opacity='.6'/><circle cx='58' cy='312' r='0.8' opacity='.7'/><circle cx='139' cy='338' r='0.6' opacity='.5'/><circle cx='216' cy='301' r='1' opacity='.9'/><circle cx='291' cy='347' r='0.7' opacity='.6'/><circle cx='364' cy='318' r='0.8' opacity='.8'/><circle cx='33' cy='389' r='0.6' opacity='.6'/><circle cx='112' cy='402' r='0.9' opacity='.7'/><circle cx='247' cy='394' r='0.6' opacity='.5'/><circle cx='338' cy='406' r='1'/></g></svg>");
@@ -2555,7 +2556,7 @@
       murals.forEach((m, i) => {
         const dm = seg - i;
         const w = (dm > 0 && dm < 1) ? Math.min(clamp01(dm / 0.22), clamp01((1 - dm) / 0.22)) : 0;
-        m.style.opacity = (w * 0.34).toFixed(3);
+        m.style.opacity = (w * 0.28).toFixed(3);
       });
       closeLine.style.opacity = clamp01((seg - 4.05) / 0.25).toFixed(3);
       hint.style.opacity = clamp01(1 - p * 14).toFixed(3);
