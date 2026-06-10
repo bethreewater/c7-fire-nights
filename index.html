@@ -1465,6 +1465,23 @@
   /* ===== Embers / next-up countdown / 19:07 / live availability ===== */
   .hero .bottom-meta { gap: 22px; }
 
+  /* ===== 3D：標題入場（仰角翻正）===== */
+  .spread > div { perspective: 900px; }
+  section.reveal .display-h {
+    opacity: 0;
+    transform: rotateX(16deg) translateY(26px);
+    transform-origin: 50% 100%;
+  }
+  section.reveal.in .display-h {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    section.reveal .display-h { opacity: 1; transform: none; }
+  }
+
   /* 語言切換 */
   .lang-switch { display: flex; gap: 2px; align-items: center; }
   .lang-switch button {
@@ -2490,6 +2507,55 @@
     });
   })();
 
+  // —— 3D：Hero 滑鼠視差 ＋ 卡片 hover 傾斜（桌機限定、reduced-motion 不跑）——
+  (function(){
+    if (prefersReducedMotion || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    // Hero 標題視差
+    const hero = document.querySelector('.hero');
+    const tb = document.querySelector('.hero .title-block');
+    if (hero && tb) {
+      hero.style.perspective = '1100px';
+      tb.style.willChange = 'transform';
+      let queued3d = false, hx = 0, hy = 0;
+      hero.addEventListener('mousemove', e => {
+        const r = hero.getBoundingClientRect();
+        hx = (e.clientX - r.left) / r.width - 0.5;
+        hy = (e.clientY - r.top) / r.height - 0.5;
+        if (!queued3d) {
+          queued3d = true;
+          requestAnimationFrame(() => {
+            tb.style.transform = 'rotateY(' + (hx * 4).toFixed(2) + 'deg) rotateX(' + (-hy * 3).toFixed(2) + 'deg)';
+            queued3d = false;
+          });
+        }
+      }, { passive: true });
+      hero.addEventListener('mouseenter', () => { tb.style.transition = 'none'; });
+      hero.addEventListener('mouseleave', () => {
+        tb.style.transition = 'transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
+        tb.style.transform = '';
+      });
+    }
+
+    // 卡片傾斜（場次卡＋浮動預訂卡）
+    function tiltify(el, deg) {
+      el.addEventListener('mouseenter', () => { el.style.transition = 'none'; });
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        el.style.transform = 'perspective(700px) rotateY(' + (x * deg).toFixed(2) + 'deg) rotateX(' + (-y * deg).toFixed(2) + 'deg) translateZ(8px)';
+      }, { passive: true });
+      el.addEventListener('mouseleave', () => {
+        el.style.transition = 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)';
+        el.style.transform = '';
+      });
+    }
+    document.querySelectorAll('#schedule .slot').forEach(el => tiltify(el, 7));
+    const fab = document.getElementById('fabBook');
+    if (fab) tiltify(fab, 5);
+  })();
+
   // —— Hero 餘燼粒子（reduced-motion 不跑；hero 離開視窗或分頁隱藏即暫停）——
   (function(){
     if (prefersReducedMotion) return;
@@ -2589,7 +2655,7 @@
         let o = 0;
         if (d > 0 && d < 1) o = Math.min(clamp01(d / 0.16), clamp01((1 - d) / 0.16));
         c.style.opacity = o.toFixed(3);
-        c.style.transform = 'translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px)';
+        c.style.transform = 'perspective(900px) translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px) rotateX(' + ((0.5 - d) * 9).toFixed(2) + 'deg)';
       });
       ticks.forEach((t, i) => t.classList.toggle('on', seg >= i + 0.2));
       // 四張餐點蝕刻壁畫各配一道菜，跟著自己的段落淡入淡出
