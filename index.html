@@ -1744,7 +1744,10 @@
     <div class="mstage">
       <div class="msky-night" aria-hidden="true"></div>
       <div class="msky-dusk" id="mDusk" aria-hidden="true"></div>
-      <div class="mmural" id="mMural" style="background-image:url('img/mural-fishing.webp')" aria-hidden="true"></div>
+      <div class="mmural" style="background-image:url('img/mural-island.webp')" aria-hidden="true"></div>
+      <div class="mmural" style="background-image:url('img/mural-fishing.webp')" aria-hidden="true"></div>
+      <div class="mmural" style="background-image:url('img/mural-phoenix.webp')" aria-hidden="true"></div>
+      <div class="mmural" style="background-image:url('img/mural-share.webp')" aria-hidden="true"></div>
       <div class="mstars" id="mStars" aria-hidden="true"></div>
       <div class="mfire" id="mFire" aria-hidden="true"></div>
 
@@ -2510,7 +2513,7 @@
     if (!sec || !pin || prefersReducedMotion) return;
     sec.classList.add('menu-live');
     const dusk = document.getElementById('mDusk');
-    const mural = document.getElementById('mMural');
+    const murals = Array.from(pin.querySelectorAll('.mmural'));   // 四張壁畫＝四道菜
     const stars = document.getElementById('mStars');
     const fire = document.getElementById('mFire');
     const closeLine = document.getElementById('mClose');
@@ -2542,10 +2545,13 @@
         c.style.transform = 'translateY(' + ((0.5 - d) * 36).toFixed(1) + 'px)';
       });
       ticks.forEach((t, i) => t.classList.toggle('on', seg >= i + 0.2));
-      // 漁火壁畫：只在「前菜・小管」那一段淡淡浮出（漁火引小管）
-      const d1 = seg - 1;
-      const mw = (d1 > 0 && d1 < 1) ? Math.min(clamp01(d1 / 0.22), clamp01((1 - d1) / 0.22)) : 0;
-      mural.style.opacity = (mw * 0.16).toFixed(3);
+      // 四張壁畫各配一道菜，跟著自己的段落淡入淡出
+      // 迎賓＝火山島、前菜＝漁火、主餐＝鳳凰、甜點＝分享
+      murals.forEach((m, i) => {
+        const dm = seg - i;
+        const w = (dm > 0 && dm < 1) ? Math.min(clamp01(dm / 0.22), clamp01((1 - dm) / 0.22)) : 0;
+        m.style.opacity = (w * 0.16).toFixed(3);
+      });
       closeLine.style.opacity = clamp01((seg - 4.05) / 0.25).toFixed(3);
       hint.style.opacity = clamp01(1 - p * 14).toFixed(3);
     }
