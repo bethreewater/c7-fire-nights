@@ -501,6 +501,31 @@
   renderSessions();
   syncForm();
 
+  // —— 深連結：官網場次表帶 ?d=6/20 進來 → 該日自動選好 ——
+  (function () {
+    var m = /[?&]d=([^&]+)/.exec(location.search);
+    if (!m) return;
+    var want = decodeURIComponent(m[1]).trim();
+    var un = null, done = false;
+    function tryPick() {
+      if (done) return true;
+      var hit = null;
+      C7.sessions().forEach(function (s) {
+        if (!hit && s.date === want && !C7.capacity(s.id).full) hit = s.id;
+      });
+      if (!hit) return false;
+      done = true;
+      pick(hit);
+      if (un) { un(); un = null; }
+      return true;
+    }
+    if (!tryPick()) {
+      un = C7.subscribe(function () { tryPick(); });
+      // 15 秒內沒等到該場（不存在或已滿）就放手讓使用者自選
+      setTimeout(function () { if (un) { un(); un = null; } }, 15000);
+    }
+  })();
+
   C7.subscribe(onStoreChange);
   // 每 30 秒釋放逾時 pending（releaseExpired 內部會 notify → onStoreChange 重繪）
   setInterval(function () { C7.releaseExpired(); }, 30000);

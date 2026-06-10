@@ -93,14 +93,14 @@ exports.sendConfirmEmail = onDocumentUpdated(
 );
 
 // ============================================================
-// 內測回饋通知：feedback collection 一有新筆 → email 給主理人
+// 回饋通知：feedback collection 一有新筆 → email 給主理人
 // ============================================================
 const FB_LABELS = [
   ['session', '場次'], ['name', '稱呼'], ['firstVisit', '首次來店'],
   ['q1_length', 'Q1 110 分鐘長度'],
   ['q2_again', 'Q2 願意再參加'], ['q2_why', '　└ 原因'],
   ['q3_price', 'Q3 票價 2,280 感受'], ['q3_note', '　└ 補充'],
-  ['q4_dance', 'Q4 最愛火舞段'], ['q4_why', '　└ 原因'], ['q4a_light', 'Q4a 第一段光線(Sunset)'],
+  ['q4_dance', 'Q4 最愛火舞段'], ['q4_why', '　└ 原因'], ['q4a_light', 'Q4a 第一段光線'],
   ['q5_pace', 'Q5 出餐節奏'], ['q5_stuck', '　└ 最卡的一波'],
   ['q6_service', 'Q6 服務'], ['q6_note', '　└ 具體'],
   ['q7_fav', 'Q7 最愛餐點'],
@@ -134,11 +134,11 @@ exports.notifyFeedback = onDocumentCreated(
 
     const html = `<!DOCTYPE html><html><body style="margin:0;background:#f4f1ec;font-family:-apple-system,'Helvetica Neue',Arial,'PingFang TC','Microsoft JhengHei',sans-serif;color:#1a1a1a;">
   <div style="max-width:560px;margin:0 auto;padding:32px 26px;">
-    <div style="font-size:12px;letter-spacing:3px;color:#D14820;text-transform:uppercase;">Container No.7 · 夏夜火舞 · 內測回饋</div>
+    <div style="font-size:12px;letter-spacing:3px;color:#D14820;text-transform:uppercase;">Container No.7 · 夏夜火舞 · 回饋</div>
     <h1 style="font-size:22px;margin:12px 0 4px;font-weight:700;">${esc(d.name || '匿名')} · ${esc(d.session || '未填場次')}</h1>
     <p style="color:#888;font-size:13px;margin:0 0 20px;">${whenStr} 送出</p>
     <table style="width:100%;border-collapse:collapse;border-top:1px solid #e0dace;">${rows}</table>
-    <p style="color:#999;font-size:12px;margin:22px 0 0;line-height:1.7;">完整列表在訂位後台「內測回饋」分頁。<br>——夏夜火舞</p>
+    <p style="color:#999;font-size:12px;margin:22px 0 0;line-height:1.7;">完整列表在訂位後台「回饋」分頁。<br>——夏夜火舞</p>
   </div>
 </body></html>`;
 
@@ -150,7 +150,7 @@ exports.notifyFeedback = onDocumentCreated(
       await transporter.sendMail({
         from: `"夏夜火舞 · 回饋" <${GMAIL_USER}>`,
         to: GMAIL_USER,
-        subject: `新內測回饋 · ${d.session || ''} · ${d.name || '匿名'}`,
+        subject: `新回饋 · ${d.session || ''} · ${d.name || '匿名'}`,
         html,
       });
       console.log('  ✓ 回饋通知已寄出');

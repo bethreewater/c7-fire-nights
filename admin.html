@@ -71,8 +71,8 @@
     </div>
     <div id="list"><!-- 表格或 empty 由 JS 注入 --></div>
 
-    <!-- 03 內測回饋 -->
-    <div class="sec-h"><span class="idx">03</span><h2>內測回饋</h2><span class="en">Feedback</span></div>
+    <!-- 03 回饋 -->
+    <div class="sec-h"><span class="idx">03</span><h2>回饋</h2><span class="en">Feedback</span></div>
     <div id="fblist"><!-- 回饋卡或 empty 由 JS 注入 --></div>
   </main>
 
@@ -223,7 +223,7 @@
   function sessionsCell(b) {
     var labels = b.sessionIds.map(function (id) { return esc(sessionLabel(id)); });
     var html = '<b>' + labels.join(' ＋ ') + '</b>';
-    if (b.sessionIds.length > 1) html += ' <span class="phone">· 兩場</span>';
+    if (b.sessionIds.length > 1) html += ' <span class="phone">· 多場</span>';
     return html;
   }
 
@@ -290,12 +290,12 @@
       '</table></div>';
   }
 
-  // --- 03 內測回饋 -------------------------------------------------
+  // --- 03 回饋 -------------------------------------------------
   var FB_FIELDS = [
     ['q1_length', '110 分鐘長度'],
     ['q2_again', '願意再參加'], ['q2_why', '　原因'],
     ['q3_price', '票價 2,280 感受'], ['q3_note', '　補充'],
-    ['q4_dance', '最愛火舞段'], ['q4_why', '　原因'], ['q4a_light', '第一段光線(Sunset)'],
+    ['q4_dance', '最愛火舞段'], ['q4_why', '　原因'], ['q4a_light', '第一段光線'],
     ['q5_pace', '出餐節奏'], ['q5_stuck', '　最卡的一波'],
     ['q6_service', '服務'], ['q6_note', '　具體'],
     ['q7_fav', '最愛餐點'],

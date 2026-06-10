@@ -122,6 +122,19 @@
   }
   .q textarea:focus, .q input[type=text]:focus { outline: none; border-color: var(--fire); }
   .q textarea::placeholder, .q input::placeholder { color: var(--paper-mute); }
+  .q select {
+    width: 100%; margin-top: 12px; display: block;
+    background: var(--bg-2); border: 1px solid var(--line); border-radius: 2px;
+    color: var(--paper); font-family: var(--sans); font-size: 15px;
+    padding: 12px 40px 12px 14px; line-height: 1.7; min-height: 44px;
+    appearance: none; -webkit-appearance: none; -moz-appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23C8C2B5' stroke-width='1.5'/></svg>");
+    background-repeat: no-repeat; background-position: right 14px center;
+    transition: border-color 0.22s;
+  }
+  .q select:focus { outline: none; border-color: var(--fire); }
+  .q select:invalid { color: var(--paper-mute); }
+  .q select option { background: var(--bg-2); color: var(--paper); }
   .q .sub { margin-top: 12px; }
   .q .sub .qt { font-size: 15.5px; font-weight: 400; color: var(--paper-soft); }
 
@@ -165,7 +178,7 @@
 <!-- HERO -->
 <header class="hero">
   <div class="hero-bg" aria-hidden="true"></div>
-  <div class="kicker">七號貨櫃 · 夏夜火舞 · 內測</div>
+  <div class="kicker">七號貨櫃 · 夏夜火舞 · 回饋</div>
   <h1>留一句話</h1>
   <p class="lead">謝謝你今晚來。<br>這份回饋會直接決定正式場要調什麼——請誠實，不用客氣。約 5 分鐘。</p>
 </header>
@@ -182,9 +195,21 @@
     </div>
     <div class="q">
       <div class="qt">今晚哪一場？</div>
-      <div class="opts" data-radio="session">
-        <label class="opt"><input type="radio" name="session" value="19:07"><span>本場 19:07</span></label>
-      </div>
+      <select name="session" required aria-label="選擇場次">
+        <option value="" disabled selected>選擇場次</option>
+        <option value="6/13（六）19:07">6/13（六）19:07</option>
+        <option value="6/20（六）19:07">6/20（六）19:07</option>
+        <option value="6/27（六）19:07">6/27（六）19:07</option>
+        <option value="7/4（六）19:07">7/4（六）19:07</option>
+        <option value="7/11（六）19:07">7/11（六）19:07</option>
+        <option value="7/18（六）19:07">7/18（六）19:07</option>
+        <option value="7/25（六）19:07">7/25（六）19:07</option>
+        <option value="8/1（六）19:07">8/1（六）19:07</option>
+        <option value="8/8（六）19:07">8/8（六）19:07</option>
+        <option value="8/15（六）19:07">8/15（六）19:07</option>
+        <option value="8/22（六）19:07">8/22（六）19:07</option>
+        <option value="8/29（六）19:07">8/29（六）19:07</option>
+      </select>
     </div>
     <div class="q">
       <div class="qt">是第一次來七號貨櫃嗎？</div>
@@ -259,7 +284,6 @@
         <div class="opts">
           <label class="opt"><input type="radio" name="q5_stuck" value="入場"><span>入場</span></label>
           <label class="opt"><input type="radio" name="q5_stuck" value="前菜"><span>前菜</span></label>
-          <label class="opt"><input type="radio" name="q5_stuck" value="調飲"><span>調飲</span></label>
           <label class="opt"><input type="radio" name="q5_stuck" value="主餐"><span>主餐</span></label>
           <label class="opt"><input type="radio" name="q5_stuck" value="甜點"><span>甜點</span></label>
           <label class="opt"><input type="radio" name="q5_stuck" value="都不卡"><span>都不卡</span></label>
@@ -286,9 +310,8 @@
         <label class="opt"><input type="checkbox" name="q7_fav" value="迎賓麵包＋抹醬"><span>迎賓麵包＋抹醬</span></label>
         <label class="opt"><input type="checkbox" name="q7_fav" value="仙人掌風茹康普茶"><span>仙人掌風茹康普茶</span></label>
         <label class="opt"><input type="checkbox" name="q7_fav" value="新鮮小管沙拉"><span>新鮮小管沙拉</span></label>
-        <label class="opt"><input type="checkbox" name="q7_fav" value="你選的那杯調飲"><span>你選的那杯調飲</span></label>
         <label class="opt"><input type="checkbox" name="q7_fav" value="煎鴨胸＋野生明蝦"><span>煎鴨胸＋野生明蝦</span></label>
-        <label class="opt"><input type="checkbox" name="q7_fav" value="仙人掌水果冰沙"><span>仙人掌水果冰沙</span></label>
+        <label class="opt"><input type="checkbox" name="q7_fav" value="當季水果冰沙"><span>當季水果冰沙</span></label>
       </div>
     </div>
     <div class="q">
@@ -297,9 +320,8 @@
         <label class="opt"><input type="radio" name="q8_weak" value="迎賓麵包＋抹醬"><span>迎賓麵包＋抹醬</span></label>
         <label class="opt"><input type="radio" name="q8_weak" value="仙人掌風茹康普茶"><span>仙人掌風茹康普茶</span></label>
         <label class="opt"><input type="radio" name="q8_weak" value="新鮮小管沙拉"><span>新鮮小管沙拉</span></label>
-        <label class="opt"><input type="radio" name="q8_weak" value="你選的那杯調飲"><span>你選的那杯調飲</span></label>
         <label class="opt"><input type="radio" name="q8_weak" value="煎鴨胸＋野生明蝦"><span>煎鴨胸＋野生明蝦</span></label>
-        <label class="opt"><input type="radio" name="q8_weak" value="仙人掌水果冰沙"><span>仙人掌水果冰沙</span></label>
+        <label class="opt"><input type="radio" name="q8_weak" value="當季水果冰沙"><span>當季水果冰沙</span></label>
         <label class="opt"><input type="radio" name="q8_weak" value="都不錯"><span>都不錯</span></label>
       </div>
       <textarea name="q8_why" rows="2" maxlength="1000" placeholder="為什麼？"></textarea>
@@ -379,7 +401,7 @@
 <div class="thanks" id="thanks">
   <span class="ch-num">謝</span>
   <h2>收到了，謝謝你。</h2>
-  <p>你寫的每一句，我們都會在 6/13 正式場之前消化進去。</p>
+  <p>你寫的每一句，我們都會在下一場之前消化進去。</p>
   <span class="fire-line">下一次，換你帶人來。</span>
 </div>
 </main>
@@ -422,6 +444,7 @@
     }
 
     function radio(name) { var el = form.querySelector('input[name="' + name + '"]:checked'); return el ? el.value : ''; }
+    function selectVal(name) { var el = form.querySelector('select[name="' + name + '"]'); return el ? el.value : ''; }
     function checks(name) {
       return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function (e) { return e.value; });
     }
@@ -430,7 +453,7 @@
     function collect() {
       var d = {
         name: text('name'),
-        session: radio('session'),
+        session: selectVal('session'),
         firstVisit: radio('firstVisit'),
         q1_length: radio('q1_length'),
         q2_again: radio('q2_again'), q2_why: text('q2_why'),

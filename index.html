@@ -4,12 +4,66 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<title>SUMMER NIGHTS — Container No.7</title>
-<meta name="description" content="Penghu · 2026.06 – 2026.08 · Saturdays · Fire Performance Dinner.">
+<title>夏夜火舞 SUMMER NIGHTS — 七號貨櫃 Container No.7</title>
+<meta name="description" content="六月到八月，每個週六 19:07，澎湖的草皮上有火。四段火舞、四道菜、一百一十分鐘，不能快轉。NT$2,280／人，每場 8–15 位。">
+<link rel="canonical" href="https://bethreewater.github.io/c7-fire-nights/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23D14820' d='M16 2c1.2 5.8 7 8.6 7 15.4A7.3 7.3 0 0 1 16 25a7.3 7.3 0 0 1-7-7.6c0-3.8 2.1-6.2 3.4-9 .9 1.9 2.6 3 2.6 5.6 0-4.6.3-8.4 1-12z'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
 
-<meta property="og:title" content="SUMMER NIGHTS · Container No.7">
-<meta property="og:description" content="Penghu · 2026 · Saturdays · Fire Dinner">
+<meta property="og:title" content="夏夜火舞 SUMMER NIGHTS · 七號貨櫃">
+<meta property="og:description" content="每個週六 19:07，澎湖的草皮上有火。四段火舞、四道菜、一百一十分鐘，不能快轉。">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://bethreewater.github.io/c7-fire-nights/">
+<meta property="og:image" content="https://bethreewater.github.io/c7-fire-nights/img/hero-poster.jpg">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="夏夜火舞 SUMMER NIGHTS · 七號貨櫃">
+<meta name="twitter:description" content="每個週六 19:07，澎湖的草皮上有火。">
+<meta name="twitter:image" content="https://bethreewater.github.io/c7-fire-nights/img/hero-poster.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EventSeries",
+  "name": "夏夜火舞 SUMMER NIGHTS — 七號貨櫃 Container No.7",
+  "description": "六月到八月，每個週六 19:07，澎湖的草皮上有火。四段火舞、四道菜、一百一十分鐘的火舞晚宴。",
+  "image": "https://bethreewater.github.io/c7-fire-nights/img/hero-poster.jpg",
+  "startDate": "2026-06-13",
+  "endDate": "2026-08-29",
+  "eventSchedule": {
+    "@type": "Schedule",
+    "repeatFrequency": "P1W",
+    "byDay": "https://schema.org/Saturday",
+    "startTime": "19:07:00",
+    "endTime": "21:00:00",
+    "startDate": "2026-06-13",
+    "endDate": "2026-08-29",
+    "scheduleTimezone": "Asia/Taipei"
+  },
+  "location": {
+    "@type": "Place",
+    "name": "七號貨櫃 Container No.7",
+    "address": { "@type": "PostalAddress", "addressRegion": "澎湖縣", "addressCountry": "TW" }
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": "七號貨櫃 Container No.7",
+    "sameAs": "https://www.instagram.com/container_no.7_penghu/"
+  },
+  "performer": { "@type": "Person", "name": "鳳凰舞者・杜奇", "sameAs": "https://www.instagram.com/duchifire/" },
+  "offers": {
+    "@type": "Offer",
+    "price": "2280",
+    "priceCurrency": "TWD",
+    "availability": "https://schema.org/InStock",
+    "url": "https://bethreewater.github.io/c7-fire-nights/book.html"
+  },
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "maximumAttendeeCapacity": 15,
+  "inLanguage": "zh-Hant"
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1407,6 +1461,52 @@
     .hero .bottom-meta > div,
     .spread .index .num { opacity: 1; transform: none; animation: none; }
   }
+
+  /* ===== Embers / next-up countdown / 19:07 / live availability ===== */
+  .hero .bottom-meta { gap: 22px; }
+  #embers {
+    position: absolute; inset: 0; z-index: 1;
+    pointer-events: none; opacity: 0.85;
+  }
+  .hero-next {
+    margin-top: 30px;
+    font-family: var(--sans); font-weight: 400;
+    font-size: 12px; letter-spacing: 0.22em;
+    color: var(--paper-soft); text-transform: uppercase;
+    min-height: 1.5em;
+  }
+  .hero-next b { color: var(--fire-soft); font-weight: 600; }
+  .hero-next .tick { font-variant-numeric: tabular-nums; color: var(--paper); }
+  .why-907 {
+    appearance: none; background: none; border: none; padding: 0;
+    margin: 16px 0 0; cursor: pointer;
+    font-family: var(--sans); font-weight: 400; font-size: 12.5px;
+    letter-spacing: 0.16em; color: var(--paper-mute);
+    border-bottom: 1px dotted var(--paper-mute);
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .why-907:hover { color: var(--fire-soft); border-color: var(--fire-soft); }
+  .why-907:focus-visible { outline: 2px solid var(--fire); outline-offset: 3px; }
+  .why-907.done { color: var(--fire-soft); border-bottom-color: transparent; cursor: default; }
+  .sched-live {
+    font-family: var(--sans); font-size: 11.5px; font-weight: 400;
+    letter-spacing: 0.14em; color: var(--paper-mute);
+    margin: 0 0 46px;
+    opacity: 0; transition: opacity 0.6s;
+  }
+  .sched-live.on { opacity: 1; }
+  .sched-live .lg { margin-left: 14px; }
+  .slot .avail {
+    margin-top: 9px;
+    font-family: var(--sans); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; color: var(--paper-mute);
+  }
+  .slot .avail.low { color: var(--fire-soft); }
+  .slot .avail.full { color: var(--fire); }
+  .slot.past { opacity: 0.32; pointer-events: none; }
+  @media (prefers-reduced-motion: reduce) {
+    #embers { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -1436,6 +1536,7 @@
     <source src="img/fire.mp4" type="video/mp4">
   </video>
   <div class="hero-bg"></div>
+  <canvas id="embers" aria-hidden="true"></canvas>
 
   <div class="top-meta">
     <div>
@@ -1459,10 +1560,11 @@
       第一根火柴，是你劃的。<br>
       接下來一百一十分鐘，那把火會跳上天、煎進你的盤子，最後回到你手上。
     </p>
+    <p class="hero-next" id="heroNext"></p>
   </div>
 
   <div class="bottom-meta">
-    <div>12 Saturdays / 24 Sittings</div>
+    <div>12 Saturdays · One Night Each</div>
     <div>↓ Scroll</div>
     <div>夏季限定 NT$ 2,280 · 一夜</div>
   </div>
@@ -1515,6 +1617,7 @@
           <p class="desc">
             19:07 開場，從暮色坐進夜裡。
           </p>
+          <button type="button" class="why-907" id="why907">為什麼是 19:07？</button>
           <p class="body">
             你入座時，天剛要暗。<br><br>
             一頓飯的時間，天越暗，火越亮——到最後，照著你的只剩那把火。從白天坐到黑夜，就這一場。
@@ -1654,6 +1757,7 @@
         June through August · 每週六一場，19:07 開場。<br>
         十二個週六，十二個從暮色坐進夜裡的夜晚。
       </p>
+      <p class="sched-live" id="schedLive">即時名額<span class="lg">○ 開放</span><span class="lg">◐ 將滿</span><span class="lg">● 已滿</span></p>
 
       <div class="sched-group">
         <h4>June</h4>
@@ -1714,91 +1818,6 @@
         <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，線上即時選位預購。</p>
       </div>
 
-      <div class="modal-overlay" id="bookModal" aria-hidden="true">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-label="預購表">
-          <button type="button" class="modal-close" aria-label="關閉預購表">✕</button>
-          <div class="modal-fire" aria-hidden="true"></div>
-          <h3 class="modal-title">預購 · Reserve</h3>
-          <form class="book" id="book" novalidate>
-          <div class="book-grid">
-            <label class="bf">
-              <span class="bf-k">場次</span>
-              <select class="bf-in" id="bfDate">
-                <option value="">選日期</option>
-                <option>6/13（六）</option>
-                <option>6/20（六）</option>
-                <option>6/27（六）</option>
-                <option>7/04（六）</option>
-                <option>7/11（六）</option>
-                <option>7/18（六）</option>
-                <option>7/25（六）</option>
-                <option>8/01（六）</option>
-                <option>8/08（六）</option>
-                <option>8/15（六）</option>
-                <option>8/22（六）</option>
-                <option>8/29（六）</option>
-              </select>
-            </label>
-            <label class="bf">
-              <span class="bf-k">時段</span>
-              <select class="bf-in" id="bfTime">
-                <option selected>19:07 開場</option>
-              </select>
-            </label>
-            <label class="bf">
-              <span class="bf-k">人數</span>
-              <select class="bf-in" id="bfPax">
-                <option value="">幾位</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
-                <option>10</option>
-              </select>
-            </label>
-            <label class="bf">
-              <span class="bf-k">稱呼</span>
-              <input type="text" class="bf-in" id="bfName" placeholder="怎麼稱呼你" autocomplete="name">
-            </label>
-            <label class="bf bf-wide">
-              <span class="bf-k">電話</span>
-              <input type="tel" class="bf-in" id="bfTel" placeholder="0900 000 000" autocomplete="tel">
-            </label>
-          </div>
-
-          <div class="bf bf-wide" style="margin-top:18px">
-            <span class="bf-k">飲食限制 · 可複選，沒有就留空</span>
-            <div class="bf-chips">
-              <label class="chip"><input type="checkbox" value="不吃鴨"><span>不吃鴨</span></label>
-              <label class="chip"><input type="checkbox" value="海鮮過敏"><span>海鮮過敏</span></label>
-              <label class="chip"><input type="checkbox" value="蛋奶過敏"><span>蛋奶過敏</span></label>
-              <label class="chip"><input type="checkbox" value="素食"><span>素食</span></label>
-              <label class="chip"><input type="checkbox" value="不吃辣"><span>不吃辣</span></label>
-            </div>
-          </div>
-
-          <div class="bf-terms">
-            <div class="bf-terms-k">預購前請知道</div>
-            <ul>
-              <li><strong>抵達</strong>18:40–19:05 抵達，19:07 開場；遲到 15 分鐘以上視為棄權。</li>
-              <li><strong>天氣</strong>陸警／海警全額退費或免費換期；火舞需要乾燥天氣，表演當天遇雨（含小雨）、或風勢大到無法安全表演（由表演者現場判斷），當日整場免費改期。澎湖常有海風，一般風勢照常。</li>
-              <li><strong>退費</strong>場次前 5 天以上全額退、2–5 天退 50%、不足 2 天不退可換期；颱風／警報不受此限。</li>
-              <li><strong>付款</strong>送出後我們在 IG 回覆確認名額與付款方式；預購截止場次前一天 22:00。</li>
-            </ul>
-            <label class="bf-agree"><input type="checkbox" id="bfAgree"><span>我已閱讀並同意以上注意事項</span></label>
-          </div>
-
-          <button type="button" class="cta" id="bfGo">送出預購 → IG</button>
-          <div class="bf-hint" id="bfHint" role="status" aria-live="polite"></div>
-          <div class="bf-note">送出後內容會自動複製，IG 私訊貼上即可。每場 8–15 位，預購截止場次前一天 22:00。</div>
-        </form>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -2019,7 +2038,7 @@
 
   const navMap = {};
   navLinks.querySelectorAll('a[data-sec]').forEach(a => { navMap[a.dataset.sec] = a; });
-  const spySections = ['island','sessions','menu','drinks','performer','schedule','faq','visit']
+  const spySections = ['island','sessions','menu','performer','schedule','faq','visit']
     .map(id => document.getElementById(id))
     .filter(Boolean);
   let currentActive = null;
@@ -2165,60 +2184,169 @@
     }
   }
 
-  // —— Reserve form: validate → compose → copy → open IG ——
+  // —— 場次表：點日期 → 訂位頁直達該場（book.html?d=6/20）；過期場次標已落幕 ——
+  const SAT_DATES = ['6/13','6/20','6/27','7/04','7/11','7/18','7/25','8/01','8/08','8/15','8/22','8/29'];
+  function sessionStart(d) {
+    const p = d.split('/');
+    return new Date(2026, Number(p[0]) - 1, Number(p[1]), 19, 7, 0);
+  }
   (function(){
-    const go = document.getElementById('bfGo');
-    if (!go) return;
-    const hint = document.getElementById('bfHint');
-    const show = (m) => { hint.textContent = m; };
-    async function copyText(t){
-      try { await navigator.clipboard.writeText(t); return true; }
-      catch (e) {
-        try {
-          const ta = document.createElement('textarea');
-          ta.value = t; ta.setAttribute('readonly','');
-          ta.style.position = 'fixed'; ta.style.opacity = '0';
-          document.body.appendChild(ta); ta.select();
-          const ok = document.execCommand('copy');
-          document.body.removeChild(ta);
-          return ok;
-        } catch (e2) { return false; }
-      }
-    }
-    go.addEventListener('click', async () => {
-      const v = (id) => (document.getElementById(id).value || '').trim();
-      const date = v('bfDate'), time = v('bfTime'), pax = v('bfPax'), name = v('bfName'), tel = v('bfTel');
-      const diet = Array.from(document.querySelectorAll('.bf-chips input:checked')).map(c => c.value);
-      const agree = document.getElementById('bfAgree').checked;
-      if (!date || !time || !pax || !name || !tel) { show('請把場次、時段、人數、稱呼、電話都填好'); return; }
-      if (!agree) { show('送出前，請先勾選「已閱讀並同意注意事項」'); return; }
-      const msg =
-        '【夏夜火舞・預購】\n' +
-        '場次：' + date + '　' + time + '\n' +
-        '人數：' + pax + ' 位\n' +
-        '飲食限制：' + (diet.length ? diet.join('、') : '無') + '\n' +
-        '稱呼：' + name + '\n' +
-        '電話：' + tel + '\n' +
-        '（已閱讀並同意預購注意事項）';
-      const ok = await copyText(msg);
-      show(ok ? '已複製預購內容 ✓ 正在開 IG——私訊貼上送出即可' : '已開 IG，請把以下內容私訊給我們：\n' + msg);
-      window.open('https://www.instagram.com/container_no.7_penghu/', '_blank', 'noopener');
-    });
-  })();
-
-  // —— 場次卡 / 預購按鈕 → 線上訂位頁（book.html）——
-  (function(){
-    function goBook(){ window.location.href = 'book.html'; }
-    document.querySelectorAll('#schedule .slot:not(.beta)').forEach(slot => {
+    const now = new Date();
+    document.querySelectorAll('#schedule .slot').forEach(slot => {
       const dEl = slot.querySelector('.d');
+      const d = dEl ? dEl.textContent.trim() : '';
+      if (d && now - sessionStart(d) > 3 * 3600 * 1000) {   // 開演後 3 小時視為已落幕
+        slot.classList.add('past');
+        slot.setAttribute('aria-disabled', 'true');
+        const av = document.createElement('div');
+        av.className = 'avail';
+        av.textContent = '已落幕';
+        slot.appendChild(av);
+        return;
+      }
+      const goBook = () => { window.location.href = 'book.html?d=' + encodeURIComponent(d); };
       slot.setAttribute('role', 'button');
       slot.setAttribute('tabindex', '0');
-      slot.setAttribute('aria-label', (dEl ? dEl.textContent.trim() + '（六）' : '') + '預購');
+      slot.setAttribute('aria-label', d + '（六）19:07 預購');
       slot.addEventListener('click', goBook);
       slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goBook(); } });
     });
     const ob = document.getElementById('openBook');
-    if (ob) ob.addEventListener('click', goBook);
+    if (ob) ob.addEventListener('click', () => { window.location.href = 'book.html'; });
+  })();
+
+  // —— 場次即時名額（Firestore 公開讀；抓不到就保持安靜，不影響頁面）——
+  (function(){
+    const URL_ = 'https://firestore.googleapis.com/v1/projects/fire-nights/databases/(default)/documents/sessions?key=AIzaSyBXaOPYXcA-0_CrjwPrIxczXzCF5XrBqWk&pageSize=50';
+    fetch(URL_).then(r => r.ok ? r.json() : null).then(j => {
+      if (!j || !j.documents) return;
+      const left = {};
+      j.documents.forEach(doc => {
+        const f = doc.fields || {};
+        const date = f.date && f.date.stringValue;
+        if (!date) return;
+        const cap = Number((f.cap && f.cap.integerValue) || 15);
+        const used = Number((f.confirmedSeats && f.confirmedSeats.integerValue) || 0);
+        left[date] = Math.max(0, cap - used);
+      });
+      let shown = 0;
+      document.querySelectorAll('#schedule .slot').forEach(slot => {
+        if (slot.classList.contains('past')) return;
+        const dEl = slot.querySelector('.d');
+        const d = dEl ? dEl.textContent.trim() : '';
+        if (!(d in left)) return;
+        const r = left[d];
+        const av = document.createElement('div');
+        av.className = 'avail';
+        if (r <= 0)      { av.classList.add('full'); av.textContent = '● 已滿'; }
+        else if (r <= 5) { av.classList.add('low');  av.textContent = '◐ 剩 ' + r + ' 位'; }
+        else             { av.textContent = '○ 開放'; }
+        slot.appendChild(av);
+        shown++;
+      });
+      const lg = document.getElementById('schedLive');
+      if (lg && shown) lg.classList.add('on');
+    }).catch(() => {});
+  })();
+
+  // —— Hero：下一場倒數（預購截止＝前一天 22:00，過了自動指向下一週）——
+  (function(){
+    const el = document.getElementById('heroNext');
+    if (!el) return;
+    function cutoff(d) {
+      const t = sessionStart(d);
+      return new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1, 22, 0, 0);
+    }
+    const pad = n => (n < 10 ? '0' : '') + n;
+    function tick() {
+      const now = new Date();
+      const next = SAT_DATES.find(d => now < cutoff(d));
+      if (!next) { el.textContent = '本季十二場已收官 — 明年夏天見'; return; }
+      const ms = sessionStart(next) - now;
+      const day = Math.floor(ms / 86400000);
+      const hh = Math.floor(ms % 86400000 / 3600000);
+      const mm = Math.floor(ms % 3600000 / 60000);
+      const ss = Math.floor(ms % 60000 / 1000);
+      el.innerHTML = 'Next — <b>' + next + '（六）19:07</b>　<span class="tick">' +
+        (day > 0 ? day + 'd ' : '') + pad(hh) + ':' + pad(mm) + ':' + pad(ss) + '</span>';
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+
+  // —— 為什麼是 19:07 ——
+  (function(){
+    const b = document.getElementById('why907');
+    if (!b) return;
+    b.addEventListener('click', () => {
+      if (b.classList.contains('done')) return;
+      b.classList.add('done');
+      b.textContent = '來了就知道。';
+      b.setAttribute('aria-disabled', 'true');
+    });
+  })();
+
+  // —— Hero 餘燼粒子（reduced-motion 不跑；hero 離開視窗或分頁隱藏即暫停）——
+  (function(){
+    if (prefersReducedMotion) return;
+    const cv = document.getElementById('embers');
+    const hero = document.querySelector('.hero');
+    if (!cv || !hero || !cv.getContext) return;
+    const ctx = cv.getContext('2d');
+    let W = 0, H = 0, P = [], running = false, inView = true;
+    function size() {
+      const DPR = Math.min(window.devicePixelRatio || 1, 1.5);
+      W = hero.clientWidth; H = hero.clientHeight;
+      cv.width = W * DPR; cv.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    function spawn(p) {
+      p.x = W * (0.18 + Math.random() * 0.64);
+      p.y = H * (0.62 + Math.random() * 0.38);
+      p.r = 0.6 + Math.random() * 1.7;
+      p.vy = 0.25 + Math.random() * 0.55;
+      p.vx = (Math.random() - 0.5) * 0.3;
+      p.life = 0;
+      p.max = 240 + Math.random() * 200;
+      p.w = Math.random() * 6.28;
+      p.hot = Math.random() < 0.45;
+      return p;
+    }
+    function frame() {
+      if (!running) return;
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      P.forEach(p => {
+        p.life++;
+        if (p.life > p.max || p.y < -8) spawn(p);
+        p.x += p.vx + Math.sin(p.life / 36 + p.w) * 0.22;
+        p.y -= p.vy;
+        const t = p.life / p.max;
+        const a = t < 0.12 ? t / 0.12 : 1 - (t - 0.12) / 0.88;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * (1 - t * 0.4), 0, 6.2832);
+        ctx.fillStyle = p.hot
+          ? 'rgba(232,161,88,' + Math.max(0, a * 0.55).toFixed(3) + ')'
+          : 'rgba(209,72,32,' + Math.max(0, a * 0.45).toFixed(3) + ')';
+        ctx.fill();
+      });
+      requestAnimationFrame(frame);
+    }
+    function setRun(on) {
+      if (on && !running) { running = true; requestAnimationFrame(frame); }
+      else if (!on) running = false;
+    }
+    size();
+    const n = W < 720 ? 13 : 24;
+    P = Array.from({ length: n }, () => spawn({}));
+    P.forEach(p => { p.life = Math.random() * p.max; });
+    new IntersectionObserver(es => {
+      inView = es[0].isIntersecting;
+      setRun(inView && !document.hidden);
+    }, { threshold: 0.02 }).observe(hero);
+    document.addEventListener('visibilitychange', () => setRun(inView && !document.hidden));
+    window.addEventListener('resize', size, { passive: true });
+    setRun(true);
   })();
 </script>
 
