@@ -1465,6 +1465,45 @@
   /* ===== Embers / next-up countdown / 19:07 / live availability ===== */
   .hero .bottom-meta { gap: 22px; }
 
+  /* ===== 餘燼天花板：一塊煤點著整個房間（全站一起呼吸）===== */
+  .coal-breath {
+    position: fixed; inset: 0; z-index: 2; pointer-events: none;
+    background: radial-gradient(60% 50% at 50% 94%, var(--fire) 0%, rgba(209,72,32,0) 68%);
+    opacity: 0; mix-blend-mode: soft-light;
+    animation: coalBreath 6.6s ease-in-out infinite;
+  }
+  @keyframes coalBreath { 0%, 100% { opacity: 0.02; } 50% { opacity: 0.085; } }
+
+  /* hero：標題後的煤光，與全站同一口氣 */
+  .hero .coal-glow {
+    position: absolute; z-index: 0; pointer-events: none;
+    left: 50%; top: 58%; width: 86vw; max-width: 640px; height: 56vh;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(50% 50% at 50% 50%, rgba(232,161,88,0.55) 0%, rgba(209,72,32,0.20) 36%, rgba(0,0,0,0) 70%);
+    filter: blur(6px); opacity: 0.4; mix-blend-mode: screen;
+    animation: coalGlow 6.6s ease-in-out infinite;
+  }
+  @keyframes coalGlow {
+    0%, 100% { opacity: 0.30; transform: translate(-50%, -50%) scale(0.96); }
+    50%      { opacity: 0.58; transform: translate(-50%, -50%) scale(1.04); }
+  }
+
+  /* footer：最後一塊餘燼，沉下去但沒熄 */
+  footer { position: relative; overflow: hidden; }
+  footer::before {
+    content: ''; position: absolute; left: 6%; bottom: -56px;
+    width: 320px; height: 240px; pointer-events: none;
+    background: radial-gradient(50% 50% at 50% 100%, rgba(209,72,32,0.42) 0%, rgba(0,0,0,0) 70%);
+    opacity: 0.5; mix-blend-mode: screen;
+    animation: coalBreath 7.8s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .coal-breath { animation: none; opacity: 0.035; }
+    .hero .coal-glow { animation: none; opacity: 0.38; }
+    footer::before { animation: none; opacity: 0.4; }
+  }
+
   /* ===== 3D：標題入場（仰角翻正）===== */
   .spread > div { perspective: 900px; }
   section.reveal .display-h {
@@ -1653,6 +1692,8 @@
 </head>
 <body>
 
+<div class="coal-breath" aria-hidden="true"></div>
+
 <a href="#island" class="skip-link">Skip to content / 跳至內容</a>
 
 <div class="scroll-progress" id="scroll-progress"></div>
@@ -1685,6 +1726,7 @@
   </video>
   <div class="hero-bg"></div>
   <canvas id="embers" aria-hidden="true"></canvas>
+  <div class="coal-glow" aria-hidden="true"></div>
 
   <div class="top-meta">
     <div>
@@ -2590,10 +2632,10 @@
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     }
     function spawn(p) {
-      p.x = W * (0.18 + Math.random() * 0.64);
-      p.y = H * (0.62 + Math.random() * 0.38);
-      p.r = 0.6 + Math.random() * 1.7;
-      p.vy = 0.25 + Math.random() * 0.55;
+      p.x = W * (0.40 + Math.random() * 0.20);   // 收束到中央：從一塊煤升起
+      p.y = H * (0.70 + Math.random() * 0.28);
+      p.r = 0.6 + Math.random() * 1.6;
+      p.vy = 0.16 + Math.random() * 0.40;        // 升得更慢，像剛離開煤的餘燼
       p.vx = (Math.random() - 0.5) * 0.3;
       p.life = 0;
       p.max = 240 + Math.random() * 200;
@@ -2626,7 +2668,7 @@
       else if (!on) running = false;
     }
     size();
-    const n = W < 720 ? 13 : 24;
+    const n = W < 720 ? 9 : 16;     // 更少：是餘燼不是篝火
     P = Array.from({ length: n }, () => spawn({}));
     P.forEach(p => { p.life = Math.random() * p.max; });
     new IntersectionObserver(es => {
