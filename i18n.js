@@ -526,14 +526,28 @@
   var KEY = 'c7lang';
   var LANGS = ['zh', 'en', 'ja', 'ko'];
   var HTML_LANG = { zh: 'zh-Hant', en: 'en', ja: 'ja', ko: 'ko' };
+  // 手機／瀏覽器語言偵測：依使用者的語言偏好序，取第一個我們支援的
+  function browserLang() {
+    var langs = (navigator.languages && navigator.languages.length)
+      ? navigator.languages
+      : [navigator.language || navigator.userLanguage || ''];
+    for (var i = 0; i < langs.length; i++) {
+      var l = String(langs[i] || '').toLowerCase();
+      if (l.indexOf('zh') === 0) return 'zh';
+      if (l.indexOf('en') === 0) return 'en';
+      if (l.indexOf('ja') === 0) return 'ja';
+      if (l.indexOf('ko') === 0) return 'ko';
+    }
+    return 'zh';   // 偵測不到支援語言 → 中文（HTML 預設、不切換）
+  }
   function detectLang() {
     var m = /[?&]lang=(zh|en|ja|ko)\b/.exec(location.search);
-    if (m) return m[1];                              // 連結帶語言 → 最優先（跨頁邏輯硬通）
+    if (m) return m[1];                              // ① 連結帶語言 → 最優先（跨頁／分享硬通）
     try {
       var s2 = localStorage.getItem(KEY);
-      if (LANGS.indexOf(s2) > -1) return s2;
+      if (LANGS.indexOf(s2) > -1) return s2;         // ② 使用者點過的選擇（明確偏好，勝過自動偵測）
     } catch (e) {}
-    return 'zh';
+    return browserLang();                            // ③ 手機／瀏覽器語言自動偵測（首次訪客）
   }
   var current = detectLang();
 
