@@ -2432,6 +2432,24 @@
       heroVideo.addEventListener('loadedmetadata', stop, { once: true });
       heroVideo.addEventListener('play', stop);
     }
+  } else {
+    // iPhone 在「自動播放預覽」關閉或「低數據模式」下會擋住自動播放（與低耗電/減少動態無關）。
+    // 對策：載入即嘗試播放；被擋的話，使用者第一次觸碰／捲動／點擊就把火點起來。
+    const hv = document.querySelector('.hero-video');
+    if (hv) {
+      hv.muted = true;                 // 確保靜音（iOS 自動播放的前提）
+      hv.setAttribute('muted', '');
+      const tryPlay = () => { try { const p = hv.play(); if (p && p.catch) p.catch(function () {}); } catch (e) {} };
+      tryPlay();
+      hv.addEventListener('loadedmetadata', tryPlay, { once: true });
+      hv.addEventListener('canplay', tryPlay, { once: true });
+      const kick = () => { tryPlay(); cleanup(); };
+      const evs = ['touchstart', 'pointerdown', 'click', 'scroll', 'keydown'];
+      function cleanup() { evs.forEach(function (ev) { window.removeEventListener(ev, kick); }); }
+      evs.forEach(function (ev) { window.addEventListener(ev, kick, { passive: true }); });
+      // 分頁切回前景時也再試一次（iOS 背景會暫停影片）
+      document.addEventListener('visibilitychange', function () { if (!document.hidden) tryPlay(); });
+    }
   }
 
   // —— 場次表：點日期 → 訂位頁直達該場（book.html?d=6/20）；過期場次標已落幕 ——
