@@ -137,7 +137,7 @@
     ['#faq .qa:nth-of-type(8) .a', 'No rush. After the hundred and ten minutes, the bar returns to normal service — stay for another glass.'],
     /* VISIT */
     ['#visit .display-h-zh', 'Visit'],
-    ['#visit .visit-item:nth-child(1) .val', 'Container No.7 · Magong, Penghu<br><span class="addr-pending">Full address &amp; map coming soon</span>'],
+    ['#visit .visit-item:nth-child(1) .val', 'Container No.7 · Shanshui Beach, Magong, Penghu<br><a href="https://maps.app.goo.gl/mxLucq4zEWwAuKQM7" target="_blank" rel="noopener" class="inline-link">Google Maps&nbsp;↗</a>'],
     /* FAB */
     ['.fp-tag', 'Summer only'],
     ['.fp-count', '8–15 seats'],
@@ -246,7 +246,7 @@
     ['#faq .qa:nth-of-type(8) .a', '急ぐ必要はありません。百十分の火の舞と食事のあと、ここは通常営業に戻ります——そのまま残って、もう一杯どうぞ。'],
     /* VISIT */
     ['#visit .display-h-zh', 'アクセス'],
-    ['#visit .visit-item:nth-child(1) .val', '澎湖県馬公市・Container No.7<br><span class="addr-pending">詳しい住所と地図は準備中</span>'],
+    ['#visit .visit-item:nth-child(1) .val', '澎湖（ポンフー）馬公市・山水ビーチ<br>Container No.7<br><a href="https://maps.app.goo.gl/mxLucq4zEWwAuKQM7" target="_blank" rel="noopener" class="inline-link">Google マップ&nbsp;↗</a>'],
     /* FAB */
     ['.fp-tag', '夏季限定'],
     ['.fp-count', '各回 8–15席'],
@@ -353,7 +353,7 @@
     ['#faq .qa:nth-of-type(8) .a', '서두르지 않아도 됩니다. 백십 분의 불춤과 식사가 끝나면 이곳은 평소 영업으로 돌아갑니다 — 남아서 한 잔 더 하셔도 좋습니다.'],
     /* VISIT */
     ['#visit .display-h-zh', '오시는 길'],
-    ['#visit .visit-item:nth-child(1) .val', '펑후현 마궁시 · Container No.7<br><span class="addr-pending">상세 주소와 지도는 준비 중</span>'],
+    ['#visit .visit-item:nth-child(1) .val', '펑후 마궁시・산수이 해변<br>Container No.7<br><a href="https://maps.app.goo.gl/mxLucq4zEWwAuKQM7" target="_blank" rel="noopener" class="inline-link">구글 지도&nbsp;↗</a>'],
     /* FAB */
     ['.fp-tag', '여름 한정'],
     ['.fp-count', '회당 8–15석'],
