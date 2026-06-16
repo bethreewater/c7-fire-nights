@@ -13,22 +13,22 @@
   /* ---------- 動態字串（index 的 JS 會讀 window.C7L）---------- */
   var L = {
     zh: {
-      sat: '（六）', seasonOver: '本季十二場已收官 — 明年夏天見',
+      sat: '（六）', seasonOver: '本季十一場已收官 — 明年夏天見',
       full: '● 已滿', last: '◐ 最後 {n} 位', some: '◐ 剩 {n} 位', more: '○ 剩 {n} 位',
       ended: '已落幕', why: '來了就知道。'
     },
     en: {
-      sat: ' (Sat) ', seasonOver: 'All twelve nights are done — see you next summer',
+      sat: ' (Sat) ', seasonOver: 'All eleven nights are done — see you next summer',
       full: '● Full', last: '◐ Last {n}', some: '◐ {n} left', more: '○ {n} left',
       ended: 'Ended', why: 'Come and you’ll know.'
     },
     ja: {
-      sat: '（土）', seasonOver: '今季の十二夜は終了 — また来年の夏に',
+      sat: '（土）', seasonOver: '今季の十一夜は終了 — また来年の夏に',
       full: '● 満席', last: '◐ 残り {n} 席', some: '◐ 残り {n} 席', more: '○ 残り {n} 席',
       ended: '終了', why: '来ればわかります。'
     },
     ko: {
-      sat: ' (토) ', seasonOver: '올여름 열두 밤은 끝났습니다 — 내년 여름에',
+      sat: ' (토) ', seasonOver: '올여름 열한 밤은 끝났습니다 — 내년 여름에',
       full: '● 매진', last: '◐ 마지막 {n}석', some: '◐ {n}석 남음', more: '○ {n}석 남음',
       ended: '종료', why: '와보면 압니다.'
     }
@@ -95,8 +95,8 @@
     ['#flow .beat:nth-child(3) .what', '<strong>Second fire</strong>After the main course the sky is fully dark — the fire rises again, and it’s the only light left on you.'],
     ['#flow .beat:nth-child(4) .what', '<strong>Last</strong>Something cold for dessert. Then the last flame comes back to your hands. You’ll take a little with you — how, you’ll see.'],
     /* SCHEDULE */
-    ['#schedule .display-h-zh', 'Twelve Saturdays'],
-    ['#schedule .spread p.lede', 'June through August · one night every Saturday, 19:07.<br>Twelve Saturdays, twelve evenings from dusk into night.'],
+    ['#schedule .display-h-zh', 'Eleven Saturdays'],
+    ['#schedule .spread p.lede', 'June through August · one night every Saturday, 19:07.<br>Eleven Saturdays, eleven evenings from dusk into night.'],
     ['.reserve > p.lede', 'Each night is whole — two fire dances, four courses, a hundred and ten minutes. One sitting every Saturday, fifteen seats at most.'],
     ['.reserve-item:nth-child(1) .rk', 'Seats per night'],
     ['.reserve-item:nth-child(1) .rv', '8–15<span class="rsub">small on purpose — full is full</span>'],
@@ -204,8 +204,8 @@
     ['#flow .beat:nth-child(3) .what', '<strong>第二幕</strong>主菜のあと、空はもう真っ暗——火がふたたび上がり、あなたを照らすのは、もうその火だけ。'],
     ['#flow .beat:nth-child(4) .what', '<strong>締めくくり</strong>甘味で少し涼む。最後のあの火は、あなたの手へ。少しだけ持ち帰って——どうやってかは、その場でわかる。'],
     /* SCHEDULE */
-    ['#schedule .display-h-zh', '十二の土曜日'],
-    ['#schedule .spread p.lede', 'June through August · 毎週土曜に一場、19:07 開演。<br>十二の土曜日、夕暮れから夜の中へ座る、十二の夜。'],
+    ['#schedule .display-h-zh', '十一の土曜日'],
+    ['#schedule .spread p.lede', 'June through August · 毎週土曜に一場、19:07 開演。<br>十一の土曜日、夕暮れから夜の中へ座る、十一の夜。'],
     ['.reserve > p.lede', 'どの回も、ひとつの完全な夜——二幕の火の舞、四皿、百十分。毎週土曜に一場、一場は最大十五名。'],
     ['.reserve-item:nth-child(1) .rk', '各回の席数'],
     ['.reserve-item:nth-child(1) .rv', '8–15名<span class="rsub">あえて小さな場——満席で締め切ります</span>'],
@@ -311,8 +311,8 @@
     ['#flow .beat:nth-child(3) .what', '<strong>두 번째 춤</strong>메인이 끝나면 하늘은 이미 캄캄합니다 — 불이 다시 오르고, 이번에 당신을 비추는 건 그 불뿐입니다.'],
     ['#flow .beat:nth-child(4) .what', '<strong>마무리</strong>디저트로 잠시 식힙니다. 마지막 그 불은, 당신의 손으로. 조금 가져가세요 — 어떻게인지는, 그 자리에서 알게 됩니다.'],
     /* SCHEDULE */
-    ['#schedule .display-h-zh', '열두 번의 토요일'],
-    ['#schedule .spread p.lede', 'June through August · 매주 토요일 한 번, 19:07 시작.<br>열두 번의 토요일, 황혼에 앉아 밤으로 들어가는 열두 밤.'],
+    ['#schedule .display-h-zh', '열한 번의 토요일'],
+    ['#schedule .spread p.lede', 'June through August · 매주 토요일 한 번, 19:07 시작.<br>열한 번의 토요일, 황혼에 앉아 밤으로 들어가는 열한 밤.'],
     ['.reserve > p.lede', '매회가 하나의 완전한 밤입니다 — 두 번의 불춤, 네 가지 코스, 백십 분. 매주 토요일 한 번, 한 번에 최대 열다섯 명.'],
     ['.reserve-item:nth-child(1) .rk', '회당 정원'],
     ['.reserve-item:nth-child(1) .rv', '8–15명<span class="rsub">일부러 작게 — 차면 닫습니다</span>'],

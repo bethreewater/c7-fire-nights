@@ -29,7 +29,7 @@
   "description": "六月到八月，每個週六 19:07，澎湖的草皮上有火。兩段火舞、四道菜、一百一十分鐘的火舞晚宴。",
   "image": "https://bethreewater.github.io/c7-fire-nights/img/hero-poster.jpg",
   "startDate": "2026-06-13",
-  "endDate": "2026-08-29",
+  "endDate": "2026-08-22",
   "eventSchedule": {
     "@type": "Schedule",
     "repeatFrequency": "P1W",
@@ -37,7 +37,7 @@
     "startTime": "19:07:00",
     "endTime": "21:00:00",
     "startDate": "2026-06-13",
-    "endDate": "2026-08-29",
+    "endDate": "2026-08-22",
     "scheduleTimezone": "Asia/Taipei"
   },
   "location": {
@@ -1758,7 +1758,7 @@
   </div>
 
   <div class="bottom-meta">
-    <div>12 Saturdays · One Night Each</div>
+    <div>11 Saturdays · One Night Each</div>
     <div>↓ Scroll</div>
     <div>夏季限定 NT$ 2,280 · 一夜</div>
   </div>
@@ -2000,11 +2000,11 @@
       The Dates
     </div>
     <div>
-      <h2 class="display-h">Twelve <span class="accent">saturdays</span>.</h2>
-      <div class="display-h-zh" lang="zh-Hant">十二個週六</div>
+      <h2 class="display-h">Eleven <span class="accent">saturdays</span>.</h2>
+      <div class="display-h-zh" lang="zh-Hant">十一個週六</div>
       <p class="lede">
         June through August · 每週六一場，19:07 開場。<br>
-        十二個週六，十二個從暮色坐進夜裡的夜晚。
+        十一個週六，十一個從暮色坐進夜裡的夜晚。
       </p>
       <p class="sched-live" id="schedLive">即時名額<span class="lg">○ 開放</span><span class="lg">◐ 將滿</span><span class="lg">● 已滿</span></p>
 
@@ -2034,7 +2034,6 @@
           <div class="slot"><div class="d">8/08</div><div class="month-tag">Sat</div><div class="sess">19:07</div></div>
           <div class="slot"><div class="d">8/15</div><div class="month-tag">Sat</div><div class="sess">19:07</div></div>
           <div class="slot"><div class="d">8/22</div><div class="month-tag">Sat</div><div class="sess">19:07</div></div>
-          <div class="slot"><div class="d">8/29</div><div class="month-tag">Sat</div><div class="sess">19:07</div></div>
         </div>
       </div>
 
@@ -2453,7 +2452,7 @@
   }
 
   // —— 場次表：點日期 → 訂位頁直達該場（book.html?d=6/20）；過期場次標已落幕 ——
-  const SAT_DATES = ['6/13','6/20','6/27','7/04','7/11','7/18','7/25','8/01','8/08','8/15','8/22','8/29'];
+  const SAT_DATES = ['6/13','6/20','6/27','7/04','7/11','7/18','7/25','8/01','8/08','8/15','8/22'];
   function sessionStart(d) {
     const p = d.split('/');
     return new Date(2026, Number(p[0]) - 1, Number(p[1]), 19, 7, 0);
@@ -2556,7 +2555,7 @@
       const now = new Date();
       const T = window.C7L || {};
       const next = SAT_DATES.find(d => now < cutoff(d));
-      if (!next) { el.textContent = T.seasonOver || '本季十二場已收官 — 明年夏天見'; return; }
+      if (!next) { el.textContent = T.seasonOver || '本季十一場已收官 — 明年夏天見'; return; }
       const ms = sessionStart(next) - now;
       const day = Math.floor(ms / 86400000);
       const hh = Math.floor(ms % 86400000 / 3600000);
