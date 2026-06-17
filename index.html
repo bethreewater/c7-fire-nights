@@ -2701,8 +2701,27 @@
       });
     }
     document.querySelectorAll('#schedule .slot').forEach(el => tiltify(el, 11));
-    const fab = document.getElementById('fabBook');
-    if (fab) tiltify(fab, 8);
+  })();
+
+  // —— Skvortsov #2：主要 CTA 磁吸（游標靠近時微移、離開回彈）——
+  (function(){
+    const desktop = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (prefersReducedMotion || !desktop) return;
+
+    function magnetic(el, strength) {
+      if (!el) return;
+      el.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+      el.style.willChange = 'transform';
+      el.addEventListener('mousemove', function (e) {
+        const r = el.getBoundingClientRect();
+        const x = (e.clientX - (r.left + r.width / 2)) * strength;
+        const y = (e.clientY - (r.top + r.height / 2)) * strength;
+        el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+      });
+      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+    }
+    magnetic(document.getElementById('openBook'), 0.3);
+    magnetic(document.getElementById('fabBook'), 0.22);
   })();
 
   // —— Hero 餘燼粒子（reduced-motion 不跑；hero 離開視窗或分頁隱藏即暫停）——
