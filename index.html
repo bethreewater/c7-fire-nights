@@ -1290,11 +1290,11 @@
      INTERACTIONS
      ──────────────────────────────────────── */
 
-  /* fade-in on scroll */
+  /* fade-in on scroll（大改版：升起距離加大、節奏收俐落）*/
   .reveal {
     opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(58px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .reveal.in {
     opacity: 1;
@@ -1311,9 +1311,9 @@
   /* Section index number: slide up from below on reveal */
   .spread .index .num {
     display: block;
-    transform: translateY(40px);
+    transform: translateY(78px);
     opacity: 0;
-    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s, transform 1s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+    transition: opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.18s, transform 0.95s cubic-bezier(0.16, 1, 0.3, 1) 0.18s;
   }
   .reveal.in .spread .index .num {
     transform: translateY(0);
@@ -1477,6 +1477,30 @@
   html.fire-gl #fireGl { display: block; }
   html.fire-gl #embers { opacity: 0.5; }   /* 有 GPU 火焰時 2D 火星退到輔助 */
 
+  /* ===== 大改版 #1：自訂游標（桌機 fine-pointer；精準點 + 滯後環，hover 連結放大/顯字）===== */
+  html.has-cursor, html.has-cursor * { cursor: none !important; }
+  .c7cur, .c7dot { position: fixed; left: 0; top: 0; pointer-events: none; will-change: transform; opacity: 0; transition: opacity .3s ease; }
+  html.cursor-on .c7cur, html.cursor-on .c7dot { opacity: 1; }
+  .c7dot { z-index: 100000; width: 6px; height: 6px; border-radius: 50%; background: var(--fire); }
+  .c7cur { z-index: 99999; }
+  .c7cur-r {
+    position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid rgba(239, 234, 224, 0.5);
+    display: grid; place-items: center;
+    transition: width .34s cubic-bezier(.22,1,.36,1), height .34s cubic-bezier(.22,1,.36,1),
+                background-color .34s ease, border-color .34s ease;
+  }
+  .c7cur-r.grow { width: 94px; height: 94px; background: rgba(209, 72, 32, 0.92); border-color: rgba(209, 72, 32, 0.92); }
+  .c7cur-r.press { width: 30px; height: 30px; }
+  .c7cur-l {
+    font-family: var(--sans); font-weight: 600; font-size: 10px; line-height: 1;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--paper);
+    opacity: 0; transition: opacity .2s ease; white-space: nowrap;
+  }
+  .c7cur-r.has-label .c7cur-l { opacity: 1; }
+  @media (hover: none), (pointer: coarse) { .c7cur, .c7dot { display: none; } }
+
   /* ===== 餘燼天花板：一塊煤點著整個房間（全站一起呼吸）===== */
   .coal-breath {
     position: fixed; inset: 0; z-index: 2; pointer-events: none;
@@ -1557,18 +1581,22 @@
     footer::before { animation: none; opacity: 0.75; }
   }
 
-  /* ===== 3D：標題入場（仰角翻正）===== */
+  /* ===== 標題入場：遮罩升起（editorial wipe，取代原 3D 翻牌）===== */
   .spread > div { perspective: 900px; }
-  section.reveal .display-h {
+  section.reveal .display-h,
+  section.reveal .display-h-zh {
     opacity: 0;
-    transform: rotateX(26deg) translateY(34px);
-    transform-origin: 50% 100%;
+    clip-path: inset(0 0 100% 0);
+    transform: translateY(0.34em);
   }
-  section.reveal.in .display-h {
+  section.reveal.in .display-h,
+  section.reveal.in .display-h-zh {
     opacity: 1;
+    clip-path: inset(-24% 0 -24% 0);   /* 負值留白避免裁切重音/descender */
     transform: none;
-    transition: opacity 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
-                transform 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+    transition: clip-path 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.06s,
+                opacity 0.7s ease 0.06s,
+                transform 1.05s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
   }
   /* 場次卡：3D 翻牌入場（手機捲動也看得到） */
   .slot.reveal {
@@ -1584,7 +1612,8 @@
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    section.reveal .display-h { opacity: 1; transform: none; }
+    section.reveal .display-h,
+    section.reveal .display-h-zh { opacity: 1; transform: none; clip-path: none; }
   }
 
   /* 語言切換 */
@@ -2120,7 +2149,7 @@
       </div>
 
       <div class="cta-block">
-        <button type="button" class="cta" id="openBook">預購 · Reserve</button>
+        <button type="button" class="cta" id="openBook" data-cursor="訂位">預購 · Reserve</button>
         <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，線上即時選位預購。</p>
       </div>
 
@@ -2296,7 +2325,7 @@
   </div>
 </footer>
 
-<div class="fab-promo" id="fabBook" aria-label="夏季限定預訂">
+<div class="fab-promo" id="fabBook" aria-label="夏季限定預訂" data-cursor="訂位">
   <div class="fp-top"><span class="fp-tag">夏季限定</span><span class="fp-count">每場 8–15 席</span></div>
   <div class="fp-price"><b>NT$ 2,280</b><span class="fp-per">／人 · 另加一成服務費</span><s>原價 NT$ 2,980</s></div>
   <a class="fp-btn" href="book.html">馬上預訂</a>
@@ -2738,6 +2767,53 @@
     }
     magnetic(document.getElementById('openBook'), 0.3);
     magnetic(document.getElementById('fabBook'), 0.22);
+  })();
+
+  // —— 大改版 #1：自訂游標（精準點即時跟手 + 滯後環；hover 互動元素放大、CTA 顯字）——
+  (function(){
+    if (prefersReducedMotion) return;
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    var cur = document.createElement('div'); cur.className = 'c7cur';
+    var ring = document.createElement('div'); ring.className = 'c7cur-r';
+    var label = document.createElement('span'); label.className = 'c7cur-l';
+    ring.appendChild(label); cur.appendChild(ring);
+    var dot = document.createElement('div'); dot.className = 'c7dot';
+    document.body.appendChild(cur); document.body.appendChild(dot);
+    document.documentElement.classList.add('has-cursor');
+
+    var mx = window.innerWidth / 2, my = window.innerHeight / 2, rx = mx, ry = my;
+    window.addEventListener('mousemove', function (e) {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = 'translate(' + (mx - 3) + 'px,' + (my - 3) + 'px)';
+      document.documentElement.classList.add('cursor-on');
+    }, { passive: true });
+    document.addEventListener('mouseleave', function () { document.documentElement.classList.remove('cursor-on'); });
+    window.addEventListener('mousedown', function () { ring.classList.add('press'); }, { passive: true });
+    window.addEventListener('mouseup', function () { ring.classList.remove('press'); }, { passive: true });
+
+    (function loop() {
+      rx += (mx - rx) * 0.2; ry += (my - ry) * 0.2;
+      cur.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0)';
+      requestAnimationFrame(loop);
+    })();
+
+    var SEL = 'a, button, summary, .slot, .lang-btn, [data-cursor], input[type="submit"]';
+    var hot = null;
+    function enter(el) {
+      hot = el;
+      ring.classList.add('grow');
+      var t = el.getAttribute('data-cursor');
+      if (t) { label.textContent = t; ring.classList.add('has-label'); }
+    }
+    function leave() { ring.classList.remove('grow'); ring.classList.remove('has-label'); hot = null; }
+    document.addEventListener('mouseover', function (e) {
+      var el = e.target.closest ? e.target.closest(SEL) : null;
+      if (el && el !== hot) enter(el);
+    });
+    document.addEventListener('mouseout', function (e) {
+      if (!hot) return;
+      if (!e.relatedTarget || !hot.contains(e.relatedTarget)) leave();
+    });
   })();
 
   // —— Skvortsov #3：WebGL 程序化火焰（桌機、效能封頂、可失敗退場）——
