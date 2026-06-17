@@ -1772,6 +1772,7 @@
   }
 </style>
 <script>try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(e){}try{if(sessionStorage.getItem("c7intro")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("no-intro");}catch(e){}</script>
+<script src="analytics.js"></script>
 </head>
 <body>
 
@@ -2329,6 +2330,14 @@
 <script>
   // fade-in on scroll, with staggered entrance for grid children
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // —— 行為分析漏斗：點擊任何通往訂位的入口記一筆（analytics.js 未啟用時 no-op）——
+  document.addEventListener('click', function (e) {
+    if (!window.c7track || !e.target.closest) return;
+    var el = e.target.closest('#openBook, a[href^="book.html"], #fabBook, .slot');
+    if (!el) return;
+    c7track(el.classList && el.classList.contains('slot') ? 'slot_click' : 'cta_book');
+  }, true);
 
   // —— 進站一律從 hero 開始（無錨點時）：關閉瀏覽器捲動還原 ——
   if (!location.hash) { try { window.scrollTo(0, 0); } catch (e) {} }

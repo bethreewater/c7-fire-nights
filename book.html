@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="booking.css">
+<script src="analytics.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -152,6 +153,16 @@
   var dietEl = $('diet');
   var submitBtn = $('submit');
   var toastEl = $('toast');
+
+  // ---- 行為分析漏斗事件（analytics.js 未填 Clarity id 時全為 no-op）----
+  if (window.c7track) c7track('book_open');
+  (function () {
+    var started = false;
+    $('form').addEventListener('focusin', function () {
+      if (started) return; started = true;
+      if (window.c7track) c7track('form_start');
+    });
+  })();
 
   // ---- 狀態 ----
   // selected: 已選場次 id（"6/20|evening"）
@@ -312,7 +323,7 @@
 
           btn.setAttribute('aria-label', [s.label, s.time].filter(Boolean).join(' ') + '，' +
             (cap.full ? (TT.bFull || '已滿') : (cap.remaining < 3 ? (TT.bLast || '最後 {n}') : (TT.bLeft || '剩 {n}')).replace('{n}', cap.remaining)));
-          btn.addEventListener('click', function () { pick(s.id); });
+          btn.addEventListener('click', function () { if (window.c7track) c7track('session_select'); pick(s.id); });
           card.appendChild(btn);
         });
       }
@@ -454,12 +465,14 @@
   $('form').addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validate()) {
+      if (window.c7track) c7track('form_invalid');
       // 捲到第一個錯誤欄位
       var firstErr = document.querySelector('.fld.invalid');
       if (firstErr) smoothScrollTo(firstErr);
       return;
     }
 
+    if (window.c7track) c7track('booking_submit');
     submitBtn.disabled = true;   // 處理中短暫鎖定
 
     var diet = [];
@@ -475,6 +488,7 @@
       email: emailInput.value.trim()
     });
 
+    if (window.c7track) c7track('booking_success');
     toast((window.C7L || {}).sentToast || '已送出 · 已為你保留 24 小時');
     showConfirm(booking);
   });
