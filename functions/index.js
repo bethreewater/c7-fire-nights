@@ -41,7 +41,8 @@ exports.sendConfirmEmail = onDocumentUpdated(
     const ids = after.sessionIds || [];
     const parsed = ids.map(parseSession);
     const party = after.party || 0;
-    const amount = (party * PRICE * ids.length).toLocaleString('en-US');
+    const unit = after.unitPrice || PRICE;   // 套夥伴碼免服務費＝2,280，否則 2,508
+    const amount = (party * unit * ids.length).toLocaleString('en-US');
 
     const rows = parsed.map((s) =>
       `<tr><td style="padding:6px 0;color:#555;">${esc(s.date)}（六）</td>` +

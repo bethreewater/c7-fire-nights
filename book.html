@@ -183,12 +183,12 @@
     if (!raw) { appliedCode = ''; unitPrice = C7.PRICE; promoMsg.textContent = ''; return; }
     if (PARTNER_CODES[raw]) {
       appliedCode = raw; unitPrice = 2280;
-      promoMsg.textContent = '已套用 ' + PARTNER_CODES[raw] + ' 優惠：免服務費，每人 NT$2,280';
+      promoMsg.textContent = ((window.C7L || {}).promoOk || '已套用 {p} 優惠：免服務費，每人 NT$2,280').replace('{p}', PARTNER_CODES[raw]);
       promoMsg.style.color = '#E8A158';
       if (window.c7track) c7track('promo_applied');
     } else {
       appliedCode = ''; unitPrice = C7.PRICE;
-      promoMsg.textContent = '查無此優惠碼';
+      promoMsg.textContent = (window.C7L || {}).promoBad || '查無此優惠碼';
       promoMsg.style.color = '#C0563C';
     }
   }
