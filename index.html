@@ -1399,42 +1399,6 @@
     color: var(--fire);
   }
 
-  /* Custom cursor — GPU-accelerated, no lerp */
-  @media (hover: hover) and (pointer: fine) {
-    html.has-custom-cursor, html.has-custom-cursor * { cursor: none !important; }
-    .cursor-dot {
-      position: fixed;
-      top: 0; left: 0;
-      width: 10px; height: 10px;
-      background: var(--fire);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      will-change: transform, width, height;
-      transform: translate3d(-100px, -100px, 0);
-      transition: width 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-                  height 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-                  background 0.18s ease,
-                  border-color 0.18s ease,
-                  opacity 0.2s ease,
-                  margin 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-      margin: -5px 0 0 -5px;
-      mix-blend-mode: difference;
-    }
-    .cursor-dot.over-link {
-      width: 36px; height: 36px;
-      margin: -18px 0 0 -18px;
-      background: var(--paper);
-    }
-    .cursor-dot.over-orb {
-      width: 80px; height: 80px;
-      margin: -40px 0 0 -40px;
-      background: transparent;
-      border: 1px solid var(--fire);
-      mix-blend-mode: normal;
-    }
-  }
-
   /* Scroll progress bar */
   .scroll-progress {
     position: fixed;
@@ -1477,29 +1441,6 @@
   html.fire-gl #fireGl { display: block; }
   html.fire-gl #embers { opacity: 0.5; }   /* 有 GPU 火焰時 2D 火星退到輔助 */
 
-  /* ===== 大改版 #1：自訂游標（桌機 fine-pointer；精準點 + 滯後環，hover 連結放大/顯字）===== */
-  html.has-cursor, html.has-cursor * { cursor: none !important; }
-  .c7cur, .c7dot { position: fixed; left: 0; top: 0; pointer-events: none; will-change: transform; opacity: 0; transition: opacity .3s ease; }
-  html.cursor-on .c7cur, html.cursor-on .c7dot { opacity: 1; }
-  .c7dot { z-index: 100000; width: 6px; height: 6px; border-radius: 50%; background: var(--fire); }
-  .c7cur { z-index: 99999; }
-  .c7cur-r {
-    position: absolute; left: 0; top: 0; transform: translate(-50%, -50%);
-    width: 42px; height: 42px; border-radius: 50%;
-    border: 1px solid rgba(239, 234, 224, 0.5);
-    display: grid; place-items: center;
-    transition: width .34s cubic-bezier(.22,1,.36,1), height .34s cubic-bezier(.22,1,.36,1),
-                background-color .34s ease, border-color .34s ease;
-  }
-  .c7cur-r.grow { width: 94px; height: 94px; background: rgba(209, 72, 32, 0.92); border-color: rgba(209, 72, 32, 0.92); }
-  .c7cur-r.press { width: 30px; height: 30px; }
-  .c7cur-l {
-    font-family: var(--sans); font-weight: 600; font-size: 10px; line-height: 1;
-    letter-spacing: .22em; text-transform: uppercase; color: var(--paper);
-    opacity: 0; transition: opacity .2s ease; white-space: nowrap;
-  }
-  .c7cur-r.has-label .c7cur-l { opacity: 1; }
-  @media (hover: none), (pointer: coarse) { .c7cur, .c7dot { display: none; } }
 
   /* ===== 餘燼天花板：一塊煤點著整個房間（全站一起呼吸）===== */
   .coal-breath {
@@ -1788,7 +1729,6 @@
 <a href="#island" class="skip-link">Skip to content / 跳至內容</a>
 
 <div class="scroll-progress" id="scroll-progress"></div>
-<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
 
 <nav class="runner" id="runner">
   <div class="left">C/7 · <span class="ac">FIRE</span> / 2026</div>
@@ -2509,31 +2449,6 @@
     update();
   })();
 
-  // Custom cursor (only on devices with fine pointer) — 1:1 tracking, GPU
-  const supportsCustom = matchMedia('(hover: hover) and (pointer: fine)').matches
-    && !matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (supportsCustom) {
-    document.documentElement.classList.add('has-custom-cursor');
-    const dot = document.getElementById('cursor-dot');
-    // Direct 1:1 follow — no lerp, no RAF loop. Browser handles smoothing via compositor.
-    document.addEventListener('mousemove', e => {
-      dot.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    }, { passive: true });
-    document.addEventListener('mouseleave', () => { dot.style.opacity = 0; });
-    document.addEventListener('mouseenter', () => { dot.style.opacity = 1; });
-
-    // Hover state targets — derive cursor state from the element under the pointer.
-    // Always clear both classes first, then re-add at most one, so they never coexist.
-    function setCursorState(target) {
-      dot.classList.remove('over-orb', 'over-link');
-      if (!target) return;
-      if (target.closest('.drink-tile .visual')) dot.classList.add('over-orb');
-      else if (target.closest('a, .cta, .slot')) dot.classList.add('over-link');
-    }
-    document.addEventListener('mouseover', e => setCursorState(e.target), { passive: true });
-    document.addEventListener('mouseout', e => setCursorState(e.relatedTarget), { passive: true });
-  }
-
   // Respect reduced-motion: do not autoplay the hero video — hold on the poster frame
   if (prefersReducedMotion) {
     const heroVideo = document.querySelector('.hero-video');
@@ -2770,53 +2685,6 @@
     }
     magnetic(document.getElementById('openBook'), 0.3);
     magnetic(document.getElementById('fabBook'), 0.22);
-  })();
-
-  // —— 大改版 #1：自訂游標（精準點即時跟手 + 滯後環；hover 互動元素放大、CTA 顯字）——
-  (function(){
-    if (prefersReducedMotion) return;
-    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    var cur = document.createElement('div'); cur.className = 'c7cur';
-    var ring = document.createElement('div'); ring.className = 'c7cur-r';
-    var label = document.createElement('span'); label.className = 'c7cur-l';
-    ring.appendChild(label); cur.appendChild(ring);
-    var dot = document.createElement('div'); dot.className = 'c7dot';
-    document.body.appendChild(cur); document.body.appendChild(dot);
-    document.documentElement.classList.add('has-cursor');
-
-    var mx = window.innerWidth / 2, my = window.innerHeight / 2, rx = mx, ry = my;
-    window.addEventListener('mousemove', function (e) {
-      mx = e.clientX; my = e.clientY;
-      dot.style.transform = 'translate(' + (mx - 3) + 'px,' + (my - 3) + 'px)';
-      document.documentElement.classList.add('cursor-on');
-    }, { passive: true });
-    document.addEventListener('mouseleave', function () { document.documentElement.classList.remove('cursor-on'); });
-    window.addEventListener('mousedown', function () { ring.classList.add('press'); }, { passive: true });
-    window.addEventListener('mouseup', function () { ring.classList.remove('press'); }, { passive: true });
-
-    (function loop() {
-      rx += (mx - rx) * 0.2; ry += (my - ry) * 0.2;
-      cur.style.transform = 'translate3d(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px,0)';
-      requestAnimationFrame(loop);
-    })();
-
-    var SEL = 'a, button, summary, .slot, .lang-btn, [data-cursor], input[type="submit"]';
-    var hot = null;
-    function enter(el) {
-      hot = el;
-      ring.classList.add('grow');
-      var t = el.getAttribute('data-cursor');
-      if (t) { label.textContent = t; ring.classList.add('has-label'); }
-    }
-    function leave() { ring.classList.remove('grow'); ring.classList.remove('has-label'); hot = null; }
-    document.addEventListener('mouseover', function (e) {
-      var el = e.target.closest ? e.target.closest(SEL) : null;
-      if (el && el !== hot) enter(el);
-    });
-    document.addEventListener('mouseout', function (e) {
-      if (!hot) return;
-      if (!e.relatedTarget || !hot.contains(e.relatedTarget)) leave();
-    });
   })();
 
   // —— Skvortsov #3：WebGL 程序化火焰（桌機、效能封頂、可失敗退場）——
