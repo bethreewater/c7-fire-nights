@@ -333,6 +333,7 @@
   .hero .bottom-meta {
     align-items: end;
     padding: 0 32px 40px;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.6);   /* 壓在底部火焰上仍清晰 */
   }
   .hero .top-meta { align-items: start; }
   .hero .top-meta .feature {
@@ -1469,9 +1470,9 @@
 
   /* ===== Skvortsov #3：WebGL/shader 火（桌機限定、預設隱藏，JS 確認可用才顯示）===== */
   #fireGl {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 62%;
+    position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
     z-index: 1; pointer-events: none; display: none;
-    mix-blend-mode: screen; opacity: 0.9;
+    mix-blend-mode: screen; opacity: 1;
   }
   html.fire-gl #fireGl { display: block; }
   html.fire-gl #embers { opacity: 0.5; }   /* 有 GPU 火焰時 2D 火星退到輔助 */
@@ -1741,7 +1742,7 @@
     #embers { display: none; }
   }
 </style>
-<script>try{if(sessionStorage.getItem("c7intro")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("no-intro");}catch(e){}</script>
+<script>try{if("scrollRestoration" in history)history.scrollRestoration="manual";}catch(e){}try{if(sessionStorage.getItem("c7intro")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("no-intro");}catch(e){}</script>
 </head>
 <body>
 
@@ -2306,6 +2307,10 @@
   // fade-in on scroll, with staggered entrance for grid children
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // —— 進站一律從 hero 開始（無錨點時）：關閉瀏覽器捲動還原 ——
+  if (!location.hash) { try { window.scrollTo(0, 0); } catch (e) {} }
+  window.addEventListener('load', function(){ if (!location.hash) { try { window.scrollTo(0, 0); } catch (e) {} } }, { once:true });
+
   // —— 開場序列控制：每 session 一次、可跳過、減動/重訪直接略過 ——
   (function(){
     var intro = document.getElementById('c7intro');
@@ -2318,6 +2323,7 @@
       if (done) return; done = true;
       intro.classList.add('done');
       document.body.classList.remove('intro-lock');
+      if (!location.hash) { try { window.scrollTo(0, 0); } catch (e) {} }  // 確保溶入後從 hero 開始
       setTimeout(function(){ try { intro.remove(); } catch (e) {} }, 750);
     }
     var t = setTimeout(finish, 2000);
@@ -2737,7 +2743,7 @@
   // —— Skvortsov #3：WebGL 程序化火焰（桌機、效能封頂、可失敗退場）——
   (function(){
     if (prefersReducedMotion) return;
-    if (!matchMedia('(min-width: 880px) and (pointer: fine)').matches) return;  // 桌機限定
+    // 全裝置啟用（reduced-motion 已於上方擋下；不支援 WebGL 會在下方自動退場；離開 hero 即暫停）
     var cv = document.getElementById('fireGl');
     var hero = document.querySelector('.hero');
     if (!cv || !hero) return;
@@ -2757,12 +2763,13 @@
       ' vec2 uv=gl_FragCoord.xy/u_res.xy;',
       ' vec2 q=vec2(uv.x*3.0, uv.y*3.2 - u_time*1.5);',
       ' float n=fbm(q+fbm(q*0.5));',
-      ' float flame=pow(n*(1.0-uv.y),1.7);',
+      ' float flame=pow(n*(1.0-uv.y*0.72),1.18);',
       ' vec3 col=vec3(0.0);',
-      ' col+=vec3(0.82,0.28,0.12)*smoothstep(0.10,0.46,flame);',
-      ' col+=vec3(0.91,0.63,0.34)*smoothstep(0.42,0.82,flame);',
-      ' col+=vec3(1.0,0.95,0.86)*smoothstep(0.80,1.0,flame);',
-      ' float a=smoothstep(0.10,0.46,flame)*(1.0-uv.y*0.5);',
+      ' col+=vec3(0.88,0.31,0.12)*smoothstep(0.07,0.42,flame);',
+      ' col+=vec3(0.97,0.68,0.37)*smoothstep(0.38,0.78,flame);',
+      ' col+=vec3(1.0,0.97,0.90)*smoothstep(0.78,1.0,flame);',
+      ' col*=1.42;',
+      ' float a=smoothstep(0.06,0.42,flame)*(1.0-uv.y*0.5);',
       ' gl_FragColor=vec4(col,a);',
       '}'
     ].join('\n');
