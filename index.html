@@ -2332,6 +2332,7 @@
 </div>
 
 <script src="i18n.js"></script>
+<script src="lenis.min.js"></script>
 <script>
   // fade-in on scroll, with staggered entrance for grid children
   const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3000,6 +3001,48 @@
     window.addEventListener('scroll', onS, { passive: true });
     window.addEventListener('resize', onS, { passive: true });
     update();
+  })();
+
+  // —— 大改版 part 2：Lenis 慣性平滑捲動（桌機限定；三重退場；每幀派合成 scroll 讓既有處理器同步）——
+  (function(){
+    try {
+      // 退場：?nosmooth=1 / 減動 / 非桌機(手機保留原生慣性，也避開 Lenis+觸控+sticky 衝突) / 無 Lenis
+      if (/[?&]nosmooth=1/.test(location.search)) return;
+      if (prefersReducedMotion) return;
+      if (!matchMedia('(pointer: fine)').matches) return;
+      if (!window.Lenis) return;
+
+      var lenis = new window.Lenis({
+        duration: 1.05,
+        easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true,
+        wheelMultiplier: 1,
+        touchMultiplier: 1.4
+      });
+      window.__c7lenis = lenis;
+
+      // 每幀推進；Lenis 捲動時派合成 scroll → 既有 onScroll/夜行菜單/壁畫處理器照常吃真實捲動位置（自動同步，不必改菜單）
+      lenis.on('scroll', function () { window.dispatchEvent(new Event('scroll')); });
+      function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+      requestAnimationFrame(raf);
+
+      // 進站無錨點即回頂
+      if (!location.hash) lenis.scrollTo(0, { immediate: true });
+
+      // 站內錨點平滑滑過去（與既有 closeMenu 共存：那個只關選單、不捲動）
+      document.addEventListener('click', function (e) {
+        var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+        if (!a) return;
+        var href = a.getAttribute('href');
+        if (!href || href.length < 2) return;
+        var el = document.querySelector(href);
+        if (!el) return;
+        e.preventDefault();
+        lenis.scrollTo(el, { offset: -8 });
+      });
+    } catch (e) {
+      if (window.console) console.warn('[lenis] 已退回原生捲動：', e);
+    }
   })();
 </script>
 
