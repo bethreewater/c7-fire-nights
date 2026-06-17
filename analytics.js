@@ -3,7 +3,7 @@
    空字串＝休眠：不載入任何追蹤、所有 c7track 事件為 no-op（零風險、可安心上線）。
    隱私：Clarity 預設遮罩輸入內容；只收行為（捲動/點擊/停留），不收個資。 */
 (function () {
-  var CLARITY_ID = "";   // <-- 待填，例如 "abcde12345"
+  var CLARITY_ID = "x8kp9zlocz";   // clarity.microsoft.com 專案 id
 
   // 漏斗事件：有 Clarity 才送，否則安全 no-op
   window.c7track = function (name) {
