@@ -97,6 +97,13 @@
         <input type="text" inputmode="numeric" maxlength="5" id="last5" name="last5" placeholder="00000">
       </div>
 
+      <!-- 夥伴優惠碼 -->
+      <div class="fld">
+        <label>優惠碼 · 有夥伴專屬碼再填</label>
+        <input type="text" id="promo" name="promo" autocomplete="off" placeholder="夥伴給你的碼">
+        <small id="promoMsg" style="display:block;margin-top:6px;font-size:13px;"></small>
+      </div>
+
       <!-- 送出 -->
       <p class="price-note">標價 <b>NT$ 2,280</b>／人，另加一成服務費（每人實收約 <b>NT$ 2,508</b>）。</p>
       <button type="submit" class="btn btn-fire" id="submit" disabled>送出訂位 · 保留 24 小時</button>
@@ -163,6 +170,29 @@
       if (window.c7track) c7track('form_start');
     });
   })();
+
+  // ---- 夥伴優惠碼（免服務費；碼自動記錄＝歸因＋月底佣金結算依據）----
+  // 簽一個夥伴就加一行： '碼（大寫）': '夥伴名'
+  var PARTNER_CODES = {
+    'C7TEST': '測試'   // 驗證用，正式營運前可刪或換成真實夥伴碼
+  };
+  var promoInput = $('promo'), promoMsg = $('promoMsg');
+  var appliedCode = '', unitPrice = C7.PRICE;
+  function checkPromo() {
+    var raw = (promoInput.value || '').trim().toUpperCase();
+    if (!raw) { appliedCode = ''; unitPrice = C7.PRICE; promoMsg.textContent = ''; return; }
+    if (PARTNER_CODES[raw]) {
+      appliedCode = raw; unitPrice = 2280;
+      promoMsg.textContent = '已套用 ' + PARTNER_CODES[raw] + ' 優惠：免服務費，每人 NT$2,280';
+      promoMsg.style.color = '#E8A158';
+      if (window.c7track) c7track('promo_applied');
+    } else {
+      appliedCode = ''; unitPrice = C7.PRICE;
+      promoMsg.textContent = '查無此優惠碼';
+      promoMsg.style.color = '#C0563C';
+    }
+  }
+  if (promoInput) promoInput.addEventListener('input', checkPromo);
 
   // ---- 狀態 ----
   // selected: 已選場次 id（"6/20|evening"）
@@ -485,7 +515,9 @@
       phone: phoneInput.value.trim(),
       diet: diet,
       last5: last5Input.value.trim(),
-      email: emailInput.value.trim()
+      email: emailInput.value.trim(),
+      code: appliedCode,
+      unitPrice: unitPrice
     });
 
     if (window.c7track) c7track('booking_success');
@@ -513,8 +545,8 @@
     $('confMeta').innerHTML = lines +
       ((window.C7L || {}).confTail || '。請在 {cd} 內完成匯款，逾時位子自動釋放。').replace('{cd}', '<span class="countdown" id="cd">24:00:00</span>');
 
-    // 金額 = party × 2508（標價 2,280 + 一成服務費）× 場次數
-    var amt = party * C7.PRICE * sessionCount;
+    // 金額 = party × 每人單價（套碼免服務費＝2,280，否則 2,508）× 場次數
+    var amt = party * (booking.unitPrice || C7.PRICE) * sessionCount;
     $('confAmt').textContent = 'NT$ ' + amt.toLocaleString('en-US');
 
     // 倒數每秒更新

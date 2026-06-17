@@ -179,6 +179,7 @@
       party: party, name: (payload.name || '').trim(), phone: (payload.phone || '').trim(),
       email: (payload.email || '').trim(),
       diet: (payload.diet || []).slice(), last5: (payload.last5 || '').trim(),
+      code: (payload.code || '').trim(), unitPrice: (payload.unitPrice || PRICE),
       status: 'pending', createdAt: t, holdUntil: holdUntil, confirmedAt: null
     });
     batch.commit().catch(function (e) {
@@ -186,7 +187,7 @@
       try { alert('訂位送出失敗，請再試一次，或直接私訊 IG / 撥 0963-059-889。'); } catch (x) {}
     });
 
-    return { id: bRef.id, sessionIds: pids, party: party, holdUntil: holdUntil, status: 'pending', createdAt: t };
+    return { id: bRef.id, sessionIds: pids, party: party, holdUntil: holdUntil, status: 'pending', createdAt: t, code: (payload.code || '').trim(), unitPrice: (payload.unitPrice || PRICE) };
   }
 
   function findBooking(id) { for (var i = 0; i < _bookings.length; i++) if (_bookings[i].id === id) return _bookings[i]; return null; }
