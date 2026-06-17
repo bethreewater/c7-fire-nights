@@ -1470,7 +1470,7 @@
 
   /* ===== Skvortsov #3：WebGL/shader 火（桌機限定、預設隱藏，JS 確認可用才顯示）===== */
   #fireGl {
-    position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
+    position: absolute; left: 0; bottom: 0; width: 100%; height: 40%;
     z-index: 1; pointer-events: none; display: none;
     mix-blend-mode: screen; opacity: 1;
   }
@@ -2247,21 +2247,14 @@
       </div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.5</span>康普茶有酒精嗎？</div>
-        <div class="a">
-          店內發酵的康普茶 ABV ＜ 0.5%，依台灣法規屬無酒精飲料。
-        </div>
-      </div>
-
-      <div class="qa">
-        <div class="q"><span class="num">07.6</span>過敏或飲食限制怎麼辦？</div>
+        <div class="q"><span class="num">07.5</span>過敏或飲食限制怎麼辦？</div>
         <div class="a">
           不吃鴨、海鮮過敏、蛋奶過敏、素食、不吃辣——皆有對應替代方案。預購時請務必告訴我們；未填寫者，現場無法另作調整。
         </div>
       </div>
 
       <div class="qa">
-        <div class="q"><span class="num">07.7</span>吃完一定要走嗎？</div>
+        <div class="q"><span class="num">07.6</span>吃完一定要走嗎？</div>
         <div class="a">
           不用趕。一百一十分鐘的火舞與餐結束後，這裡就恢復一般營業——想續坐、加點一杯，留下來都歡迎。
         </div>
@@ -2838,7 +2831,8 @@
       'float fbm(vec2 p){float v=0.0,a=0.5;for(int i=0;i<5;i++){v+=a*noise(p);p*=2.0;a*=0.5;}return v;}',
       'void main(){',
       ' vec2 uv=gl_FragCoord.xy/u_res.xy;',
-      ' vec2 q=vec2(uv.x*3.0, uv.y*3.2 - u_time*1.5);',
+      ' float asp=u_res.x/max(u_res.y,1.0);',
+      ' vec2 q=vec2(uv.x*3.0*asp, uv.y*3.2 - u_time*1.5);',
       ' float n=fbm(q+fbm(q*0.5));',
       ' float flame=pow(n*(1.0-uv.y*0.72),1.18);',
       ' vec3 col=vec3(0.0);',
