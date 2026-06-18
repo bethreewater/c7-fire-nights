@@ -53,6 +53,7 @@
 
   // ---- 即時快取 ----
   var _sessions = {};          // docId -> {docId,pid,date,sitting,label,time,cap,confirmedSeats,order}
+  var _partners = {};          // CODE(大寫) -> {code,name,category,active}
   var _holdsBySession = {};    // docId -> [{id,seats,until,bookingId}]
   var _bookings = [];          // 後台才有（含個資）
   var _feedback = [];          // 後台才有（場後回饋）
@@ -86,6 +87,18 @@
     _sessions = m;
     notify();
   }, function (e) { console.error('[C7] sessions 監聽錯誤', e); });
+
+  // 夥伴折扣碼：公開可讀（book.html 驗碼用），僅後台可寫。CODE 用大寫當 doc id。
+  db.collection('partners').onSnapshot(function (snap) {
+    var m = {};
+    snap.forEach(function (d) {
+      var x = d.data() || {};
+      var c = (x.code || d.id || '').toUpperCase();
+      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false };
+    });
+    _partners = m;
+    notify();
+  }, function (e) { console.error('[C7] partners 監聽錯誤', e); });
 
   // ---- REST 搶跑：不等 SDK 建立連線，先用一發輕量 GET 把場次畫出來 ----
   // 首次訪客 SDK 下載＋連線要 1–3 秒，這發通常 ~0.3 秒就回。
@@ -273,6 +286,26 @@
 
   function feedback() { return _feedback.slice(); }
 
+  // ---- 夥伴折扣碼 ----
+  function partners() { return Object.keys(_partners).map(function (k) { return _partners[k]; }); }
+  function findPartner(code) {                       // 公開：book.html 驗碼（只認啟用中的）
+    var p = _partners[(code || '').trim().toUpperCase()];
+    return (p && p.active) ? p : null;
+  }
+  function savePartner(p) {                           // 後台：新增/更新一個夥伴碼
+    if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
+    var code = (p.code || '').trim().toUpperCase();
+    if (!code) return Promise.reject(new Error('缺少代碼'));
+    return db.collection('partners').doc(code).set({
+      code: code, name: (p.name || '').trim(), category: p.category || '其他',
+      active: p.active !== false, createdAt: p.createdAt || now()
+    }, { merge: true });
+  }
+  function deletePartner(code) {                       // 後台：刪除
+    if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
+    return db.collection('partners').doc((code || '').trim().toUpperCase()).delete();
+  }
+
   function reset() { console.warn('[C7] reset() 在正式版停用（資料在 Firestore）'); }
 
   // ---- Auth ----
@@ -326,6 +359,7 @@
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel,
     adjustSeats: adjustSeats,
+    partners: partners, findPartner: findPartner, savePartner: savePartner, deletePartner: deletePartner,
     releaseExpired: releaseExpired, reset: reset,
     subscribe: subscribe, fmtCountdown: fmtCountdown,
     signIn: signIn, signOut: signOut, onAuth: onAuth, isAdmin: isAdmin

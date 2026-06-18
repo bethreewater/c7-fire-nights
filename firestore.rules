@@ -22,6 +22,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // 夥伴折扣碼：公開可讀（book.html 驗碼用，只含代碼/名稱/類別，無個資）；僅後台可寫
+    match /partners/{pid} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // 保留（hold）：放在 sessions/{sid}/holds/{id}，但前台用 collectionGroup 查詢，
     // 需用遞迴萬用比對才涵蓋 collection group。欄位只允許座位數/到期/連結 id，無個資。
     match /{path=**}/holds/{holdId} {

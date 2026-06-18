@@ -171,19 +171,16 @@
     });
   })();
 
-  // ---- 夥伴優惠碼（免服務費；碼自動記錄＝歸因＋月底佣金結算依據）----
-  // 簽一個夥伴就加一行： '碼（大寫）': '夥伴名'
-  var PARTNER_CODES = {
-    'C7TEST': '測試'   // 驗證用，正式營運前可刪或換成真實夥伴碼
-  };
+  // ---- 夥伴優惠碼（碼來自 Firestore partners，後台可管理；免服務費；碼記錄＝歸因＋佣金結算依據）----
   var promoInput = $('promo'), promoMsg = $('promoMsg');
   var appliedCode = '', unitPrice = C7.PRICE;
   function checkPromo() {
     var raw = (promoInput.value || '').trim().toUpperCase();
     if (!raw) { appliedCode = ''; unitPrice = C7.PRICE; promoMsg.textContent = ''; return; }
-    if (PARTNER_CODES[raw]) {
-      appliedCode = raw; unitPrice = 2280;
-      promoMsg.textContent = ((window.C7L || {}).promoOk || '已套用 {p} 優惠：免服務費，每人 NT$2,280').replace('{p}', PARTNER_CODES[raw]);
+    var p = C7.findPartner ? C7.findPartner(raw) : null;
+    if (p) {
+      appliedCode = p.code; unitPrice = 2280;
+      promoMsg.textContent = ((window.C7L || {}).promoOk || '已套用 {p} 優惠：免服務費，每人 NT$2,280').replace('{p}', p.name);
       promoMsg.style.color = '#E8A158';
       if (window.c7track) c7track('promo_applied');
     } else {

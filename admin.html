@@ -85,7 +85,38 @@
     <!-- 03 回饋 -->
     <div class="sec-h"><span class="idx">03</span><h2>回饋</h2><span class="en">Feedback</span></div>
     <div id="fblist"><!-- 回饋卡或 empty 由 JS 注入 --></div>
+
+    <!-- 04 夥伴折扣碼 -->
+    <div class="sec-h"><span class="idx">04</span><h2>夥伴折扣碼</h2><span class="en">Partners</span></div>
+    <form id="partnerForm" class="pform">
+      <input type="text" id="pName" placeholder="夥伴名稱（例：獺浪民宿）" autocomplete="off">
+      <input type="text" id="pCode" placeholder="代碼（例：lunos07）" autocomplete="off" autocapitalize="characters">
+      <select id="pCat">
+        <option value="民宿">民宿</option>
+        <option value="旅行社">旅行社</option>
+        <option value="其他">其他</option>
+      </select>
+      <button type="submit" class="btn btn-sm btn-fire">新增／更新</button>
+    </form>
+    <div id="partners"><!-- 由 JS 注入 --></div>
   </main>
+
+  <style>
+    .pform { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .pform input, .pform select { padding: 9px 11px; border: 1px solid rgba(138,133,123,.4); border-radius: 7px; background: transparent; color: inherit; font: inherit; font-size: 14px; }
+    .pform input { flex: 1 1 160px; }
+    .pcat { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 8px; }
+    .pcat-t { font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 12px; letter-spacing: .14em; color: var(--fire, #D14820); text-transform: uppercase; }
+    .pcat-n { font-size: 12px; color: var(--mute, #8A857B); }
+    .prow { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 11px 0; border-bottom: 1px solid rgba(138,133,123,.2); }
+    .prow.off { opacity: .5; }
+    .pmain b { font-weight: 600; }
+    .pcode { font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 13px; color: var(--fire, #D14820); margin-left: 10px; }
+    .poff { font-size: 11px; color: var(--mute, #8A857B); margin-left: 8px; }
+    .pstat { font-size: 13px; color: var(--mute, #8A857B); }
+    .pstat b { color: inherit; font-weight: 600; }
+    .pact { display: flex; gap: 6px; }
+  </style>
 
 </div>
 
@@ -363,11 +394,48 @@
       : '<div class="empty">目前沒有回饋</div>';
   }
 
+  // --- 04 夥伴折扣碼 -------------------------------------------------
+  var PCATS = ['民宿', '旅行社', '其他'];
+  function renderPartners() {
+    var host = $('#partners'); if (!host || !C7.partners) return;
+    var list = C7.partners();
+    // 統計各碼使用：完成付款(confirmed)＝佣金結算依據，pending 另計。以「人數」為主（佣金按人頭）。
+    var stat = {};
+    C7.bookings().forEach(function (b) {
+      var c = (b.code || '').toUpperCase(); if (!c) return;
+      if (!stat[c]) stat[c] = { cN: 0, cP: 0, pP: 0 };
+      var party = Number(b.party) || 0;
+      if (b.status === 'confirmed') { stat[c].cN++; stat[c].cP += party; }
+      else if (b.status === 'pending') { stat[c].pP += party; }
+    });
+    if (!list.length) { host.innerHTML = '<div class="empty">還沒有夥伴碼。用上面表單新增。</div>'; return; }
+    var html = '';
+    PCATS.forEach(function (cat) {
+      var rows = list.filter(function (p) { return (p.category || '其他') === cat; })
+        .sort(function (a, b) { return String(a.name).localeCompare(String(b.name)); });
+      if (!rows.length) return;
+      html += '<div class="pcat"><span class="pcat-t">' + esc(cat) + '</span><span class="pcat-n">' + rows.length + ' 家</span></div>';
+      rows.forEach(function (p) {
+        var s = stat[p.code] || { cN: 0, cP: 0, pP: 0 };
+        html += '<div class="prow' + (p.active ? '' : ' off') + '">' +
+          '<div class="pmain"><b>' + esc(p.name) + '</b><span class="pcode">' + esc(p.code) + '</span>' + (p.active ? '' : '<span class="poff">停用</span>') + '</div>' +
+          '<div class="pstat">已確認 <b>' + s.cP + '</b> 人（' + s.cN + ' 筆）' + (s.pP ? ' · 待匯款 ' + s.pP + ' 人' : '') + '</div>' +
+          '<div class="pact">' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-pact="toggle" data-code="' + esc(p.code) + '" data-active="' + (p.active ? '1' : '0') + '">' + (p.active ? '停用' : '啟用') + '</button>' +
+            '<button type="button" class="btn btn-sm btn-ghost" data-pact="del" data-code="' + esc(p.code) + '">刪除</button>' +
+          '</div>' +
+        '</div>';
+      });
+    });
+    host.innerHTML = html || '<div class="empty">還沒有夥伴碼。</div>';
+  }
+
   function renderAll() {
     buildSessionLabels();
     renderCaps();
     renderList();
     renderFeedback();
+    renderPartners();
   }
 
   /* --- 操作（事件委派）------------------------------------------- */
@@ -409,6 +477,37 @@
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     renderList();
+  });
+
+  /* --- 夥伴折扣碼：新增/更新 + 啟停/刪除 ------------------------- */
+  $('#partnerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('#pName').value.trim();
+    var code = $('#pCode').value.trim();
+    if (!name || !code) { toast('請填名稱與代碼'); return; }
+    C7.savePartner({ name: name, code: code, category: $('#pCat').value, active: true }).then(function () {
+      toast('已儲存 ' + name + '（' + code.toUpperCase() + '）');
+      $('#pName').value = ''; $('#pCode').value = ''; $('#pName').focus();
+    }).catch(function (err) { toast('儲存失敗：' + (err && err.message ? err.message : '請重試')); });
+  });
+
+  $('#partners').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-pact]'); if (!btn) return;
+    var code = btn.getAttribute('data-code');
+    var act = btn.getAttribute('data-pact');
+    if (act === 'del') {
+      if (!window.confirm('刪除夥伴碼 ' + code + '？已產生的訂位不受影響。')) return;
+      btn.disabled = true;
+      C7.deletePartner(code).then(function () { toast('已刪除 ' + code); })
+        .catch(function (err) { toast('刪除失敗：' + (err && err.message ? err.message : '請重試')); btn.disabled = false; });
+    } else if (act === 'toggle') {
+      var nowActive = btn.getAttribute('data-active') === '1';
+      var p = C7.partners().filter(function (x) { return x.code === code; })[0] || { code: code };
+      btn.disabled = true;
+      C7.savePartner({ code: code, name: p.name, category: p.category, active: !nowActive })
+        .then(function () { toast(nowActive ? '已停用 ' + code : '已啟用 ' + code); })
+        .catch(function (err) { toast('失敗：' + (err && err.message ? err.message : '請重試')); btn.disabled = false; });
+    }
   });
 
   /* --- 倒數每秒刷新（只改 pending 列的文字，不整表重繪）---------- */
