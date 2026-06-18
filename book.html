@@ -629,6 +629,22 @@
     }
   })();
 
+  // —— 夥伴 QR 深連結：?promo=LUNOS07 → 自動填碼並套用（夥伴發給客人的單張用）——
+  (function () {
+    var m = /[?&]promo=([^&]+)/.exec(location.search);
+    if (!m || !promoInput) return;
+    promoInput.value = decodeURIComponent(m[1]).trim();
+    checkPromo();
+    if (!appliedCode) {                       // partners 還沒載入 → 等資料到再套
+      var un = null, tries = 0;
+      un = C7.subscribe(function () {
+        checkPromo();
+        if (appliedCode || ++tries > 30) { if (un) { un(); un = null; } }
+      });
+      setTimeout(function () { if (un) { un(); un = null; } }, 15000);
+    }
+  })();
+
   document.addEventListener('c7lang', function () {
     if (!step3.hidden) return;
     renderSessions();
