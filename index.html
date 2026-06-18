@@ -2671,20 +2671,33 @@
     const desktop = matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (prefersReducedMotion || !desktop) return;
 
+    // 磁吸：rAF 節流（每幀最多算一次）＋移動時「不加 transition」（即時跟隨、不拖影＝不卡頓感）；
+    // transition 只在離開時套用（平順歸位）。
     function magnetic(el, strength) {
       if (!el) return;
-      el.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+      let raf = null, mx = 0, my = 0;
       el.style.willChange = 'transform';
       el.addEventListener('mousemove', function (e) {
-        const r = el.getBoundingClientRect();
-        const x = (e.clientX - (r.left + r.width / 2)) * strength;
-        const y = (e.clientY - (r.top + r.height / 2)) * strength;
-        el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+        mx = e.clientX; my = e.clientY;
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = null;
+          const r = el.getBoundingClientRect();
+          const x = (mx - (r.left + r.width / 2)) * strength;
+          const y = (my - (r.top + r.height / 2)) * strength;
+          el.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+        });
       });
-      el.addEventListener('mouseleave', function () { el.style.transform = ''; });
+      el.addEventListener('mouseleave', function () {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        el.style.transition = 'transform 0.3s cubic-bezier(0.16,1,0.3,1)';
+        el.style.transform = '';
+        setTimeout(function () { el.style.transition = ''; }, 320);
+      });
     }
     magnetic(document.getElementById('openBook'), 0.3);
-    magnetic(document.getElementById('fabBook'), 0.22);
+    // ⚠️ fabBook 不套磁吸：它是 position:fixed 置中（transform: translateY(-50%)）＋backdrop-filter:blur 的面板；
+    // 磁吸會覆寫掉置中 transform（移過去會跳位），又讓模糊每幀重算（Safari 嚴重卡頓）。保持靜止。
   })();
 
   // —— Skvortsov #3：WebGL 程序化火焰（桌機、效能封頂、可失敗退場）——

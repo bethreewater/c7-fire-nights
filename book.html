@@ -150,6 +150,16 @@
   // ---- DOM ----
   var $ = function (id) { return document.getElementById(id); };
   var sessionsEl = $('sessions');
+  // 整張場次卡可點：把命中區從「裡面那顆小按鈕」擴大到整張卡。
+  // （Clarity 實測：手機使用者常點又大又顯眼的「日期」，那塊沒有處理＝dead click。）
+  // 委派只掛一次；點到卡上非按鈕處時，轉發給該卡裡可用的場次按鈕，重用既有 pick 邏輯。
+  sessionsEl.addEventListener('click', function (e) {
+    var card = e.target.closest('.scard');
+    if (!card || card.classList.contains('full') || card.classList.contains('skel')) return;
+    if (e.target.closest('.row.pick')) return; // 按鈕本身已處理，避免重複觸發
+    var btn = card.querySelector('.row.pick:not([disabled])');
+    if (btn) btn.click();
+  });
   var step1 = $('step1'), step2 = $('step2'), step3 = $('step3');
   var pickedView = $('pickedView'), fldPicked = $('fldPicked');
   var partySel = $('party'), fldParty = $('fldParty'), errParty = $('errParty');
@@ -252,9 +262,20 @@
   // ============================================================
   // 資料還沒到時的骨架：11 個日期先站好位，名額同步中
   var SKELETON_DATES = ['6/13', '6/20', '6/27', '7/04', '7/11', '7/18', '7/25', '8/01', '8/08', '8/15', '8/22'];
+  // 早於「今天」（使用者裝置時鐘）的場次＝已過去，不顯示（避免有人訂到已結束的場）。日期是 M/D，年份取當前年。
+  function isPastDate(mmdd) {
+    var p = String(mmdd).split('/');
+    if (p.length < 2) return false;
+    var mo = parseInt(p[0], 10), d = parseInt(p[1], 10);
+    if (!mo || !d) return false;
+    var now = new Date();
+    var sess = new Date(now.getFullYear(), mo - 1, d);
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return sess.getTime() < today.getTime();
+  }
   function renderSkeleton() {
     var frag = document.createDocumentFragment();
-    SKELETON_DATES.forEach(function (date) {
+    SKELETON_DATES.filter(function (d) { return !isPastDate(d); }).forEach(function (date) {
       var card = document.createElement('div');
       card.className = 'scard skel';
       var dt = document.createElement('div');
@@ -286,6 +307,13 @@
 
     if (!order.length) {   // 資料還沒到：先畫骨架，第一筆資料到就會重繪覆蓋
       renderSkeleton();
+      return;
+    }
+
+    // 隱藏早於今天的場次（已結束）
+    order = order.filter(function (date) { return !isPastDate(date); });
+    if (!order.length) {
+      sessionsEl.innerHTML = '<p class="help" style="padding:8px 2px;">本季場次已全數結束，敬請期待下一季。</p>';
       return;
     }
 
@@ -365,10 +393,15 @@
   // 點某時段
   function pick(id) {
     selected = id;
-    // 視覺：清掉所有 .sel，標記目前這顆
+    // 視覺：清掉所有 .sel，標記目前這顆（按鈕＋整張卡都標，選取回饋更明確）
     var all = sessionsEl.querySelectorAll('.row.pick');
     for (var i = 0; i < all.length; i++) {
       all[i].classList.toggle('sel', all[i].dataset.id === id);
+    }
+    var cards = sessionsEl.querySelectorAll('.scard');
+    for (var j = 0; j < cards.length; j++) {
+      var b = cards[j].querySelector('.row.pick');
+      cards[j].classList.toggle('sel', !!b && b.dataset.id === id);
     }
     syncForm();
     smoothScrollTo(step2);

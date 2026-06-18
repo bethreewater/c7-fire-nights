@@ -535,12 +535,16 @@
     var langs = (navigator.languages && navigator.languages.length)
       ? navigator.languages
       : [navigator.language || navigator.userLanguage || ''];
-    for (var i = 0; i < langs.length; i++) {
-      var l = String(langs[i] || '').toLowerCase();
-      if (l.indexOf('zh') === 0) return 'zh';
-      if (l.indexOf('en') === 0) return 'en';
-      if (l.indexOf('ja') === 0) return 'ja';
-      if (l.indexOf('ko') === 0) return 'ko';
+    var lower = [];
+    for (var i = 0; i < langs.length; i++) lower.push(String(langs[i] || '').toLowerCase());
+    // 台灣為主：只要語言清單裡「有中文」就用中文。多數台灣手機即使把 en 排前面也是中文使用者；
+    // 社群(IG/FB)內建瀏覽器常把 en 報在最前，導致台灣客人被丟到英文版（Clarity 實測）。
+    for (var z = 0; z < lower.length; z++) { if (lower[z].indexOf('zh') === 0) return 'zh'; }
+    // 完全沒有中文 → 才依序給支援的外語（真・外國訪客仍看得到自己的語言）
+    for (var k = 0; k < lower.length; k++) {
+      if (lower[k].indexOf('en') === 0) return 'en';
+      if (lower[k].indexOf('ja') === 0) return 'ja';
+      if (lower[k].indexOf('ko') === 0) return 'ko';
     }
     return 'zh';   // 偵測不到支援語言 → 中文（HTML 預設、不切換）
   }
