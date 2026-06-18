@@ -83,7 +83,7 @@
     <div id="list"><!-- 表格或 empty 由 JS 注入 --></div>
 
     <!-- 03 回饋 -->
-    <div class="sec-h"><span class="idx">03</span><h2>回饋</h2><span class="en">Feedback</span></div>
+    <div class="sec-h sec-toggle" id="fbHead"><span class="idx">03</span><h2>回饋</h2><span class="en">Feedback</span><span class="fb-count" id="fbCount"></span><span class="caret" id="fbCaret">▾</span></div>
     <div id="fblist"><!-- 回饋卡或 empty 由 JS 注入 --></div>
 
     <!-- 04 夥伴折扣碼 -->
@@ -116,6 +116,10 @@
     .pstat { font-size: 13px; color: var(--mute, #8A857B); }
     .pstat b { color: inherit; font-weight: 600; }
     .pact { display: flex; gap: 6px; }
+    .sec-toggle { cursor: pointer; user-select: none; }
+    .sec-toggle .caret { margin-left: 10px; font-size: 12px; color: var(--mute, #8A857B); transition: transform .2s; }
+    .fb-count { margin-left: 10px; font-size: 12px; color: var(--mute, #8A857B); }
+    #fblist.fb-hide { display: none; }
   </style>
 
 </div>
@@ -392,6 +396,8 @@
     host.innerHTML = arr.length
       ? arr.map(fbCard).join('')
       : '<div class="empty">目前沒有回饋</div>';
+    var cnt = $('#fbCount'); if (cnt) cnt.textContent = arr.length ? '· ' + arr.length + ' 則' : '';
+    applyFbCollapse();
   }
 
   // --- 04 夥伴折扣碼 -------------------------------------------------
@@ -509,6 +515,23 @@
         .catch(function (err) { toast('失敗：' + (err && err.message ? err.message : '請重試')); btn.disabled = false; });
     }
   });
+
+  /* --- 回饋區收合（標題可點、狀態記在 localStorage、預設收起）----- */
+  var fbCollapsed;
+  (function () { try { var v = localStorage.getItem('c7_fb_collapsed'); fbCollapsed = (v === null) ? true : (v === '1'); } catch (e) { fbCollapsed = true; } })();
+  function applyFbCollapse() {
+    var list = $('#fblist'), caret = $('#fbCaret');
+    if (list) list.classList.toggle('fb-hide', fbCollapsed);
+    if (caret) caret.textContent = fbCollapsed ? '▸' : '▾';
+  }
+  (function () {
+    var h = $('#fbHead');
+    if (h) h.addEventListener('click', function () {
+      fbCollapsed = !fbCollapsed;
+      try { localStorage.setItem('c7_fb_collapsed', fbCollapsed ? '1' : '0'); } catch (e) {}
+      applyFbCollapse();
+    });
+  })();
 
   /* --- 倒數每秒刷新（只改 pending 列的文字，不整表重繪）---------- */
   function tick() {
