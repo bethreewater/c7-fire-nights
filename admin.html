@@ -310,7 +310,9 @@
                '<button type="button" class="btn btn-sm btn-ghost" data-act="cancel" data-id="' + b.id + '">取消</button>' +
              '</div>';
     }
-    if (b.status === 'expired')  return '<div class="act"><span class="done">名額已放回</span></div>';
+    if (b.status === 'expired')  return '<div class="act">' +
+             '<button type="button" class="btn btn-sm btn-confirm" data-act="reconfirm" data-id="' + b.id + '">補確認到帳</button>' +
+           '</div>';
     return '<div class="act"><span class="done">已取消</span></div>';   // cancelled
   }
 
@@ -458,6 +460,17 @@
         toast('確認失敗：' + (err && err.message ? err.message : '請重試'));
         btn.disabled = false;
       });
+    } else if (btn.getAttribute('data-act') === 'reconfirm') {
+      // 逾時放回後補確認：可能是真的棄單，故二次確認；確認後 C7.confirm 會重扣名額（有上限檢查）＋標確認＋觸發寄信
+      if (window.confirm('這筆已逾時、名額先前已放回。\n確定客人已完成匯款、要補確認並重新佔用名額嗎？')) {
+        btn.disabled = true;
+        C7.confirm(id).then(function () {
+          toast('已補確認 · 名額已重新算入');
+        }).catch(function (err) {
+          toast('補確認失敗：' + (err && err.message ? err.message : '請重試'));
+          btn.disabled = false;
+        });
+      }
     } else if (btn.getAttribute('data-act') === 'cancel') {
       // 破壞性動作：二次確認
       if (window.confirm('確定取消這筆訂位？名額會放回。')) {
