@@ -160,3 +160,66 @@ exports.notifyFeedback = onDocumentCreated(
     }
   }
 );
+
+// ============================================================
+// 新訂位通知：bookings 一有新筆（pending）→ email 給主理人，免得漏看、錯過確認
+// ============================================================
+exports.notifyNewBooking = onDocumentCreated(
+  { document: 'bookings/{bookingId}', region: 'asia-east1', secrets: [GMAIL_PASS] },
+  async (event) => {
+    const d = (event.data && event.data.data()) || {};
+    if (d.status !== 'pending') return;   // 只通知新的待匯款訂位
+
+    const ids = d.sessionIds || [];
+    const party = Number(d.party || 0);
+    const unit = Number(d.unitPrice || PRICE);
+    const amount = (party * unit * (ids.length || 1)).toLocaleString('en-US');
+    const w = new Date(Number(d.createdAt) || Date.now());
+    const whenStr = `${w.getMonth() + 1}/${w.getDate()} ${String(w.getHours()).padStart(2, '0')}:${String(w.getMinutes()).padStart(2, '0')}`;
+    console.log(`[new-booking] ${event.params.bookingId}: ${ids.join(',')} ${d.name || ''} x${party}`);
+
+    const row = (label, val) => (val == null || val === '')
+      ? ''
+      : `<tr><td style="padding:7px 12px 7px 0;color:#888;font-size:13px;white-space:nowrap;vertical-align:top;">${esc(label)}</td>` +
+        `<td style="padding:7px 0;color:#1a1a1a;">${esc(val)}</td></tr>`;
+    const rows = [
+      row('場次', ids.join('、')),
+      row('稱呼', d.name),
+      row('電話', d.phone),
+      row('人數', party ? party + ' 人' : ''),
+      row('應收', 'NT$ ' + amount + (d.code ? '（夥伴碼 · 免服務費）' : '')),
+      row('匯款末五碼', d.last5),
+      row('折扣碼', d.code),
+      row('Email', d.email),
+      row('飲食', Array.isArray(d.diet) ? d.diet.join('、') : d.diet),
+    ].join('');
+
+    const html = `<!DOCTYPE html><html><body style="margin:0;background:#f4f1ec;font-family:-apple-system,'Helvetica Neue',Arial,'PingFang TC','Microsoft JhengHei',sans-serif;color:#1a1a1a;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 26px;">
+    <div style="font-size:12px;letter-spacing:3px;color:#D14820;text-transform:uppercase;">Container No.7 · 夏夜火舞 · 新訂位</div>
+    <h1 style="font-size:22px;margin:12px 0 4px;font-weight:700;">${esc(d.name || '（未填稱呼）')}　${party} 人</h1>
+    <p style="color:#888;font-size:13px;margin:0 0 20px;">${whenStr} 送出 · 待匯款</p>
+    <table style="width:100%;border-collapse:collapse;border-top:1px solid #e0dace;">${rows}</table>
+    <p style="background:#fff3ee;border-left:3px solid #D14820;padding:12px 14px;margin:22px 0 0;font-size:13px;line-height:1.7;color:#8a3a20;">
+      對到帳後，到訂位後台按「確認到帳」。名額為這位客人保留 <b>72 小時</b>，逾時自動放回（放回後仍可在後台「補確認到帳」）。</p>
+    <p style="color:#999;font-size:12px;margin:14px 0 0;">——夏夜火舞 · 訂位系統</p>
+  </div>
+</body></html>`;
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com', port: 465, secure: true,
+      auth: { user: GMAIL_USER, pass: GMAIL_PASS.value() },
+    });
+    try {
+      await transporter.sendMail({
+        from: `"夏夜火舞 · 新訂位" <${GMAIL_USER}>`,
+        to: GMAIL_USER,
+        subject: `🔔 新訂位待確認 · ${ids.join('、')} · ${d.name || ''} ${party}人`,
+        html,
+      });
+      console.log('  ✓ 新訂位通知已寄出');
+    } catch (e) {
+      console.error('  ✗ 新訂位通知寄信失敗: ' + (e && e.message));
+    }
+  }
+);
