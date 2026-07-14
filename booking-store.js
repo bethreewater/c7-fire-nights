@@ -94,7 +94,7 @@
     snap.forEach(function (d) {
       var x = d.data() || {};
       var c = (x.code || d.id || '').toUpperCase();
-      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false, discount: Math.max(0, Math.min(100, Number(x.discount) || 0)) };
+      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false, discount: Math.max(0, Math.min(100, Number(x.discount) || 0)), commission: (x.commission != null ? Math.max(0, Math.round(Number(x.commission) || 0)) : 228) };
     });
     _partners = m;
     notify();
@@ -296,11 +296,13 @@
     if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
     var code = (p.code || '').trim().toUpperCase();
     if (!code) return Promise.reject(new Error('缺少代碼'));
-    return db.collection('partners').doc(code).set({
-      code: code, name: (p.name || '').trim(), category: p.category || '其他',
-      active: p.active !== false, discount: Math.max(0, Math.min(100, Number(p.discount) || 0)),
-      createdAt: p.createdAt || now()
-    }, { merge: true });
+    var doc = { code: code, createdAt: p.createdAt || now() };
+    if (p.name != null) doc.name = String(p.name).trim();
+    if (p.category != null) doc.category = p.category || '其他';
+    if (p.active != null) doc.active = p.active !== false;
+    if (p.discount != null) doc.discount = Math.max(0, Math.min(100, Number(p.discount) || 0));
+    if (p.commission != null) doc.commission = Math.max(0, Math.round(Number(p.commission) || 0));
+    return db.collection('partners').doc(code).set(doc, { merge: true });
   }
   function deletePartner(code) {                       // 後台：刪除
     if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));

@@ -99,6 +99,7 @@
         </select>
       </div>
       <div class="pfield f-disc"><label>折扣 %</label><input type="number" id="pDisc" min="0" max="100" step="1" value="0" title="從正常價 2,508 折幾 %（0＝不打折）"></div>
+      <div class="pfield f-comm"><label>佣金 /人</label><input type="number" id="pComm" min="0" step="1" value="228" title="每帶一位已確認客人，退給夥伴多少（NT$）"></div>
       <div class="pfield f-btn"><label>&nbsp;</label><button type="submit" class="btn btn-sm btn-fire">新增／更新</button></div>
     </form>
     <div id="pDiscPrev" class="caps-note" style="margin:2px 0 14px;"></div>
@@ -112,7 +113,7 @@
     .pform input, .pform select { padding: 9px 11px; border: 1px solid rgba(138,133,123,.4); border-radius: 7px; background: transparent; color: inherit; font: inherit; font-size: 14px; }
     .pfield.f-name { flex: 1 1 190px; } .pfield.f-name input { width: 100%; }
     .pfield.f-code { flex: 1 1 150px; } .pfield.f-code input { width: 100%; }
-    .pfield.f-disc input { width: 92px; }
+    .pfield.f-disc input, .pfield.f-comm input { width: 92px; }
     .pform button { height: 40px; }
     .pcat { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 8px; }
     .pcat-t { font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 12px; letter-spacing: .14em; color: var(--fire, #D14820); text-transform: uppercase; }
@@ -122,8 +123,10 @@
     .p-name { flex: 0 0 auto; min-width: 92px; }
     .p-name b { font-weight: 600; }
     .p-code { flex: 0 0 auto; font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 13px; color: var(--fire, #D14820); }
-    .p-disc { flex: 0 0 auto; font-size: 12.5px; color: var(--mute, #8A857B); white-space: nowrap; }
-    .p-disc input { width: 56px; padding: 3px 6px; font-size: 13px; border: 1px solid rgba(138,133,123,.45); border-radius: 6px; background: transparent; color: inherit; }
+    .p-disc, .p-comm { flex: 0 0 auto; font-size: 12.5px; color: var(--mute, #8A857B); white-space: nowrap; }
+    .p-disc input, .p-comm input { width: 56px; padding: 3px 6px; font-size: 13px; border: 1px solid rgba(138,133,123,.45); border-radius: 6px; background: transparent; color: inherit; }
+    .powed-total { margin: 0 0 10px; padding: 10px 13px; border-radius: 8px; background: rgba(209,72,32,.1); border: 1px solid rgba(209,72,32,.28); font-size: 13.5px; color: var(--paper, #EFEAE0); }
+    .powed-total b { color: #E8A158; font-size: 15px; }
     .p-price { flex: 0 0 auto; white-space: nowrap; }
     .p-price .pprice { color: #E8A158; font-weight: 500; }
     .poff { font-size: 11px; color: var(--mute, #8A857B); margin-left: 8px; }
@@ -431,7 +434,7 @@
       else if (b.status === 'pending') { stat[c].pP += party; }
     });
     if (!list.length) { host.innerHTML = '<div class="empty">還沒有夥伴碼。用上面表單新增。</div>'; return; }
-    var html = '';
+    var html = '', totalOwed = 0, totalHeads = 0;
     PCATS.forEach(function (cat) {
       var rows = list.filter(function (p) { return (p.category || '其他') === cat; })
         .sort(function (a, b) { return String(a.name).localeCompare(String(b.name)); });
@@ -440,13 +443,17 @@
       rows.forEach(function (p) {
         var s = stat[p.code] || { cN: 0, cP: 0, pP: 0 };
         var disc = Math.max(0, Math.min(100, Number(p.discount) || 0));
+        var comm = Math.max(0, Math.round(Number(p.commission) || 0));
         var pp = Math.round(((window.C7 && C7.PRICE) || 2508) * (1 - disc / 100));
+        var owed = s.cP * comm;
+        totalOwed += owed; totalHeads += s.cP;
         html += '<div class="prow' + (p.active ? '' : ' off') + '">' +
           '<div class="p-name"><b>' + esc(p.name) + '</b>' + (p.active ? '' : '<span class="poff">停用</span>') + '</div>' +
           '<div class="p-code">' + esc(p.code) + '</div>' +
           '<div class="p-disc">折扣 <input type="number" class="pdisc-edit" data-code="' + esc(p.code) + '" min="0" max="100" step="1" value="' + disc + '"> %</div>' +
           '<div class="p-price"><b class="pprice">每人 NT$' + pp + '</b></div>' +
-          '<div class="pstat">已確認 <b>' + s.cP + '</b> 人（' + s.cN + ' 筆）' + (s.pP ? ' · 待匯款 ' + s.pP + ' 人' : '') + '</div>' +
+          '<div class="p-comm">佣金 <input type="number" class="pcomm-edit" data-code="' + esc(p.code) + '" min="0" step="1" value="' + comm + '"> /人</div>' +
+          '<div class="pstat">已確認 <b>' + s.cP + '</b> 人 · 應退佣 <b class="powed" style="color:#E8A158;">NT$' + owed + '</b>' + (s.pP ? ' · 待匯款 ' + s.pP + ' 人' : '') + '</div>' +
           '<div class="pact">' +
             '<button type="button" class="btn btn-sm btn-ghost" data-pact="toggle" data-code="' + esc(p.code) + '" data-active="' + (p.active ? '1' : '0') + '">' + (p.active ? '停用' : '啟用') + '</button>' +
             '<button type="button" class="btn btn-sm btn-ghost" data-pact="del" data-code="' + esc(p.code) + '">刪除</button>' +
@@ -454,7 +461,10 @@
         '</div>';
       });
     });
-    host.innerHTML = html || '<div class="empty">還沒有夥伴碼。</div>';
+    var summary = totalOwed > 0
+      ? '<div class="powed-total">累計應退佣金 <b>NT$' + totalOwed + '</b>（已確認 ' + totalHeads + ' 人 · 月底結給夥伴）</div>'
+      : '';
+    host.innerHTML = summary + (html || '<div class="empty">還沒有夥伴碼。</div>');
   }
 
   function renderAll() {
@@ -524,9 +534,10 @@
     var code = $('#pCode').value.trim();
     if (!name || !code) { toast('請填名稱與代碼'); return; }
     var disc = Math.max(0, Math.min(100, Number($('#pDisc').value) || 0));
-    C7.savePartner({ name: name, code: code, category: $('#pCat').value, active: true, discount: disc }).then(function () {
-      toast('已儲存 ' + name + '（' + code.toUpperCase() + '）' + (disc > 0 ? ' · 折 ' + disc + '%' : ''));
-      $('#pName').value = ''; $('#pCode').value = ''; $('#pDisc').value = '0'; updateDiscPrev(); $('#pName').focus();
+    var comm = Math.max(0, Math.round(Number($('#pComm').value) || 0));
+    C7.savePartner({ name: name, code: code, category: $('#pCat').value, active: true, discount: disc, commission: comm }).then(function () {
+      toast('已儲存 ' + name + '（' + code.toUpperCase() + '）' + (disc > 0 ? ' · 折 ' + disc + '%' : '') + ' · 佣金 ' + comm + '/人');
+      $('#pName').value = ''; $('#pCode').value = ''; $('#pDisc').value = '0'; $('#pComm').value = '228'; updateDiscPrev(); $('#pName').focus();
     }).catch(function (err) { toast('儲存失敗：' + (err && err.message ? err.message : '請重試')); });
   });
 
@@ -535,12 +546,15 @@
     var el = $('#pDiscPrev'); if (!el) return;
     var base = (window.C7 && C7.PRICE) || 2508;
     var d = Math.max(0, Math.min(100, Number($('#pDisc').value) || 0));
+    var comm = Math.max(0, Math.round(Number(($('#pComm') || {}).value) || 0));
     var pp = Math.round(base * (1 - d / 100));
-    var net = pp - 1000;
-    el.innerHTML = '折 ' + d + '%：客人每人付 <b>NT$' + pp + '</b> · 你每人淨 <b style="color:' + (net < 400 ? '#C0563C' : '#8FBF7F') + ';">NT$' + net + '</b>' +
-      '（正常價 ' + base + '；食材 1,000／人；每場杜奇 2,000 固定）' + (net < 400 ? ' ⚠️毛利偏低' : '');
+    var net = pp - 1000 - comm;
+    el.innerHTML = '折 ' + d + '% · 佣金 ' + comm + '/人：客人每人付 <b>NT$' + pp + '</b> · 你每人淨 <b style="color:' + (net < 300 ? '#C0563C' : '#8FBF7F') + ';">NT$' + net + '</b>' +
+      '（正常價 ' + base + '；食材 1,000／人；佣金 ' + comm + '；每場杜奇 2,000 固定）' + (net < 300 ? ' ⚠️毛利偏低' : '');
   }
-  if ($('#pDisc')) { $('#pDisc').addEventListener('input', updateDiscPrev); updateDiscPrev(); }
+  if ($('#pDisc')) { $('#pDisc').addEventListener('input', updateDiscPrev); }
+  if ($('#pComm')) { $('#pComm').addEventListener('input', updateDiscPrev); }
+  updateDiscPrev();
 
   $('#partners').addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-pact]'); if (!btn) return;
@@ -581,6 +595,32 @@
     inp.disabled = true;
     C7.savePartner({ code: code, name: p.name, category: p.category, active: p.active, discount: d })
       .then(function () { toast('已更新 ' + code + ' 折扣 ' + d + '%'); inp.disabled = false; })
+      .catch(function (err) { toast('更新失敗：' + (err && err.message ? err.message : '請重試')); inp.disabled = false; });
+  });
+
+  // 名單內「佣金」可直接編輯：input 即時更新該列應退；change（離開/Enter）才存檔
+  $('#partners').addEventListener('input', function (e) {
+    var inp = e.target.closest ? e.target.closest('.pcomm-edit') : null;
+    if (!inp) return;
+    var c = Math.max(0, Math.round(Number(inp.value) || 0));
+    var row = inp.closest ? inp.closest('.prow') : null;
+    if (!row) return;
+    var hb = row.querySelector('.pstat b');
+    var heads = hb ? (Number(hb.textContent) || 0) : 0;
+    var ow = row.querySelector('.powed');
+    if (ow) ow.textContent = 'NT$' + (heads * c);
+  });
+  $('#partners').addEventListener('change', function (e) {
+    var inp = e.target.closest ? e.target.closest('.pcomm-edit') : null;
+    if (!inp) return;
+    var code = inp.getAttribute('data-code');
+    var c = Math.max(0, Math.round(Number(inp.value) || 0));
+    inp.value = c;
+    var p = C7.partners().filter(function (x) { return x.code === code; })[0] || { code: code };
+    if ((Math.max(0, Math.round(Number(p.commission) || 0))) === c) return;   // 沒變就不寫
+    inp.disabled = true;
+    C7.savePartner({ code: code, commission: c })
+      .then(function () { toast('已更新 ' + code + ' 佣金 ' + c + '/人'); inp.disabled = false; })
       .catch(function (err) { toast('更新失敗：' + (err && err.message ? err.message : '請重試')); inp.disabled = false; });
   });
 
