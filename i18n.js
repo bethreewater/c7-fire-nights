@@ -504,25 +504,25 @@
           bFull: '已滿', bLast: '最後 {n}', bLeft: '剩 {n}', seatWord: '{n} 位',
           sentToast: '已送出 · 已為你保留 72 小時', fullToast: '你選的場次剛剛被訂滿了，請重新選擇',
           reserved: '已為你保留 {n} 位', confTail: '。請在 {cd} 內完成匯款，逾時位子自動釋放。', expired: '已逾時',
-          promoOk: '已套用 {p} 優惠：免服務費，每人 NT$2,280', promoBad: '查無此優惠碼' },
+          promoOk: '已套用 {p} 優惠', promoBad: '查無此優惠碼' },
     en: { pickFirst: 'Pick a date above first', partyPh: 'How many of you?', partyNone: 'No seats available', partyN: '{n}',
           errParty: 'Please pick a party size.', errOver: 'That’s more than the seats left ({n}).', syncing: 'Syncing seats…',
           bFull: 'Full', bLast: 'Last {n}', bLeft: '{n} left', seatWord: '{n}',
           sentToast: 'Sent — your seats are held for 72 hours', fullToast: 'That night just filled up — please pick another',
           reserved: '{n} seats held for you', confTail: '. Please transfer within {cd} — after that the seats release automatically.', expired: 'Expired',
-          promoOk: 'Applied — {p}: service fee waived, NT$2,280/person', promoBad: 'Code not found' },
+          promoOk: 'Applied — {p} discount', promoBad: 'Code not found' },
     ja: { pickFirst: 'まず上の日付をお選びください', partyPh: '人数をお選びください', partyNone: '空席がありません', partyN: '{n} 名',
           errParty: '人数をお選びください。', errOver: '残席を超えています（残り {n}）。', syncing: '残席を確認中…',
           bFull: '満席', bLast: '残り {n}', bLeft: '残り {n}', seatWord: '{n} 名',
           sentToast: '送信しました · 72時間お席を確保します', fullToast: 'その日はちょうど満席になりました。別の日をお選びください',
           reserved: '{n} 名分のお席を確保しました', confTail: '。{cd} 以内にお振込みください。期限を過ぎるとお席は自動的に解放されます。', expired: '期限切れ',
-          promoOk: '{p} の特典を適用：サービス料無料、お一人 NT$2,280', promoBad: 'コードが見つかりません' },
+          promoOk: '{p} の特典を適用', promoBad: 'コードが見つかりません' },
     ko: { pickFirst: '먼저 위에서 날짜를 선택해 주세요', partyPh: '인원을 선택해 주세요', partyNone: '남은 자리가 없습니다', partyN: '{n}명',
           errParty: '인원을 선택해 주세요.', errOver: '남은 자리보다 많습니다(남은 {n}석).', syncing: '잔여석 확인 중…',
           bFull: '매진', bLast: '마지막 {n}', bLeft: '{n} 남음', seatWord: '{n}명',
           sentToast: '전송 완료 · 72시간 동안 자리를 잡아둡니다', fullToast: '방금 그 날짜가 매진되었습니다. 다른 날짜를 선택해 주세요',
           reserved: '{n}석을 잡아두었습니다', confTail: '. {cd} 안에 입금해 주세요. 시간이 지나면 자리가 자동으로 풀립니다.', expired: '기한 만료',
-          promoOk: '{p} 혜택 적용: 서비스료 면제, 1인 NT$2,280', promoBad: '코드를 찾을 수 없습니다' }
+          promoOk: '{p} 혜택 적용', promoBad: '코드를 찾을 수 없습니다' }
   };
   Object.keys(LB).forEach(function (k) { var t = LB[k]; for (var key in t) L[k][key] = t[key]; });
 

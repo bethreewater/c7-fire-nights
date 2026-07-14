@@ -191,10 +191,8 @@
     if (p) {
       appliedCode = p.code;
       var disc = Math.max(0, Math.min(100, Number(p.discount) || 0));
-      unitPrice = Math.round(2280 * (1 - disc / 100));   // 夥伴碼＝免服務費（基準 2,280），再依 discount% 折
-      promoMsg.textContent = disc > 0
-        ? ('已套用 ' + p.name + ' 優惠：每人 NT$' + unitPrice + '（免服務費再折 ' + disc + '%）')
-        : (((window.C7L || {}).promoOk || '已套用 {p} 優惠：免服務費，每人 NT$2,280').replace('{p}', p.name));
+      unitPrice = Math.round(C7.PRICE * (1 - disc / 100));   // 折扣％ 從正常價 C7.PRICE(2,508) 往下折
+      promoMsg.textContent = '已套用 ' + p.name + '：每人 NT$' + unitPrice + (disc > 0 ? ('（折 ' + disc + '%）') : '');
       promoMsg.style.color = '#E8A158';
       if (window.c7track) c7track('promo_applied');
     } else {

@@ -89,24 +89,31 @@
     <!-- 04 夥伴折扣碼 -->
     <div class="sec-h"><span class="idx">04</span><h2>夥伴折扣碼</h2><span class="en">Partners</span></div>
     <form id="partnerForm" class="pform">
-      <input type="text" id="pName" placeholder="夥伴名稱（例：獺浪民宿）" autocomplete="off">
-      <input type="text" id="pCode" placeholder="代碼（例：lunos07）" autocomplete="off" autocapitalize="characters">
-      <select id="pCat">
-        <option value="民宿">民宿</option>
-        <option value="旅行社">旅行社</option>
-        <option value="其他">其他</option>
-      </select>
-      <input type="number" id="pDisc" min="0" max="100" step="1" value="0" placeholder="折扣%" title="在免服務費 2,280 上再折幾 %（0＝只免服務費）" style="width:92px;">
-      <button type="submit" class="btn btn-sm btn-fire">新增／更新</button>
+      <div class="pfield f-name"><label>夥伴名稱</label><input type="text" id="pName" placeholder="例：獺浪民宿" autocomplete="off"></div>
+      <div class="pfield f-code"><label>代碼</label><input type="text" id="pCode" placeholder="例：lunos07" autocomplete="off" autocapitalize="characters"></div>
+      <div class="pfield f-cat"><label>類別</label>
+        <select id="pCat">
+          <option value="民宿">民宿</option>
+          <option value="旅行社">旅行社</option>
+          <option value="其他">其他</option>
+        </select>
+      </div>
+      <div class="pfield f-disc"><label>折扣 %</label><input type="number" id="pDisc" min="0" max="100" step="1" value="0" title="從正常價 2,508 折幾 %（0＝不打折）"></div>
+      <div class="pfield f-btn"><label>&nbsp;</label><button type="submit" class="btn btn-sm btn-fire">新增／更新</button></div>
     </form>
-    <div id="pDiscPrev" class="caps-note" style="margin:2px 0 10px;"></div>
+    <div id="pDiscPrev" class="caps-note" style="margin:2px 0 14px;"></div>
     <div id="partners"><!-- 由 JS 注入 --></div>
   </main>
 
   <style>
-    .pform { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
+    .pform { display: flex; flex-wrap: wrap; gap: 14px; margin: 0 0 10px; align-items: flex-end; }
+    .pfield { display: flex; flex-direction: column; gap: 5px; }
+    .pfield > label { font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 11px; letter-spacing: .1em; color: var(--mute, #8A857B); text-transform: uppercase; }
     .pform input, .pform select { padding: 9px 11px; border: 1px solid rgba(138,133,123,.4); border-radius: 7px; background: transparent; color: inherit; font: inherit; font-size: 14px; }
-    .pform input { flex: 1 1 160px; }
+    .pfield.f-name { flex: 1 1 190px; } .pfield.f-name input { width: 100%; }
+    .pfield.f-code { flex: 1 1 150px; } .pfield.f-code input { width: 100%; }
+    .pfield.f-disc input { width: 92px; }
+    .pform button { height: 40px; }
     .pcat { display: flex; align-items: baseline; gap: 8px; margin: 18px 0 8px; }
     .pcat-t { font-family: var(--mono, 'IBM Plex Mono', monospace); font-size: 12px; letter-spacing: .14em; color: var(--fire, #D14820); text-transform: uppercase; }
     .pcat-n { font-size: 12px; color: var(--mute, #8A857B); }
@@ -428,7 +435,7 @@
       rows.forEach(function (p) {
         var s = stat[p.code] || { cN: 0, cP: 0, pP: 0 };
         var disc = Math.max(0, Math.min(100, Number(p.discount) || 0));
-        var pp = Math.round(2280 * (1 - disc / 100));
+        var pp = Math.round(((window.C7 && C7.PRICE) || 2508) * (1 - disc / 100));
         html += '<div class="prow' + (p.active ? '' : ' off') + '">' +
           '<div class="pmain"><b>' + esc(p.name) + '</b><span class="pcode">' + esc(p.code) + '</span>' +
             (p.active ? '' : '<span class="poff">停用</span>') +
@@ -524,12 +531,12 @@
   // 折扣即時試算：客人實付／你每人淨（每人變動成本 1,000；每場另有固定杜奇 2,000）
   function updateDiscPrev() {
     var el = $('#pDiscPrev'); if (!el) return;
+    var base = (window.C7 && C7.PRICE) || 2508;
     var d = Math.max(0, Math.min(100, Number($('#pDisc').value) || 0));
-    var pp = Math.round(2280 * (1 - d / 100));
+    var pp = Math.round(base * (1 - d / 100));
     var net = pp - 1000;
-    el.innerHTML = (d > 0 ? ('折 ' + d + '%：') : '免服務費：') +
-      '客人每人付 <b>NT$' + pp + '</b> · 你每人淨 <b style="color:' + (net < 400 ? '#C0563C' : '#8FBF7F') + ';">NT$' + net + '</b>' +
-      '（食材 1,000／人；每場杜奇 2,000 固定）' + (net < 400 ? ' ⚠️毛利偏低' : '');
+    el.innerHTML = '折 ' + d + '%：客人每人付 <b>NT$' + pp + '</b> · 你每人淨 <b style="color:' + (net < 400 ? '#C0563C' : '#8FBF7F') + ';">NT$' + net + '</b>' +
+      '（正常價 ' + base + '；食材 1,000／人；每場杜奇 2,000 固定）' + (net < 400 ? ' ⚠️毛利偏低' : '');
   }
   if ($('#pDisc')) { $('#pDisc').addEventListener('input', updateDiscPrev); updateDiscPrev(); }
 
@@ -558,7 +565,7 @@
     if (!inp) return;
     var d = Math.max(0, Math.min(100, Number(inp.value) || 0));
     var pr = inp.parentElement.querySelector('.pprice');
-    if (pr) pr.textContent = '每人 NT$' + Math.round(2280 * (1 - d / 100));
+    if (pr) pr.textContent = '每人 NT$' + Math.round(((window.C7 && C7.PRICE) || 2508) * (1 - d / 100));
   });
   $('#partners').addEventListener('change', function (e) {
     var inp = e.target.closest ? e.target.closest('.pdisc-edit') : null;
