@@ -431,8 +431,12 @@
         var pp = Math.round(2280 * (1 - disc / 100));
         html += '<div class="prow' + (p.active ? '' : ' off') + '">' +
           '<div class="pmain"><b>' + esc(p.name) + '</b><span class="pcode">' + esc(p.code) + '</span>' +
-            '<span class="pcode" style="background:rgba(209,72,32,.16);color:#E8A158;">' + (disc > 0 ? ('折 ' + disc + '% · NT$' + pp) : '免服務費 · 2,280') + '</span>' +
-            (p.active ? '' : '<span class="poff">停用</span>') + '</div>' +
+            (p.active ? '' : '<span class="poff">停用</span>') +
+            '<span class="pdisc-wrap" style="margin-left:auto;font-size:12.5px;color:#9a948a;white-space:nowrap;">折扣 ' +
+              '<input type="number" class="pdisc-edit" data-code="' + esc(p.code) + '" min="0" max="100" step="1" value="' + disc + '" ' +
+              'style="width:52px;padding:2px 5px;font-size:13px;border:1px solid rgba(255,255,255,.18);border-radius:5px;background:rgba(255,255,255,.06);color:inherit;"> % ' +
+              '<b class="pprice" style="color:#E8A158;font-weight:500;">每人 NT$' + pp + '</b></span>' +
+          '</div>' +
           '<div class="pstat">已確認 <b>' + s.cP + '</b> 人（' + s.cN + ' 筆）' + (s.pP ? ' · 待匯款 ' + s.pP + ' 人' : '') + '</div>' +
           '<div class="pact">' +
             '<button type="button" class="btn btn-sm btn-ghost" data-pact="toggle" data-code="' + esc(p.code) + '" data-active="' + (p.active ? '1' : '0') + '">' + (p.active ? '停用' : '啟用') + '</button>' +
@@ -546,6 +550,28 @@
         .then(function () { toast(nowActive ? '已停用 ' + code : '已啟用 ' + code); })
         .catch(function (err) { toast('失敗：' + (err && err.message ? err.message : '請重試')); btn.disabled = false; });
     }
+  });
+
+  // 名單內「折扣」可直接編輯：input 即時更新旁邊實付；change（離開/Enter）才存檔
+  $('#partners').addEventListener('input', function (e) {
+    var inp = e.target.closest ? e.target.closest('.pdisc-edit') : null;
+    if (!inp) return;
+    var d = Math.max(0, Math.min(100, Number(inp.value) || 0));
+    var pr = inp.parentElement.querySelector('.pprice');
+    if (pr) pr.textContent = '每人 NT$' + Math.round(2280 * (1 - d / 100));
+  });
+  $('#partners').addEventListener('change', function (e) {
+    var inp = e.target.closest ? e.target.closest('.pdisc-edit') : null;
+    if (!inp) return;
+    var code = inp.getAttribute('data-code');
+    var d = Math.max(0, Math.min(100, Number(inp.value) || 0));
+    inp.value = d;
+    var p = C7.partners().filter(function (x) { return x.code === code; })[0] || { code: code };
+    if ((Math.max(0, Math.min(100, Number(p.discount) || 0))) === d) return;   // 沒變就不寫
+    inp.disabled = true;
+    C7.savePartner({ code: code, name: p.name, category: p.category, active: p.active, discount: d })
+      .then(function () { toast('已更新 ' + code + ' 折扣 ' + d + '%'); inp.disabled = false; })
+      .catch(function (err) { toast('更新失敗：' + (err && err.message ? err.message : '請重試')); inp.disabled = false; });
   });
 
   /* --- 回饋區收合（標題可點、狀態記在 localStorage、預設收起）----- */
