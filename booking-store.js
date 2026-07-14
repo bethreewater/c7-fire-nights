@@ -94,7 +94,7 @@
     snap.forEach(function (d) {
       var x = d.data() || {};
       var c = (x.code || d.id || '').toUpperCase();
-      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false, discount: Math.max(0, Math.min(100, Number(x.discount) || 0)), commission: (x.commission != null ? Math.max(0, Math.round(Number(x.commission) || 0)) : 228) };
+      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false, discount: Math.max(0, Math.min(100, Number(x.discount) || 0)), commission: (x.commission != null ? Math.max(0, Math.min(100, Number(x.commission) || 0)) : 10) };
     });
     _partners = m;
     notify();
@@ -301,7 +301,7 @@
     if (p.category != null) doc.category = p.category || '其他';
     if (p.active != null) doc.active = p.active !== false;
     if (p.discount != null) doc.discount = Math.max(0, Math.min(100, Number(p.discount) || 0));
-    if (p.commission != null) doc.commission = Math.max(0, Math.round(Number(p.commission) || 0));
+    if (p.commission != null) doc.commission = Math.max(0, Math.min(100, Number(p.commission) || 0));
     return db.collection('partners').doc(code).set(doc, { merge: true });
   }
   function deletePartner(code) {                       // 後台：刪除
