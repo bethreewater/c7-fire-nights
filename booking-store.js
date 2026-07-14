@@ -94,7 +94,7 @@
     snap.forEach(function (d) {
       var x = d.data() || {};
       var c = (x.code || d.id || '').toUpperCase();
-      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false };
+      if (c) m[c] = { code: c, name: x.name || c, category: x.category || '其他', active: x.active !== false, discount: Math.max(0, Math.min(100, Number(x.discount) || 0)) };
     });
     _partners = m;
     notify();
@@ -298,7 +298,8 @@
     if (!code) return Promise.reject(new Error('缺少代碼'));
     return db.collection('partners').doc(code).set({
       code: code, name: (p.name || '').trim(), category: p.category || '其他',
-      active: p.active !== false, createdAt: p.createdAt || now()
+      active: p.active !== false, discount: Math.max(0, Math.min(100, Number(p.discount) || 0)),
+      createdAt: p.createdAt || now()
     }, { merge: true });
   }
   function deletePartner(code) {                       // 後台：刪除

@@ -96,8 +96,10 @@
         <option value="旅行社">旅行社</option>
         <option value="其他">其他</option>
       </select>
+      <input type="number" id="pDisc" min="0" max="100" step="1" value="0" placeholder="折扣%" title="在免服務費 2,280 上再折幾 %（0＝只免服務費）" style="width:92px;">
       <button type="submit" class="btn btn-sm btn-fire">新增／更新</button>
     </form>
+    <div id="pDiscPrev" class="caps-note" style="margin:2px 0 10px;"></div>
     <div id="partners"><!-- 由 JS 注入 --></div>
   </main>
 
@@ -425,8 +427,12 @@
       html += '<div class="pcat"><span class="pcat-t">' + esc(cat) + '</span><span class="pcat-n">' + rows.length + ' 家</span></div>';
       rows.forEach(function (p) {
         var s = stat[p.code] || { cN: 0, cP: 0, pP: 0 };
+        var disc = Math.max(0, Math.min(100, Number(p.discount) || 0));
+        var pp = Math.round(2280 * (1 - disc / 100));
         html += '<div class="prow' + (p.active ? '' : ' off') + '">' +
-          '<div class="pmain"><b>' + esc(p.name) + '</b><span class="pcode">' + esc(p.code) + '</span>' + (p.active ? '' : '<span class="poff">停用</span>') + '</div>' +
+          '<div class="pmain"><b>' + esc(p.name) + '</b><span class="pcode">' + esc(p.code) + '</span>' +
+            '<span class="pcode" style="background:rgba(209,72,32,.16);color:#E8A158;">' + (disc > 0 ? ('折 ' + disc + '% · NT$' + pp) : '免服務費 · 2,280') + '</span>' +
+            (p.active ? '' : '<span class="poff">停用</span>') + '</div>' +
           '<div class="pstat">已確認 <b>' + s.cP + '</b> 人（' + s.cN + ' 筆）' + (s.pP ? ' · 待匯款 ' + s.pP + ' 人' : '') + '</div>' +
           '<div class="pact">' +
             '<button type="button" class="btn btn-sm btn-ghost" data-pact="toggle" data-code="' + esc(p.code) + '" data-active="' + (p.active ? '1' : '0') + '">' + (p.active ? '停用' : '啟用') + '</button>' +
@@ -504,11 +510,24 @@
     var name = $('#pName').value.trim();
     var code = $('#pCode').value.trim();
     if (!name || !code) { toast('請填名稱與代碼'); return; }
-    C7.savePartner({ name: name, code: code, category: $('#pCat').value, active: true }).then(function () {
-      toast('已儲存 ' + name + '（' + code.toUpperCase() + '）');
-      $('#pName').value = ''; $('#pCode').value = ''; $('#pName').focus();
+    var disc = Math.max(0, Math.min(100, Number($('#pDisc').value) || 0));
+    C7.savePartner({ name: name, code: code, category: $('#pCat').value, active: true, discount: disc }).then(function () {
+      toast('已儲存 ' + name + '（' + code.toUpperCase() + '）' + (disc > 0 ? ' · 折 ' + disc + '%' : ''));
+      $('#pName').value = ''; $('#pCode').value = ''; $('#pDisc').value = '0'; updateDiscPrev(); $('#pName').focus();
     }).catch(function (err) { toast('儲存失敗：' + (err && err.message ? err.message : '請重試')); });
   });
+
+  // 折扣即時試算：客人實付／你每人淨（每人變動成本 1,000；每場另有固定杜奇 2,000）
+  function updateDiscPrev() {
+    var el = $('#pDiscPrev'); if (!el) return;
+    var d = Math.max(0, Math.min(100, Number($('#pDisc').value) || 0));
+    var pp = Math.round(2280 * (1 - d / 100));
+    var net = pp - 1000;
+    el.innerHTML = (d > 0 ? ('折 ' + d + '%：') : '免服務費：') +
+      '客人每人付 <b>NT$' + pp + '</b> · 你每人淨 <b style="color:' + (net < 400 ? '#C0563C' : '#8FBF7F') + ';">NT$' + net + '</b>' +
+      '（食材 1,000／人；每場杜奇 2,000 固定）' + (net < 400 ? ' ⚠️毛利偏低' : '');
+  }
+  if ($('#pDisc')) { $('#pDisc').addEventListener('input', updateDiscPrev); updateDiscPrev(); }
 
   $('#partners').addEventListener('click', function (e) {
     var btn = e.target.closest('button[data-pact]'); if (!btn) return;
@@ -523,7 +542,7 @@
       var nowActive = btn.getAttribute('data-active') === '1';
       var p = C7.partners().filter(function (x) { return x.code === code; })[0] || { code: code };
       btn.disabled = true;
-      C7.savePartner({ code: code, name: p.name, category: p.category, active: !nowActive })
+      C7.savePartner({ code: code, name: p.name, category: p.category, active: !nowActive, discount: p.discount })
         .then(function () { toast(nowActive ? '已停用 ' + code : '已啟用 ' + code); })
         .catch(function (err) { toast('失敗：' + (err && err.message ? err.message : '請重試')); btn.disabled = false; });
     }
