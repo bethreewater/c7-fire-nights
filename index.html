@@ -1708,6 +1708,7 @@
   @keyframes availPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
   @media (prefers-reduced-motion: reduce) { .slot .avail.urgent { animation: none; } }
   .slot.past { opacity: 0.32; pointer-events: none; }
+  .slot.closed { opacity: 0.45; pointer-events: none; }
   @media (prefers-reduced-motion: reduce) {
     #embers { display: none; }
   }
@@ -2501,6 +2502,15 @@
         slot.appendChild(av);
         return;
       }
+      if (d && sessionStart(d) - now <= 48 * 3600 * 1000) {   // 開演前 48h 起報名截止（與訂位系統一致）
+        slot.classList.add('closed');
+        slot.setAttribute('aria-disabled', 'true');
+        const avc = document.createElement('div');
+        avc.className = 'avail';
+        avc.textContent = (window.C7L || {}).bClosed || '報名已截止';
+        slot.appendChild(avc);
+        return;
+      }
       const goBook = () => { const lg = (window.C7I18N && C7I18N.lang !== 'zh') ? '&lang=' + C7I18N.lang : ''; window.location.href = 'book.html?d=' + encodeURIComponent(d) + lg; };
       slot.setAttribute('role', 'button');
       slot.setAttribute('tabindex', '0');
@@ -2548,6 +2558,11 @@
             if (pav) pav.textContent = T.ended || '已落幕';
             return;
           }
+          if (slot.classList.contains('closed')) {
+            const cav = slot.querySelector('.avail');
+            if (cav) cav.textContent = T.bClosed || '報名已截止';
+            return;
+          }
           const dEl = slot.querySelector('.d');
           const d = dEl ? dEl.textContent.trim() : '';
           if (!(d in left)) return;
@@ -2572,13 +2587,13 @@
     document.addEventListener('c7lang', () => { if (window.__renderAvail) window.__renderAvail(); });
   })();
 
-  // —— Hero：下一場倒數（預購截止＝前一天 22:00，過了自動指向下一週）——
+  // —— Hero：下一場倒數（報名截止＝開演前 48 小時／2 天，過了自動指向下一週）——
   (function(){
     const el = document.getElementById('heroNext');
     if (!el) return;
     function cutoff(d) {
-      const t = sessionStart(d);
-      return new Date(t.getFullYear(), t.getMonth(), t.getDate() - 1, 22, 0, 0);
+      // 報名/匯款截止＝開演前 48 小時，與訂位系統 book.html 一致
+      return new Date(sessionStart(d).getTime() - 48 * 3600 * 1000);
     }
     const pad = n => (n < 10 ? '0' : '') + n;
     function tick() {

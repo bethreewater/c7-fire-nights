@@ -31,7 +31,7 @@
   <!-- 3. 頁首大標 -->
   <p class="pg-kicker">線上訂位 / RESERVE</p>
   <h1 class="pg-h1">訂位</h1>
-  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 72 小時。<br><b>NT$ 2,280</b>／人<small>（另加一成服務費）</small>（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>兩段火舞</b>、<b>四道菜</b>。</p>
+  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 72 小時；<b>報名與匯款請於活動 2 天前完成</b>（開演前 48 小時截止報名）。<br><b>NT$ 2,280</b>／人<small>（另加一成服務費）</small>（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>兩段火舞</b>、<b>四道菜</b>。</p>
 
   <!-- 4. Step 01 選場次 -->
   <section id="step1">
@@ -324,6 +324,7 @@
     order.forEach(function (date) {
       var list = byDate[date];
       var caps = list.map(function (s) { return C7.capacity(s.id); });
+      var allClosed = caps.every(function (c) { return c.closed; });
       var allFull = caps.every(function (c) { return c.full; });
 
       var card = document.createElement('div');
@@ -339,7 +340,13 @@
       dow.textContent = 'SAT';
       card.appendChild(dow);
 
-      if (allFull) {
+      if (allClosed) {
+        card.classList.add('full', 'closed');
+        var sc = document.createElement('div');
+        sc.className = 'soldout';
+        sc.textContent = (window.C7L || {}).bClosed || '報名已截止';
+        card.appendChild(sc);
+      } else if (allFull) {
         card.classList.add('full');
         var so = document.createElement('div');
         so.className = 'soldout';
@@ -362,7 +369,12 @@
           var seat = document.createElement('span');
           seat.className = 'seat';
           var TT = window.C7L || {};
-          if (cap.full) {
+          if (cap.closed) {
+            seat.classList.add('zero');
+            seat.textContent = TT.bClosed || '報名已截止';
+            btn.disabled = true;
+            btn.setAttribute('aria-disabled', 'true');
+          } else if (cap.full) {
             seat.classList.add('zero');
             seat.textContent = TT.bFull || '已滿';
             btn.disabled = true;

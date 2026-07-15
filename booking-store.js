@@ -149,6 +149,18 @@
       .map(function (s) { return { id: s.pid, date: s.date, sitting: s.sitting, label: s.label, time: s.time, cap: s.cap }; });
   }
 
+  // 報名/匯款截止＝開演前 48 小時（2 天，讓主理人有時間備料）
+  var BOOK_CUTOFF_MS = 48 * 60 * 60 * 1000;
+  function sessionStartMs(s) {
+    if (!s || !s.date) return null;
+    var dp = String(s.date).split('/');
+    var mo = parseInt(dp[0], 10), d = parseInt(dp[1], 10);
+    if (!mo || !d) return null;
+    var tp = String(s.time || '19:07').split(':');
+    var hh = parseInt(tp[0], 10) || 0, mm = parseInt(tp[1], 10) || 0;
+    return new Date(new Date().getFullYear(), mo - 1, d, hh, mm, 0).getTime();
+  }
+
   function capacityByDoc(sd) {
     var s = _sessions[sd];
     var cap = s ? s.cap : CAP;
@@ -156,7 +168,9 @@
     var pending = 0, t = now();
     (_holdsBySession[sd] || []).forEach(function (h) { if (h.until > t) pending += h.seats; });
     var remaining = Math.max(0, cap - confirmed - pending);
-    return { cap: cap, confirmed: confirmed, pending: pending, remaining: remaining, full: remaining <= 0 };
+    var startMs = sessionStartMs(s);
+    var closed = (startMs != null) && (t >= startMs - BOOK_CUTOFF_MS);   // 開演前 48h 起停止報名
+    return { cap: cap, confirmed: confirmed, pending: pending, remaining: remaining, full: remaining <= 0, closed: closed, startMs: startMs };
   }
   function capacity(pid) { return capacityByDoc(docId(pid)); }
 
@@ -358,7 +372,7 @@
   }
 
   window.C7 = {
-    CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS,
+    CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS, BOOK_CUTOFF_MS: BOOK_CUTOFF_MS,
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel,
     adjustSeats: adjustSeats,
