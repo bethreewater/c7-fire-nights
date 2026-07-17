@@ -34,6 +34,13 @@
   .seatbtn:hover{border-color:var(--fire);color:var(--fire);}
   .seatbtn:disabled{opacity:.4;cursor:default;}
   .caps-note{font-size:12px;color:var(--mute);line-height:1.7;margin:10px 2px 0;}
+  /* 群發通知面板（改時間／颱風／臨時公告）*/
+  .cap.noticing{grid-column:1/-1;border-color:var(--fire);}   /* 打字時整列展開，不擠在窄格裡 */
+  .npanel{margin-top:14px;padding-top:13px;border-top:1px solid var(--line2);}
+  .nlab{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+    color:var(--soft);line-height:1.6;margin-bottom:8px;}
+  .npanel textarea{min-height:64px;}
+  .nact{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -245,16 +252,21 @@
   // 只顯示有任何 confirmed 或 pending 的場次，以免 24 格全空。
   function renderCaps() {
     var host = $('#caps');
+    if (host.querySelector('.npanel')) return;   // 有人正在打通知文字，資料同步時別重繪蓋掉
     var rows = [];
     C7.sessions().forEach(function (s) {
       var c = C7.capacity(s.id);
 
-      var pct = Math.min(100, Math.round((c.confirmed + c.pending) / c.cap * 100));
+      var heads = c.confirmed + c.pending;
+      var pct = Math.min(100, Math.round(heads / c.cap * 100));
       var metaLeft = '上限 ' + c.cap + ' · 確認 ' + c.confirmed +
                      (c.pending > 0 ? ' · 保留 ' + c.pending : '');
       var right = (c.full
         ? '<span class="left full">已滿</span>'
         : '<span class="left">剩 ' + c.remaining + '</span>') +
+        (heads > 0
+          ? '<button type="button" class="btn btn-sm btn-ghost notifybtn" data-notify="' + esc(s.id) + '">通知</button>'
+          : '') +
         '<span class="seatadj">' +
           '<button type="button" class="seatbtn" data-pid="' + esc(s.id) + '" data-d="-1" aria-label="減一席">−</button>' +
           '<button type="button" class="seatbtn" data-pid="' + esc(s.id) + '" data-d="1" aria-label="加一席">＋</button>' +
@@ -271,19 +283,78 @@
 
     host.innerHTML = rows.length
       ? '<div class="caps">' + rows.join('') + '</div>' +
-        '<p class="caps-note">＋／−＝手動調整「已確認席次」：IG／電話訂位入帳用＋，釋放席次用−（線上訂位確認會自動入帳，不用手動加）。</p>'
+        '<p class="caps-note">＋／−＝手動調整「已確認席次」：IG／電話訂位入帳用＋，釋放席次用−（線上訂位確認會自動入帳，不用手動加）。<br>' +
+        '「通知」＝寄信給這場所有客人（改時間、颱風、任何臨時公告都用它；網站顯示的 19:07 不會被改動）。</p>'
       : '<div class="empty">場次同步中…</div>';
   }
 
-  // 席次 ± 按鈕（事件委派，重繪不掉監聽）
+  // 席次 ± ＋ 群發通知（事件委派，重繪不掉監聽）
+  function closeNPanel(cap) {
+    var p = cap.querySelector('.npanel');
+    if (p) p.remove();
+    cap.classList.remove('noticing');
+    var b = cap.querySelector('.notifybtn');
+    if (b) b.textContent = '通知';
+  }
+
   $('#caps').addEventListener('click', function (e) {
-    var b = e.target.closest('.seatbtn');
-    if (!b) return;
-    b.disabled = true;
-    C7.adjustSeats(b.dataset.pid, Number(b.dataset.d))
-      .then(function () { toast('已更新席次'); })
-      .catch(function (err) { toast('更新失敗：' + (err && err.message)); })
-      .finally(function () { b.disabled = false; });
+    var seat = e.target.closest('.seatbtn');
+    if (seat) {
+      seat.disabled = true;
+      C7.adjustSeats(seat.dataset.pid, Number(seat.dataset.d))
+        .then(function () { toast('已更新席次'); })
+        .catch(function (err) { toast('更新失敗：' + (err && err.message)); })
+        .finally(function () { seat.disabled = false; });
+      return;
+    }
+
+    // 展開／收合通知面板
+    var nb = e.target.closest('.notifybtn');
+    if (nb) {
+      var cap = nb.closest('.cap');
+      if (cap.querySelector('.npanel')) { closeNPanel(cap); renderCaps(); return; }
+      var pid = nb.getAttribute('data-notify');
+      var c = C7.capacity(pid);
+      var p = document.createElement('div');
+      p.className = 'npanel fld';
+      p.innerHTML =
+        '<label class="nlab">通知這場的客人 · ' + esc(pid.split('|')[0]) +
+          '（' + (c.confirmed + c.pending) + ' 席；有留 Email 的會立刻收到信）</label>' +
+        '<textarea class="nta" rows="3" placeholder="例：因風雨，本場改為 20:00 開場，入座 19:40，其餘不變。"></textarea>' +
+        '<div class="nact">' +
+          '<button type="button" class="btn btn-sm btn-ghost" data-nact="cancel">取消</button>' +
+          '<button type="button" class="btn btn-sm btn-confirm" data-nact="send" data-pid="' + esc(pid) + '">送出通知</button>' +
+        '</div>';
+      cap.classList.add('noticing');
+      cap.appendChild(p);
+      nb.textContent = '收合';
+      p.querySelector('.nta').focus();
+      return;
+    }
+
+    var na = e.target.closest('[data-nact]');
+    if (!na) return;
+    var capEl = na.closest('.cap');
+
+    if (na.dataset.nact === 'cancel') { closeNPanel(capEl); renderCaps(); return; }
+
+    var ta = capEl.querySelector('.nta');
+    var msg = (ta.value || '').trim();
+    if (!msg) { toast('請先寫通知內容'); ta.focus(); return; }
+    if (!window.confirm('確定寄出給這場所有客人？\n\n' + msg + '\n\n（有留 Email 的會立刻收到，寄出後無法收回）')) return;
+    na.disabled = true;
+    na.textContent = '寄送中…';
+    C7.notifySession(na.dataset.pid, msg)
+      .then(function (n) {
+        toast(n ? ('已通知 ' + n + ' 筆訂位') : '這場沒有可通知的訂位');
+        closeNPanel(capEl);
+        renderCaps();
+      })
+      .catch(function (err) {
+        toast('通知失敗：' + (err && err.message ? err.message : '請重試'));
+        na.disabled = false;
+        na.textContent = '送出通知';
+      });
   });
 
   // --- 02 訂位管理 -------------------------------------------------
@@ -357,6 +428,7 @@
 
   function renderList() {
     var host = $('#list');
+    if (host.querySelector('.reschedSel')) return;   // 正在挑改期場次，資料同步時別重繪蓋掉
     var rows = C7.bookings().filter(passesFilter);
 
     if (!rows.length) {

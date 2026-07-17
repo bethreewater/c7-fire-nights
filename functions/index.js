@@ -286,3 +286,55 @@ exports.notifyReschedule = onDocumentUpdated(
     }
   }
 );
+
+/* ── 05 場次公告：後台按「通知」→ 寄給該場每一位客人 ──────────────
+   後台把 notice{text,at} 寫進該場每一筆有效訂位，這裡逐筆寄出。
+   （改時間、颱風、任何臨時異動都走這條；notice.at 變了才寄，不會重寄。）*/
+exports.notifyNotice = onDocumentUpdated(
+  { document: 'bookings/{bookingId}', region: 'asia-east1', secrets: [GMAIL_PASS] },
+  async (event) => {
+    const id = event.params.bookingId;
+    const before = event.data.before.data() || {};
+    const after = event.data.after.data() || {};
+    const bAt = (before.notice || {}).at || 0;
+    const aAt = (after.notice || {}).at || 0;
+    const text = ((after.notice || {}).text || '').trim();
+    if (!aAt || aAt === bAt || !text) return;        // 沒有新公告
+    if (after.status === 'cancelled') return;        // 已取消不通知
+    const to = (after.email || '').trim();
+    console.log(`[notice] ${id}: email=${to || '(無)'}`);
+    if (!to) { console.log('  跳過：沒填 email'); return; }
+
+    const list = (after.sessionIds || []).map(parseSession);
+    const sessStr = list.map((s) => `${s.date} ${s.time}`).join('、') || '你預訂的場次';
+    const body = esc(text).replace(/\n/g, '<br>');
+
+    const html = `<!DOCTYPE html><html><body style="margin:0;background:#f4f1ec;font-family:-apple-system,'Helvetica Neue',Arial,'PingFang TC','Microsoft JhengHei',sans-serif;color:#1a1a1a;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 26px;">
+    <div style="font-size:12px;letter-spacing:3px;color:#D14820;text-transform:uppercase;">Container No.7 · 夏夜火舞</div>
+    <h1 style="font-size:22px;margin:12px 0 6px;font-weight:700;">${esc(sessStr)} 場次通知</h1>
+    <p style="color:#555;line-height:1.7;margin:0 0 22px;">${esc(after.name || '')} 你好，你預訂的 ${esc(sessStr)} 這場有異動要告訴你：</p>
+    <div style="background:#fff;border-left:3px solid #D14820;padding:16px 18px;font-size:15px;line-height:1.9;">${body}</div>
+    <p style="color:#555;font-size:13px;line-height:1.7;margin:22px 0 0;">
+      你的訂位（${after.party || 0} 人）不受影響，位子仍為你保留。若這樣不方便，請直接回信或私訊 IG／撥 0963-059-889，我們幫你改期或退費。</p>
+    <p style="color:#999;font-size:12px;margin:16px 0 0;line-height:1.7;">澎湖馬公・山水 ｜ 七號貨櫃<br>——夏夜火舞</p>
+  </div>
+</body></html>`;
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com', port: 465, secure: true,
+      auth: { user: GMAIL_USER, pass: GMAIL_PASS.value() },
+    });
+    try {
+      await transporter.sendMail({
+        from: `"夏夜火舞 · 七號貨櫃" <${GMAIL_USER}>`,
+        to,
+        subject: `${sessStr} 場次通知 · 夏夜火舞`,
+        html,
+      });
+      console.log('  ✓ 場次通知已寄出');
+    } catch (e) {
+      console.error('  ✗ 場次通知寄信失敗: ' + (e && e.message));
+    }
+  }
+);

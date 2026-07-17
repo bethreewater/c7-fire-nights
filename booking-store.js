@@ -311,6 +311,25 @@
     return batch.commit().then(function () { return true; });
   }
 
+  // ---- 後台：群發通知某場次的客人（改時間、颱風、任何臨時公告）----
+  // 作法：把 notice 標記寫進該場每一筆有效訂位 → 雲端函式 notifyNotice 逐筆寄信給有留 Email 的客人。
+  function notifySession(pid, text) {
+    if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
+    var msg = String(text || '').trim();
+    if (!msg) return Promise.reject(new Error('請輸入通知內容'));
+    var sd = docId(pid);
+    var targets = bookings().filter(function (b) {
+      if (b.status !== 'pending' && b.status !== 'confirmed') return false;   // 只通知還算數的訂位
+      return docIdsOf(b).indexOf(sd) > -1;
+    });
+    if (!targets.length) return Promise.resolve(0);
+    var batch = db.batch(), t = now();
+    targets.forEach(function (b) {
+      batch.update(db.collection('bookings').doc(b.id), { notice: { text: msg, at: t } });
+    });
+    return batch.commit().then(function () { return targets.length; });
+  }
+
   // ---- 後台：手動調整「已確認席次」（IG／電話訂位入帳、釋放保留席）----
   // 直接增減 sessions.confirmedSeats，鎖在 0..cap 之間。
   function adjustSeats(pid, delta) {
@@ -420,7 +439,7 @@
     CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS, BOOK_CUTOFF_MS: BOOK_CUTOFF_MS,
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel, reschedule: reschedule,
-    adjustSeats: adjustSeats,
+    notifySession: notifySession, adjustSeats: adjustSeats,
     partners: partners, findPartner: findPartner, savePartner: savePartner, deletePartner: deletePartner,
     releaseExpired: releaseExpired, reset: reset,
     subscribe: subscribe, fmtCountdown: fmtCountdown,
