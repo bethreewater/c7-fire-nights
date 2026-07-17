@@ -266,6 +266,51 @@
     return batch.commit();
   }
 
+  // ---- 後台：改期（把一筆訂位換到別的場次）----
+  // confirmed：舊場退席次、新場扣席次（有滿場檢查）；pending：舊 hold 刪、新場開 hold（有名額檢查）；
+  // expired：沒有佔位，只換場次（之後仍可「補確認到帳」）。寫入 rescheduledAt/prevSessionIds → 觸發通知信。
+  function reschedule(bookingId, newPid) {
+    if (!_isAdmin) return Promise.reject(new Error('需要管理員登入'));
+    var b = findBooking(bookingId);
+    if (!b) return Promise.reject(new Error('找不到訂位'));
+    if (b.status === 'cancelled') return Promise.reject(new Error('已取消的訂位不能改期'));
+    var oldSds = docIdsOf(b);
+    if (oldSds.length !== 1) return Promise.reject(new Error('多場次訂位請手動處理'));
+    var oldSd = oldSds[0], newSd = docId(newPid);
+    if (oldSd === newSd) return Promise.resolve(false);          // 沒變
+    var party = Number(b.party) || 0;
+    var bRef = db.collection('bookings').doc(bookingId);
+    var meta = { sessionIds: [newPid], sessionDocIds: [newSd], rescheduledAt: now(), prevSessionIds: (b.sessionIds || []) };
+
+    if (b.status === 'confirmed') {
+      var oldRef = db.collection('sessions').doc(oldSd), newRef = db.collection('sessions').doc(newSd);
+      return db.runTransaction(function (tx) {
+        return Promise.all([tx.get(oldRef), tx.get(newRef)]).then(function (snaps) {
+          if (!snaps[1].exists) throw new Error('新場次不存在');
+          var oldD = snaps[0].data() || {}, newD = snaps[1].data() || {};
+          var newCap = newD.cap != null ? newD.cap : CAP;
+          if ((newD.confirmedSeats || 0) + party > newCap) throw new Error('新場次已滿，改不過去');
+          tx.update(oldRef, { confirmedSeats: Math.max(0, (oldD.confirmedSeats || 0) - party) });
+          tx.update(newRef, { confirmedSeats: (newD.confirmedSeats || 0) + party });
+          tx.update(bRef, meta);
+        });
+      }).then(function () { return true; });
+    }
+
+    // pending / expired
+    var batch = db.batch(), hids = b.holdIds || {};
+    if (b.status === 'pending') {
+      if (capacityByDoc(newSd).remaining < party) return Promise.reject(new Error('新場次名額不足'));
+      var nh = db.collection('sessions').doc(newSd).collection('holds').doc();
+      batch.set(nh, { seats: party, until: b.holdUntil, bookingId: bookingId, createdAt: now() });
+      var nhIds = {}; nhIds[newSd] = nh.id;
+      meta.holdIds = nhIds;
+    }
+    if (hids[oldSd]) batch.delete(holdRef(oldSd, hids[oldSd]));
+    batch.update(bRef, meta);
+    return batch.commit().then(function () { return true; });
+  }
+
   // ---- 後台：手動調整「已確認席次」（IG／電話訂位入帳、釋放保留席）----
   // 直接增減 sessions.confirmedSeats，鎖在 0..cap 之間。
   function adjustSeats(pid, delta) {
@@ -374,7 +419,7 @@
   window.C7 = {
     CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS, BOOK_CUTOFF_MS: BOOK_CUTOFF_MS,
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
-    createBooking: createBooking, confirm: confirm, cancel: cancel,
+    createBooking: createBooking, confirm: confirm, cancel: cancel, reschedule: reschedule,
     adjustSeats: adjustSeats,
     partners: partners, findPartner: findPartner, savePartner: savePartner, deletePartner: deletePartner,
     releaseExpired: releaseExpired, reset: reset,

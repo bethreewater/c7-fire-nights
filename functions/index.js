@@ -223,3 +223,66 @@ exports.notifyNewBooking = onDocumentCreated(
     }
   }
 );
+
+// ============================================================
+// 改期通知：後台把訂位換到別的場次（sessionIds 變動）→ email 通知客人
+// ============================================================
+exports.notifyReschedule = onDocumentUpdated(
+  { document: 'bookings/{bookingId}', region: 'asia-east1', secrets: [GMAIL_PASS] },
+  async (event) => {
+    const id = event.params.bookingId;
+    const before = event.data.before.data() || {};
+    const after = event.data.after.data() || {};
+    const bIds = (before.sessionIds || []).join(',');
+    const aIds = (after.sessionIds || []).join(',');
+    if (!aIds || bIds === aIds) return;              // 場次沒變
+    if (after.status === 'cancelled') return;        // 已取消不通知
+    const to = (after.email || '').trim();
+    console.log(`[reschedule] ${id}: ${bIds} -> ${aIds}, email=${to || '(無)'}`);
+    if (!to) { console.log('  跳過：沒填 email'); return; }
+
+    const oldStr = (before.sessionIds || []).map(parseSession).map((s) => `${s.date} ${s.time}`).join('、') || '原場次';
+    const newList = (after.sessionIds || []).map(parseSession);
+    const newStr = newList.map((s) => `${s.date} ${s.time}`).join('、');
+    const arrive = (newList[0] || {}).arrive || '';
+    const party = after.party || 0;
+    const unit = after.unitPrice || PRICE;
+    const amount = (party * unit * (after.sessionIds || []).length).toLocaleString('en-US');
+
+    const html = `<!DOCTYPE html><html><body style="margin:0;background:#f4f1ec;font-family:-apple-system,'Helvetica Neue',Arial,'PingFang TC','Microsoft JhengHei',sans-serif;color:#1a1a1a;">
+  <div style="max-width:560px;margin:0 auto;padding:32px 26px;">
+    <div style="font-size:12px;letter-spacing:3px;color:#D14820;text-transform:uppercase;">Container No.7 · 夏夜火舞</div>
+    <h1 style="font-size:22px;margin:12px 0 6px;font-weight:700;">你的訂位已改期</h1>
+    <p style="color:#555;line-height:1.7;margin:0 0 22px;">${esc(after.name || '')} 你好，你的場次已更改，位子已幫你移到新的一晚。</p>
+    <table style="width:100%;border-collapse:collapse;border-top:1px solid #e0dace;">
+      <tr><td style="padding:9px 12px 9px 0;color:#888;font-size:13px;white-space:nowrap;">原場次</td>
+          <td style="padding:9px 0;color:#999;text-decoration:line-through;">${esc(oldStr)}</td></tr>
+      <tr><td style="padding:9px 12px 9px 0;color:#888;font-size:13px;white-space:nowrap;">新場次</td>
+          <td style="padding:9px 0;color:#D14820;font-weight:700;font-size:17px;">${esc(newStr)}</td></tr>
+      ${arrive ? `<tr><td style="padding:9px 12px 9px 0;color:#888;font-size:13px;white-space:nowrap;">入座</td><td style="padding:9px 0;">${esc(arrive)}</td></tr>` : ''}
+      <tr><td style="padding:9px 12px 9px 0;color:#888;font-size:13px;white-space:nowrap;">人數</td><td style="padding:9px 0;">${party} 人</td></tr>
+      <tr><td style="padding:9px 12px 9px 0;color:#888;font-size:13px;white-space:nowrap;">金額</td><td style="padding:9px 0;">NT$ ${amount}</td></tr>
+    </table>
+    <p style="background:#fff3ee;border-left:3px solid #D14820;padding:12px 14px;margin:22px 0 0;font-size:13px;line-height:1.7;color:#8a3a20;">
+      新場次若不方便，請直接回信或私訊 IG／撥 0963-059-889，我們再幫你安排。</p>
+    <p style="color:#999;font-size:12px;margin:16px 0 0;line-height:1.7;">澎湖馬公・山水 ｜ 七號貨櫃<br>——夏夜火舞</p>
+  </div>
+</body></html>`;
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com', port: 465, secure: true,
+      auth: { user: GMAIL_USER, pass: GMAIL_PASS.value() },
+    });
+    try {
+      await transporter.sendMail({
+        from: `"夏夜火舞 · 七號貨櫃" <${GMAIL_USER}>`,
+        to,
+        subject: `你的訂位已改期 · 新場次 ${newStr}`,
+        html,
+      });
+      console.log('  ✓ 改期通知已寄出');
+    } catch (e) {
+      console.error('  ✗ 改期通知寄信失敗: ' + (e && e.message));
+    }
+  }
+);

@@ -316,19 +316,23 @@
   }
 
   function actionCell(b) {
+    var resched = '<button type="button" class="btn btn-sm btn-ghost" data-act="resched" data-id="' + b.id + '">改期</button>';
     if (b.status === 'pending') {
       return '<div class="act">' +
                '<button type="button" class="btn btn-sm btn-confirm" data-act="confirm" data-id="' + b.id + '">確認到帳</button>' +
+               resched +
                '<button type="button" class="btn btn-sm btn-ghost" data-act="cancel" data-id="' + b.id + '">取消</button>' +
              '</div>';
     }
     if (b.status === 'confirmed') {
       return '<div class="act">' +
+               resched +
                '<button type="button" class="btn btn-sm btn-ghost" data-act="cancel" data-id="' + b.id + '">取消</button>' +
              '</div>';
     }
     if (b.status === 'expired')  return '<div class="act">' +
              '<button type="button" class="btn btn-sm btn-confirm" data-act="reconfirm" data-id="' + b.id + '">補確認到帳</button>' +
+             resched +
            '</div>';
     return '<div class="act"><span class="done">已取消</span></div>';   // cancelled
   }
@@ -512,6 +516,36 @@
           btn.disabled = false;
         });
       }
+    } else if (btn.getAttribute('data-act') === 'resched') {
+      // 展開場次選單：排除目前場次、已滿、已截止(<48h)、名額不足的場
+      var cell = btn.closest('.act'); if (!cell) return;
+      var bk = C7.bookings().filter(function (x) { return x.id === id; })[0];
+      if (!bk) return;
+      var cur = (bk.sessionIds || [])[0] || '';
+      var need = Number(bk.party) || 1;
+      var opts = C7.sessions().filter(function (s) {
+        var c = C7.capacity(s.id);
+        return s.id !== cur && !c.full && !c.closed && c.remaining >= need;
+      }).map(function (s) {
+        var c = C7.capacity(s.id);
+        return '<option value="' + esc(s.id) + '">' + esc(s.date + ' ' + (s.label || s.time)) + '（剩 ' + c.remaining + '）</option>';
+      }).join('');
+      if (!opts) { toast('沒有可改去的場次（都已滿／已截止／名額不足）'); return; }
+      cell.innerHTML = '<select class="reschedSel" style="padding:6px 8px;border:1px solid rgba(138,133,123,.4);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:13px;">' + opts + '</select>' +
+        '<button type="button" class="btn btn-sm btn-confirm" data-act="resched-ok" data-id="' + id + '">確定改期</button>' +
+        '<button type="button" class="btn btn-sm btn-ghost" data-act="resched-no">取消</button>';
+    } else if (btn.getAttribute('data-act') === 'resched-ok') {
+      var selEl = btn.closest('.act') ? btn.closest('.act').querySelector('.reschedSel') : null;
+      if (!selEl) return;
+      btn.disabled = true;
+      C7.reschedule(id, selEl.value).then(function (ok) {
+        toast(ok ? '已改期 · 客人若有留 Email 會自動收到通知' : '場次沒變');
+      }).catch(function (err) {
+        toast('改期失敗：' + (err && err.message ? err.message : '請重試'));
+        btn.disabled = false;
+      });
+    } else if (btn.getAttribute('data-act') === 'resched-no') {
+      renderList();
     }
   });
 
