@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <title>夏夜火舞 SUMMER NIGHTS — 七號貨櫃 Container No.7</title>
-<meta name="description" content="六月到八月，每個週六 19:07，澎湖的草皮上有火。兩段火舞、四道菜、一百一十分鐘，不能快轉。NT$2,280／人，每場 8–15 位。">
+<meta name="description" content="夏夜火舞已落幕。2026 年六月到八月，每個週六 19:07，澎湖的草皮上有火——兩段火舞、四道菜、一百一十分鐘。訂位已關閉；未來有機會，我們再見。">
 <link rel="canonical" href="https://bethreewater.github.io/c7-fire-nights/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23D14820' d='M16 2c1.2 5.8 7 8.6 7 15.4A7.3 7.3 0 0 1 16 25a7.3 7.3 0 0 1-7-7.6c0-3.8 2.1-6.2 3.4-9 .9 1.9 2.6 3 2.6 5.6 0-4.6.3-8.4 1-12z'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="img/hero-poster.jpg" fetchpriority="high">
@@ -29,7 +29,7 @@
   "description": "六月到八月，每個週六 19:07，澎湖的草皮上有火。兩段火舞、四道菜、一百一十分鐘的火舞晚宴。",
   "image": "https://bethreewater.github.io/c7-fire-nights/img/hero-poster.jpg",
   "startDate": "2026-06-13",
-  "endDate": "2026-08-22",
+  "endDate": "2026-08-01",
   "eventSchedule": {
     "@type": "Schedule",
     "repeatFrequency": "P1W",
@@ -37,7 +37,7 @@
     "startTime": "19:07:00",
     "endTime": "21:00:00",
     "startDate": "2026-06-13",
-    "endDate": "2026-08-22",
+    "endDate": "2026-08-01",
     "scheduleTimezone": "Asia/Taipei"
   },
   "location": {
@@ -57,7 +57,7 @@
     "@type": "Offer",
     "price": "2280",
     "priceCurrency": "TWD",
-    "availability": "https://schema.org/InStock",
+    "availability": "https://schema.org/Discontinued",
     "url": "https://bethreewater.github.io/c7-fire-nights/book.html"
   },
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
@@ -960,6 +960,39 @@
     text-wrap: pretty;
   }
 
+  /* 活動結束 · 告別（2026-08-07；取代原本的價格列與 Reserve CTA）*/
+  .farewell { max-width: 58ch; margin-top: 8px; }
+  .farewell .fw-mark {
+    font-family: var(--sans); font-size: 15px; letter-spacing: 0.42em;
+    color: var(--fire); margin-bottom: 30px;
+  }
+  .farewell .fw-lead {
+    font-family: var(--display); font-weight: 400;
+    font-size: clamp(24px, 4.4vw, 36px); line-height: 1.48; letter-spacing: 0.02em;
+    color: var(--paper); margin-bottom: 30px; text-wrap: balance;
+  }
+  .farewell .fw-body {
+    font-family: var(--sans); font-weight: 300; font-size: 15px; line-height: 1.95;
+    letter-spacing: 0.02em; color: var(--paper-soft); margin-bottom: 34px; text-wrap: pretty;
+  }
+  .farewell .fw-again {
+    font-family: var(--serif); font-size: clamp(17px, 2.4vw, 20px); line-height: 1.8;
+    letter-spacing: 0.08em; color: var(--fire);
+    padding: 26px 0 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    margin-bottom: 34px;
+  }
+  .farewell .fw-still {
+    font-family: var(--sans); font-weight: 300; font-size: 14px; line-height: 1.95;
+    letter-spacing: 0.02em; color: var(--paper-soft); margin-bottom: 30px; text-wrap: pretty;
+  }
+  .farewell .fw-still a { color: var(--paper); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .farewell .fw-still a:hover { color: var(--fire); border-bottom-color: var(--fire); }
+  .farewell .fw-note {
+    font-family: var(--sans); font-weight: 300; font-size: 12.5px; line-height: 1.95;
+    letter-spacing: 0.02em; color: var(--paper-mute);
+    padding-left: 15px; border-left: 2px solid var(--line); text-wrap: pretty;
+  }
+
   /* CTA */
   .cta-block {
     margin-top: 96px;
@@ -1789,7 +1822,7 @@
   <div class="bottom-meta">
     <div>11 Saturdays · One Night Each</div>
     <div>↓ Scroll</div>
-    <div>夏季限定 NT$ 2,280 · 一夜</div>
+    <div>2026 夏季 · 已落幕</div>
   </div>
 </header>
 
@@ -1871,7 +1904,7 @@
       <h2 class="display-h">Four <span class="accent">small</span><br>movements.</h2>
       <div class="display-h-zh" lang="zh-Hant">四道</div>
       <p class="lede">
-        四道菜，穿插在兩段火舞之間，一道一道，不趕。<br>一個晚上：兩段火舞、四道菜、一百一十分鐘——NT$2,280／人<small style="color:var(--paper-mute);font-weight:400;">（另加一成服務費）</small>（原價 NT$2,980）。
+        四道菜，穿插在兩段火舞之間，一道一道，不趕。<br>一個晚上：兩段火舞、四道菜、一百一十分鐘。
       </p>
     </div>
   </div>
@@ -2068,31 +2101,21 @@
 
       <div class="reserve">
         <p class="lede" style="margin-bottom:40px">每一場，是一個完整的夜晚——兩段火舞、四道菜、一百一十分鐘。每週六一場，一場最多十五人。</p>
-        <div class="reserve-row">
-          <div class="reserve-item">
-            <div class="rk">每場名額</div>
-            <div class="rv">8–15 位<span class="rsub">小而精緻，滿了就關</span></div>
-          </div>
-          <div class="reserve-item">
-            <div class="rk">正式場 · 夏季限定</div>
-            <div class="rv"><s style="font-size:0.5em;color:var(--paper-mute);font-weight:400;margin-right:5px;vertical-align:2px;">NT$2,980</s>NT$2,280<span class="rsub">／人 · 另加一成服務費</span></div>
-          </div>
-          <div class="reserve-item">
-            <div class="rk">預購截止</div>
-            <div class="rv">場次前一天<span class="rsub">22:00</span></div>
-          </div>
+        <div class="farewell" id="fwHome">
+          <p class="fw-mark" aria-hidden="true">◈</p>
+          <p class="fw-lead" id="fwLead">十一個週六。<br>火亮過，也熄了。</p>
+          <p class="fw-body" id="fwBody">
+            夏夜火舞的訂位已經關閉，2026 年夏季到此為止。<br>
+            謝謝每一位在草皮上坐下來、把那個晚上留給我們的貴客。
+          </p>
+          <p class="fw-again" id="fwAgain">未來有機會，我們再見。</p>
+          <p class="fw-still" id="fwStill">
+            七號貨櫃還在澎湖。日常營業與最新消息，都在
+            <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener">@container_no.7_penghu&nbsp;↗</a>
+            ，或撥 <a href="tel:+886963059889">0963-059-889</a>。
+          </p>
+          <p class="fw-note" id="fwNote">已經訂位並完成匯款的貴客：我們會主動與你聯絡，不需要另外處理。</p>
         </div>
-        <p class="reserve-how">
-          線上預購：按下方按鈕即時選位、看剩餘名額。也可 IG 私訊
-          <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener" class="inline-link">@container_no.7_penghu&nbsp;↗</a>
-          或電話
-          <a href="tel:+886963059889" class="inline-link">0963-059-889</a>。
-        </p>
-      </div>
-
-      <div class="cta-block">
-        <button type="button" class="cta" id="openBook" data-cursor="訂位">預購 · Reserve</button>
-        <p class="bf-note" style="margin-top:18px">點上方任一場次、或按這裡，線上即時選位預購。</p>
       </div>
 
     </div>
@@ -2109,6 +2132,14 @@
     <div>
       <h2 class="display-h">Weather, <span class="accent">refunds</span>,<br>arrivals.</h2>
       <div class="display-h-zh" lang="zh-Hant">條款</div>
+
+      <div class="qa">
+        <div class="q"><span class="num">06.0</span>活動結束</div>
+        <div class="a">
+          夏夜火舞已於 2026 年夏季結束，訂位已關閉，尚未舉行的場次不再舉辦。<br>
+          <b>因主辦方停辦而未能參加的貴客，一律全額退費</b>——下方 06.2 的退費比例只適用於客人自己取消，不適用於這次停辦。我們會主動與每一位受影響的貴客聯絡；若你已匯款而尚未接到通知，請撥 <a href="tel:+886963059889" class="inline-link">0963-059-889</a>。
+        </div>
+      </div>
 
       <div class="qa">
         <div class="q"><span class="num">06.1</span>天氣</div>
@@ -2260,11 +2291,8 @@
   </div>
 </footer>
 
-<div class="fab-promo" id="fabBook" aria-label="夏季限定預訂" data-cursor="訂位">
-  <div class="fp-top"><span class="fp-tag">夏季限定</span><span class="fp-count">每場 8–15 席</span></div>
-  <div class="fp-price"><b>NT$ 2,280</b><span class="fp-per">／人 · 另加一成服務費</span><s>原價 NT$ 2,980</s></div>
-  <a class="fp-btn" href="book.html">馬上預訂</a>
-</div>
+<!-- 浮動「馬上預訂」卡：2026-08-07 活動結束後移除（原始碼在 git 歷史 commit 0a36d30）。
+     下方 JS 對 #fabBook 皆有 null 檢查，元素不存在不會出錯。 -->
 
 <script src="i18n.js"></script>
 <script src="lenis.min.js"></script>
@@ -2482,41 +2510,22 @@
     }
   }
 
-  // —— 場次表：點日期 → 訂位頁直達該場（book.html?d=6/20）；過期場次標已落幕 ——
+  // —— 場次表：2026-08-07 活動結束後，十一場一律標「已落幕」、不可點 ——
+  // （原本是「點日期 → 訂位頁直達該場」＋依時間分過期／截止；原始碼在 git commit 0a36d30）
+  const SEASON_ENDED = true;
   const SAT_DATES = ['6/13','6/20','6/27','7/04','7/11','7/18','7/25','8/01','8/08','8/15','8/22'];
   function sessionStart(d) {
     const p = d.split('/');
     return new Date(2026, Number(p[0]) - 1, Number(p[1]), 19, 7, 0);
   }
   (function(){
-    const now = new Date();
     document.querySelectorAll('#schedule .slot').forEach(slot => {
-      const dEl = slot.querySelector('.d');
-      const d = dEl ? dEl.textContent.trim() : '';
-      if (d && now - sessionStart(d) > 3 * 3600 * 1000) {   // 開演後 3 小時視為已落幕
-        slot.classList.add('past');
-        slot.setAttribute('aria-disabled', 'true');
-        const av = document.createElement('div');
-        av.className = 'avail';
-        av.textContent = (window.C7L || {}).ended || '已落幕';
-        slot.appendChild(av);
-        return;
-      }
-      if (d && sessionStart(d) - now <= 48 * 3600 * 1000) {   // 開演前 48h 起報名截止（與訂位系統一致）
-        slot.classList.add('closed');
-        slot.setAttribute('aria-disabled', 'true');
-        const avc = document.createElement('div');
-        avc.className = 'avail';
-        avc.textContent = (window.C7L || {}).bClosed || '報名已截止';
-        slot.appendChild(avc);
-        return;
-      }
-      const goBook = () => { const lg = (window.C7I18N && C7I18N.lang !== 'zh') ? '&lang=' + C7I18N.lang : ''; window.location.href = 'book.html?d=' + encodeURIComponent(d) + lg; };
-      slot.setAttribute('role', 'button');
-      slot.setAttribute('tabindex', '0');
-      slot.setAttribute('aria-label', d + '（六）19:07 預購');
-      slot.addEventListener('click', goBook);
-      slot.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goBook(); } });
+      slot.classList.add('past');
+      slot.setAttribute('aria-disabled', 'true');
+      const av = document.createElement('div');
+      av.className = 'avail';
+      av.textContent = (window.C7L || {}).fwSlot || '已落幕';
+      slot.appendChild(av);
     });
     const ob = document.getElementById('openBook');
     if (ob) ob.addEventListener('click', () => { const lg = (window.C7I18N && C7I18N.lang !== 'zh') ? '?lang=' + C7I18N.lang : ''; window.location.href = 'book.html' + lg; });
@@ -2537,6 +2546,19 @@
 
   // —— 場次即時名額（Firestore 公開讀；抓不到就保持安靜，不影響頁面）——
   (function(){
+    // 活動結束：不再拉即時名額（沒有名額可拉了），只負責讓「已落幕」跟著語言切換走。
+    if (SEASON_ENDED) {
+      const lg = document.getElementById('schedLive');
+      if (lg) lg.remove();                       // 移除「即時名額 ○開放 ◐將滿 ●已滿」圖例
+      window.__renderAvail = function () {
+        const T = window.C7L || {};
+        document.querySelectorAll('#schedule .slot .avail').forEach(av => {
+          av.textContent = T.fwSlot || '已落幕';
+        });
+      };
+      document.addEventListener('c7lang', window.__renderAvail);
+      return;
+    }
     const URL_ = 'https://firestore.googleapis.com/v1/projects/fire-nights/databases/(default)/documents/sessions?key=AIzaSyBXaOPYXcA-0_CrjwPrIxczXzCF5XrBqWk&pageSize=50';
     fetch(URL_).then(r => r.ok ? r.json() : null).then(j => {
       if (!j || !j.documents) return;
@@ -2591,6 +2613,13 @@
   (function(){
     const el = document.getElementById('heroNext');
     if (!el) return;
+    // 活動結束：沒有下一場可倒數，改成一句收尾（跟著語言切換）。
+    if (SEASON_ENDED) {
+      const show = () => { el.textContent = (window.C7L || {}).seasonOver || '十一個週六已落幕 — 未來有機會，我們再見'; };
+      show();
+      document.addEventListener('c7lang', show);
+      return;
+    }
     function cutoff(d) {
       // 報名/匯款截止＝開演前 48 小時，與訂位系統 book.html 一致
       return new Date(sessionStart(d).getTime() - 48 * 3600 * 1000);

@@ -13,22 +13,22 @@
   /* ---------- 動態字串（index 的 JS 會讀 window.C7L）---------- */
   var L = {
     zh: {
-      sat: '（六）', seasonOver: '本季十一場已收官 — 明年夏天見',
+      sat: '（六）', seasonOver: '十一個週六已落幕 — 未來有機會，我們再見',
       full: '● 已滿', last: '◐ 最後 {n} 位', some: '◐ 剩 {n} 位', more: '○ 剩 {n} 位',
       ended: '已落幕', why: '來了就知道。'
     },
     en: {
-      sat: ' (Sat) ', seasonOver: 'All eleven nights are done — see you next summer',
+      sat: ' (Sat) ', seasonOver: 'All eleven nights are done — if the chance comes again, we’ll see you there',
       full: '● Full', last: '◐ Last {n}', some: '◐ {n} left', more: '○ {n} left',
       ended: 'Ended', why: 'Come and you’ll know.'
     },
     ja: {
-      sat: '（土）', seasonOver: '今季の十一夜は終了 — また来年の夏に',
+      sat: '（土）', seasonOver: '十一夜は終了しました — また機会がありましたら、お会いしましょう',
       full: '● 満席', last: '◐ 残り {n} 席', some: '◐ 残り {n} 席', more: '○ 残り {n} 席',
       ended: '終了', why: '来ればわかります。'
     },
     ko: {
-      sat: ' (토) ', seasonOver: '올여름 열한 밤은 끝났습니다 — 내년 여름에',
+      sat: ' (토) ', seasonOver: '열한 밤이 막을 내렸습니다 — 기회가 된다면, 다시 만나요',
       full: '● 매진', last: '◐ 마지막 {n}석', some: '◐ {n}석 남음', more: '○ {n}석 남음',
       ended: '종료', why: '와보면 압니다.'
     }
@@ -525,6 +525,35 @@
           promoOk: '{p} 혜택 적용', promoBad: '코드를 찾을 수 없습니다' }
   };
   Object.keys(LB).forEach(function (k) { var t = LB[k]; for (var key in t) L[k][key] = t[key]; });
+
+  /* ---------- 活動結束 · 告別（2026-08-07 起；index/book 共用）---------- */
+  var FW = {
+    zh: { fwKicker: '夏夜火舞 / SUMMER NIGHTS', fwH1: '已落幕',
+          fwLead: '十一個週六。<br>火亮過，也熄了。',
+          fwBody: '夏夜火舞的訂位已經關閉，2026 年夏季到此為止。<br>謝謝每一位在草皮上坐下來、把那個晚上留給我們的貴客。',
+          fwAgain: '未來有機會，我們再見。',
+          fwNote: '已經訂位並完成匯款的貴客：我們會主動與你聯絡，不需要另外處理。',
+          fwSlot: '已落幕' },
+    en: { fwKicker: 'SUMMER NIGHTS / 夏夜火舞', fwH1: 'That’s a wrap',
+          fwLead: 'Eleven Saturdays. The fire went up, and it went out.',
+          fwBody: 'Bookings for Summer Nights are now closed — the 2026 season has ended.<br>Thank you to everyone who sat down on that lawn and gave us the evening.',
+          fwAgain: 'If the chance comes again, we’ll see you there.',
+          fwNote: 'Already booked and paid? We’ll contact you directly — nothing for you to do.',
+          fwSlot: 'Ended' },
+    ja: { fwKicker: 'サマーナイツ / 夏夜火舞', fwH1: '終了しました',
+          fwLead: '十一回の土曜日。火は上がり、そして消えました。',
+          fwBody: '夏夜火舞のご予約は終了し、2026年の夏はここまでとなりました。<br>芝生に腰を下ろし、あの一夜を過ごしてくださった皆さまに感謝します。',
+          fwAgain: 'また機会がありましたら、お会いしましょう。',
+          fwNote: 'ご予約とお振込みが済んでいるお客様には、こちらからご連絡します。お手続きは不要です。',
+          fwSlot: '終了' },
+    ko: { fwKicker: '서머 나이츠 / 夏夜火舞', fwH1: '막을 내렸습니다',
+          fwLead: '열한 번의 토요일. 불은 타올랐고, 또 꺼졌습니다.',
+          fwBody: '여름밤 불춤의 예약이 마감되었고, 2026년 여름은 여기까지입니다.<br>잔디밭에 앉아 그 밤을 함께해 주신 모든 분께 감사드립니다.',
+          fwAgain: '기회가 된다면, 다시 만나요.',
+          fwNote: '이미 예약과 입금을 마치신 분께는 저희가 직접 연락드립니다. 따로 하실 일은 없습니다.',
+          fwSlot: '종료' }
+  };
+  Object.keys(FW).forEach(function (k) { var t = FW[k]; for (var key in t) L[k][key] = t[key]; });
 
   /* ---------- 引擎 ---------- */
   var KEY = 'c7lang';

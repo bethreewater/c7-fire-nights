@@ -30,6 +30,12 @@
   var CAP = 15;
   var HOLD_MS = 72 * 60 * 60 * 1000;
   var PRICE = 2508;   // 每人實收 = 標價 2,280 + 一成服務費（2280 × 1.1）
+
+  // ⛔ 2026-08-07 活動結束（不再續辦）：所有場次一律關閉，不接受新訂位。
+  //    前端這個旗標讓每一場都顯示「已結束」；真正擋死寫入的是 firestore.rules
+  //    （bookings/holds 的 allow create: if false）。日後重辦要兩處一起改回。
+  //    既有訂位不受影響：後台仍可讀取、確認、改期、取消。
+  var SEASON_ENDED = true;
   var ADMIN_EMAIL = 'mryomryo@gmail.com';
 
   if (!window.firebase || !firebase.initializeApp) {
@@ -169,7 +175,8 @@
     (_holdsBySession[sd] || []).forEach(function (h) { if (h.until > t) pending += h.seats; });
     var remaining = Math.max(0, cap - confirmed - pending);
     var startMs = sessionStartMs(s);
-    var closed = (startMs != null) && (t >= startMs - BOOK_CUTOFF_MS);   // 開演前 48h 起停止報名
+    // 活動結束＝每一場都關；否則沿用「開演前 48h 起停止報名」
+    var closed = SEASON_ENDED || ((startMs != null) && (t >= startMs - BOOK_CUTOFF_MS));
     return { cap: cap, confirmed: confirmed, pending: pending, remaining: remaining, full: remaining <= 0, closed: closed, startMs: startMs };
   }
   function capacity(pid) { return capacityByDoc(docId(pid)); }
@@ -187,6 +194,7 @@
   // ---- 建立訂位：同步回傳本地物件 + 背景寫入 Firestore ----
   // book.html 以同步方式取用回傳值（sessionIds/party/holdUntil），故維持同步回傳。
   function createBooking(payload) {
+    if (SEASON_ENDED) throw new Error('夏夜火舞已結束，不再接受訂位。');
     var t = now();
     var holdUntil = t + HOLD_MS;
     var pids = payload.sessionIds.slice();
@@ -437,6 +445,7 @@
 
   window.C7 = {
     CAP: CAP, PRICE: PRICE, HOLD_MS: HOLD_MS, BOOK_CUTOFF_MS: BOOK_CUTOFF_MS,
+    SEASON_ENDED: SEASON_ENDED,
     sessions: sessions, capacity: capacity, bookings: bookings, feedback: feedback,
     createBooking: createBooking, confirm: confirm, cancel: cancel, reschedule: reschedule,
     notifySession: notifySession, adjustSeats: adjustSeats,

@@ -231,3 +231,19 @@ td .phone{color:var(--mute);}
 }
 .lang-switch button:hover { color: var(--soft, #C8C2B5); }
 .lang-switch button.on { color: var(--fire, #D14820); }
+
+/* ---- 活動結束 · 告別（book.html #ended；index.html 也共用這組字級）---- */
+.farewell{max-width:56ch;margin:34px 0 12px;}
+.farewell .fw-mark{color:var(--fire);font-family:var(--mono);font-size:15px;
+  letter-spacing:.4em;margin-bottom:26px;}
+.farewell .fw-lead{font-family:var(--display);font-size:clamp(22px,4.2vw,31px);
+  line-height:1.5;letter-spacing:.02em;color:var(--paper);margin-bottom:26px;font-weight:400;}
+.farewell .fw-body{font-size:15px;color:var(--soft);line-height:1.9;margin-bottom:30px;}
+.farewell .fw-again{font-size:17px;color:var(--fire);line-height:1.8;letter-spacing:.06em;
+  padding:22px 0 24px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);
+  margin-bottom:30px;}
+.farewell .fw-still{font-size:14px;color:var(--soft);line-height:1.9;margin-bottom:26px;}
+.farewell .fw-still a{color:var(--paper);text-decoration:none;border-bottom:1px solid var(--line2);}
+.farewell .fw-still a:hover{color:var(--fire);border-bottom-color:var(--fire);}
+.farewell .fw-note{font-family:var(--mono);font-size:12px;color:var(--mute);line-height:1.9;
+  padding-left:13px;border-left:2px solid var(--line2);}

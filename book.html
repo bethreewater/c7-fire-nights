@@ -29,9 +29,28 @@
   </header>
 
   <!-- 3. 頁首大標 -->
-  <p class="pg-kicker">線上訂位 / RESERVE</p>
-  <h1 class="pg-h1">訂位</h1>
-  <p class="pg-lede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 72 小時；<b>報名與匯款請於活動 2 天前完成</b>（開演前 48 小時截止報名）。<br><b>NT$ 2,280</b>／人<small>（另加一成服務費）</small>（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>兩段火舞</b>、<b>四道菜</b>。</p>
+  <p class="pg-kicker" id="pgKicker">線上訂位 / RESERVE</p>
+  <h1 class="pg-h1" id="pgH1">訂位</h1>
+  <p class="pg-lede" id="pgLede">選好場次即可看到<b>即時剩餘名額</b>，送出後為你保留 72 小時；<b>報名與匯款請於活動 2 天前完成</b>（開演前 48 小時截止報名）。<br><b>NT$ 2,280</b>／人<small>（另加一成服務費）</small>（原價 <s>NT$ 2,980</s>），一個晚上 <b>110 分鐘</b>、<b>兩段火舞</b>、<b>四道菜</b>。</p>
+
+  <!-- 3b. 活動結束（SEASON_ENDED 時由 JS 顯示，並隱藏下方三個步驟）-->
+  <section id="ended" hidden>
+    <div class="farewell">
+      <p class="fw-mark" aria-hidden="true">◈</p>
+      <p class="fw-lead" id="fwLead">十一個週六。<br>火亮過，也熄了。</p>
+      <p class="fw-body" id="fwBody">
+        夏夜火舞的訂位已經關閉，2026 年夏季到此為止。<br>
+        謝謝每一位在草皮上坐下來、把那個晚上留給我們的貴客。
+      </p>
+      <p class="fw-again" id="fwAgain">未來有機會，我們再見。</p>
+      <p class="fw-still" id="fwStill">
+        七號貨櫃還在澎湖。日常營業與最新消息，都在
+        <a href="https://www.instagram.com/container_no.7_penghu/" target="_blank" rel="noopener">@container_no.7_penghu&nbsp;↗</a>
+        ，或撥 <a href="tel:+886963059889">0963-059-889</a>。
+      </p>
+      <p class="fw-note" id="fwNote">已經訂位並完成匯款的貴客：我們會主動與你聯絡，不需要另外處理。</p>
+    </div>
+  </section>
 
   <!-- 4. Step 01 選場次 -->
   <section id="step1">
@@ -143,6 +162,34 @@
 <script>
 (function () {
   'use strict';
+
+  // ---- 活動已結束：整頁換成告別，訂位流程完全不啟動 ----
+  // （名額真正的鎖在 firestore.rules；這裡只負責不要再給人一個填了會失敗的表單。）
+  if (window.C7 && C7.SEASON_ENDED) {
+    ['step1', 'step2', 'step3'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    var kick = document.getElementById('pgKicker');
+    var h1 = document.getElementById('pgH1');
+    var lede = document.getElementById('pgLede');
+    var ended = document.getElementById('ended');
+    if (kick) kick.textContent = '夏夜火舞 / SUMMER NIGHTS';
+    if (h1) h1.textContent = '已落幕';
+    if (lede) lede.remove();
+    if (ended) ended.hidden = false;
+    document.addEventListener('c7lang', function () {
+      var T = window.C7L || {};
+      if (kick && T.fwKicker) kick.textContent = T.fwKicker;
+      if (h1 && T.fwH1) h1.textContent = T.fwH1;
+      [['fwLead', 'fwLead'], ['fwBody', 'fwBody'], ['fwAgain', 'fwAgain'],
+       ['fwNote', 'fwNote']].forEach(function (p) {
+        var el = document.getElementById(p[0]);
+        if (el && T[p[1]]) el.innerHTML = T[p[1]];
+      });
+    });
+    return;
+  }
 
   // ---- 偏好：reduced-motion ----
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;

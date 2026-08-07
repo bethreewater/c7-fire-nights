@@ -32,29 +32,21 @@ service cloud.firestore {
     // 需用遞迴萬用比對才涵蓋 collection group。欄位只允許座位數/到期/連結 id，無個資。
     match /{path=**}/holds/{holdId} {
       allow read: if true;
-      allow create: if request.resource.data.keys().hasOnly(['seats', 'until', 'bookingId', 'createdAt'])
-                     && isNum(request.resource.data.seats)
-                     && request.resource.data.seats >= 1
-                     && request.resource.data.seats <= 15
-                     && isNum(request.resource.data.until);
+      // ⛔ 2026-08-07 活動結束，不再接受新訂位（見下方 bookings 說明）
+      allow create: if false;
       allow update, delete: if isAdmin();
     }
 
-    // 訂位：含個資。只有後台可讀／改／刪；任何人可送出一筆 pending（欄位受限）
+    // 訂位：含個資。只有後台可讀／改／刪。
+    // ⛔ 2026-08-07 活動結束（用戶決定不再續辦）：新訂位一律拒絕。
+    //    這是「關掉名額」的最後一道閘——即使有人開著舊分頁、存了直連或跳過前端，
+    //    也送不出訂位。既有訂位不受影響，後台仍可讀取／改期／取消。
+    //    ▸ 日後若重辦：把 `allow create: if false;` 換回原本的欄位檢查規則
+    //      （原文在 git 歷史 commit 0a36d30 的這個檔案），並把 booking-store.js
+    //      的 SEASON_ENDED 改回 false，兩處要一起改。
     match /bookings/{bid} {
       allow read, update, delete: if isAdmin();
-      allow create: if request.resource.data.status == 'pending'
-                     && isNum(request.resource.data.party)
-                     && request.resource.data.party >= 1
-                     && request.resource.data.party <= 15
-                     && request.resource.data.name is string
-                     && request.resource.data.name.size() > 0
-                     && request.resource.data.name.size() <= 40
-                     && request.resource.data.phone is string
-                     && request.resource.data.phone.size() >= 6
-                     && request.resource.data.phone.size() <= 20
-                     && request.resource.data.sessionIds is list
-                     && isNum(request.resource.data.holdUntil);
+      allow create: if false;
     }
 
     // 內測回饋：任何人可送出一筆（欄位數與長文受限，防濫用）；只有後台可讀／改／刪
